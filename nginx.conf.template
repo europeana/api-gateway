@@ -1,8 +1,4 @@
-# Based on: https://raw.githubusercontent.com/cloudfoundry/nginx-buildpack/v1.0.1/fixtures/mainline/nginx.conf
-
 worker_processes auto;
-
-# see https://github.com/cloudfoundry/nginx-buildpack/blob/master/fixtures/mainline/nginx.conf#L2
 daemon off;
 
 error_log stderr warn;
@@ -24,34 +20,30 @@ http {
     tcp_nodelay on;
     tcp_nopush on;
     keepalive_timeout 30;
-    port_in_redirect off; # Ensure that redirects don't include the internal container PORT - 8080
 
     server {
-        listen {{port}};
+        listen 80;
         root public;
         index index.html;
 
-        # Enforce SSL
-        if ($http_x_forwarded_proto != "https") {
-            return 301 https://$host$request_uri;
-        }
+        # HTTPS enforcement should be done within Kubernetes ingress
 
         # "upstream" servers do not use resolver settings by default (paid option),
         # so we proxy directly to the urls
-        set $search_api {{env "SEARCH_API_HOST"}};
-        set $thumbnail_api {{env "THUMBNAIL_API_HOST"}};
-        set $oai_record {{env "OAI_RECORD_HOST"}};
-        set $annotation_api {{env "ANNOTATION_API_HOST"}};
-        set $entity_api {{env "ENTITY_API_HOST"}};
-        set $entity_management {{env "ENTITY_MANAGEMENT_HOST"}};
-        set $manifest_api {{env "MANIFEST_API_HOST"}};
-        set $set_api {{env "SET_API_HOST"}};
-        set $fulltext_api {{env "FULLTEXT_API_HOST"}};
-        set $recommendation_api {{env "RECOMMENDATION_API_HOST"}};
+        set $search_api ${SEARCH_API_HOST};
+        set $thumbnail_api ${THUMBNAIL_API_HOST};
+        set $oai_record ${OAI_RECORD_HOST};
+        set $annotation_api ${ANNOTATION_API_HOST};
+        set $entity_api ${ENTITY_API_HOST};
+        set $entity_management ${ENTITY_MANAGEMENT_HOST};
+        set $manifest_api ${MANIFEST_API_HOST};
+        set $set_api ${SET_API_HOST};
+        set $fulltext_api ${FULLTEXT_API_HOST};
+        set $recommendation_api ${RECOMMENDATION_API_HOST};
         
 
         # Override TTL from responses; cache IP addresses for 5 minutes 
-        resolver {{env "RESOLVER_ADDRESS"}} valid=5m;
+        resolver ${RESOLVER_ADDRESS} valid=5m;
 
         add_header Link "<http://creativecommons.org/publicdomain/zero/1.0/>;rel=license";
 
@@ -59,7 +51,7 @@ http {
 
         # Redirect root
         location = / {
-            return 302 {{env "ROOT_REDIRECT_URL"}};
+            return 302 ${ROOT_REDIRECT_URL};
         }
 
 

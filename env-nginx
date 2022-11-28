@@ -15,7 +15,7 @@ vars='$ANNOTATION_API_HOST
       $THUMBNAIL_API_HOST
       $RECOMMENDATION_API_HOST'
 
-envsubst "${vars}" < /etc/nginx/nginx.template.conf > /etc/nginx/nginx.conf
+envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 if [ -z "$1" ]; then
       echo "No container params. Running default nginx command"

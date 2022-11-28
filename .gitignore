@@ -9,3 +9,4 @@
 
 # Kubernetes config properties
 *.properties.yaml
+*.user.properties
