@@ -4,7 +4,7 @@
 
 # Also use default nameserver for resolving hostnames (necessary for k8s deployments so we can use service names)
 NAMESERVER=$(cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}' | tr '\n' ' ')
-export RESOLVER_ADDRESS="${RESOLVER_ADDRESS} ${NAMESERVER}"
+export RESOLVER_ADDRESS="${NAMESERVER} ${RESOLVER_ADDRESS}"
 
 vars='$ANNOTATION_API_HOST
       $ENTITY_API_HOST
