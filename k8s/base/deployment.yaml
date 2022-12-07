@@ -3,14 +3,8 @@ kind: Deployment
 metadata:
   name: api-gateway-deployment
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: api-gateway
+# selector.matchLabels provided via Kustomize
   template:
-    metadata:
-      labels:
-        app: api-gateway
     spec:
       containers:
         - name: api-gateway
@@ -20,3 +14,4 @@ spec:
           envFrom:
             - configMapRef:
                 name: api-gateway-config
+
