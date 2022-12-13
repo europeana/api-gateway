@@ -1,0 +1,44 @@
+# There is an issue with loading the correct certificate when using a server alias with a different domain, so we create two ingresses instead
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-gateway
+spec:
+  ingressClassName: public-iks-k8s-nginx
+  rules:
+  - host:  ${K8S_HOSTNAME}
+    http:
+      paths:
+      - backend:
+          service:
+            name: api-gateway-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    -  ${K8S_HOSTNAME}
+    secretName: ${K8S_HOSTNAME_SECRET}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-gateway-alias
+spec:
+  ingressClassName: public-iks-k8s-nginx
+  rules:
+  - host:  ${K8S_SERVER_ALIAS}
+    http:
+      paths:
+      - backend:
+          service:
+            name: api-gateway-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+      - ${K8S_SERVER_ALIAS}
+    secretName: ${K8S_SERVER_ALIAS_SECRET}
