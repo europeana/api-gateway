@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: api-gateway
+  name: api-gateway-ingress
 spec:
   ingressClassName: public-iks-k8s-nginx
   rules:
@@ -16,18 +16,6 @@ spec:
               number: 80
         path: /
         pathType: Prefix
-  tls:
-  - hosts:
-    -  ${K8S_HOSTNAME}
-    secretName: ${K8S_HOSTNAME_SECRET}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: api-gateway-alias
-spec:
-  ingressClassName: public-iks-k8s-nginx
-  rules:
   - host:  ${K8S_SERVER_ALIAS}
     http:
       paths:
@@ -38,7 +26,11 @@ spec:
               number: 80
         path: /
         pathType: Prefix
+
   tls:
   - hosts:
-      - ${K8S_SERVER_ALIAS}
+    - ${K8S_HOSTNAME}
+    secretName: ${K8S_HOSTNAME_SECRET}
+  - hosts:
+    - ${K8S_SERVER_ALIAS}
     secretName: ${K8S_SERVER_ALIAS_SECRET}
