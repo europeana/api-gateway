@@ -11,7 +11,9 @@ spec:
     name: api-gateway-deployment
   behavior:
     scaleDown:
-      stabilizationWindowSeconds: 900
+      stabilizationWindowSeconds: 300
+    scaleUp:
+      stabilizationWindowSeconds: 15
   metrics:
     - type: Resource
       resource:
