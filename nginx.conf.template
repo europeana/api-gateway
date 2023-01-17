@@ -69,7 +69,7 @@ http {
         location ~ ^/api/(.*) {
             rewrite ^/api/(.*)$ /api/$1 break;
             proxy_set_header Host $search_api;
-            proxy_pass https://$search_api;
+            proxy_pass http://$search_api;
         }
         
       
@@ -112,14 +112,14 @@ http {
         location ~ ^/record/(v2/)?(open)?search(.*) {
             rewrite ^/record/(v2/)?(open)?search(.*)$ /api/v2/$2search$3 break;
             proxy_set_header Host $search_api;
-            proxy_pass https://$search_api;
+            proxy_pass http://$search_api;
         }
 
         # Record API
         location ~ ^/record/(v2/)?(.*) {
             rewrite  ^/record/(v2/)?(.*)$ /api/v2/record/$2 break;
             proxy_set_header Host $search_api;
-            proxy_pass https://$search_api;
+            proxy_pass http://$search_api;
         }
 
         # Always enable CORS for Search & Record API Swagger endpoint (as bug fix)
@@ -127,7 +127,7 @@ http {
             proxy_set_header Host $search_api;
             proxy_hide_header Access-Control-Allow-Origin;
             add_header Access-Control-Allow-Origin "*";
-            proxy_pass https://$search_api/api/api-docs;
+            proxy_pass http://$search_api/api/api-docs;
         }
 
         # Thumbnail API v2 (old style)
