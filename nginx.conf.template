@@ -42,8 +42,8 @@ http {
         set $recommendation_api ${RECOMMENDATION_API_HOST};
         
 
-        # Override TTL from responses; cache IP addresses for 30 seconds
-        resolver ${RESOLVER_ADDRESS} valid=30s;
+        # Override TTL from responses
+        resolver ${RESOLVER_SETTINGS} 
 
         add_header Link "<http://creativecommons.org/publicdomain/zero/1.0/>;rel=license";
 
