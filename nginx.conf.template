@@ -21,6 +21,11 @@ http {
     tcp_nopush on;
     keepalive_timeout 30;
 
+    upstream search_api {
+            keepalive 10;
+            server ${SEARCH_API_HOST};
+    }
+
     server {
         listen 80;
         root public;
@@ -30,7 +35,6 @@ http {
 
         # "upstream" servers do not use resolver settings by default (paid option),
         # so we proxy directly to the urls
-        set $search_api ${SEARCH_API_HOST};
         set $thumbnail_api ${THUMBNAIL_API_HOST};
         set $oai_record ${OAI_RECORD_HOST};
         set $annotation_api ${ANNOTATION_API_HOST};
@@ -68,8 +72,8 @@ http {
         # Not sure why we have this rule and if it's still useful.
         location ~ ^/api/(.*) {
             rewrite ^/api/(.*)$ /api/$1 break;
-            proxy_set_header Host $search_api;
-            proxy_pass http://$search_api;
+            proxy_set_header Host ${SEARCH_API_HOST};
+            proxy_pass http://search_api;
         }
         
       
@@ -111,23 +115,23 @@ http {
         # Search API
         location ~ ^/record/(v2/)?(open)?search(.*) {
             rewrite ^/record/(v2/)?(open)?search(.*)$ /api/v2/$2search$3 break;
-            proxy_set_header Host $search_api;
-            proxy_pass http://$search_api;
+            proxy_set_header Host ${SEARCH_API_HOST};
+            proxy_pass http://search_api;
         }
 
         # Record API
         location ~ ^/record/(v2/)?(.*) {
             rewrite  ^/record/(v2/)?(.*)$ /api/v2/record/$2 break;
-            proxy_set_header Host $search_api;
-            proxy_pass http://$search_api;
+            proxy_set_header Host ${SEARCH_API_HOST};
+            proxy_pass http://search_api;
         }
 
         # Always enable CORS for Search & Record API Swagger endpoint (as bug fix)
         location = /record/api-docs {
-            proxy_set_header Host $search_api;
+            proxy_set_header Host ${SEARCH_API_HOST};
             proxy_hide_header Access-Control-Allow-Origin;
             add_header Access-Control-Allow-Origin "*";
-            proxy_pass http://$search_api/api/api-docs;
+            proxy_pass http://search_api/api/api-docs;
         }
 
         # Thumbnail API v2 (old style)
