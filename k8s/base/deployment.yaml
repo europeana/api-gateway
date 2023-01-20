@@ -11,6 +11,18 @@ spec:
           image: europeana/api-gateway
           ports:
             - containerPort: 80
+          livenessProbe:
+            httpGet:
+              port: 80
+              path: /
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              port: 80
+              path: /
+            initialDelaySeconds: 5
+            periodSeconds: 5
           envFrom:
             - configMapRef:
                 name: api-gateway-config
