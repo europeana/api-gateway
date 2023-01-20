@@ -46,8 +46,7 @@ http {
         set $recommendation_api ${RECOMMENDATION_API_HOST};
         
 
-        # Override TTL from responses
-        resolver ${RESOLVER_SETTINGS} 
+        resolver ${RESOLVER_SETTINGS};
 
         add_header Link "<http://creativecommons.org/publicdomain/zero/1.0/>;rel=license";
 
