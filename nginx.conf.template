@@ -26,6 +26,11 @@ http {
             server ${SEARCH_API_HOST};
     }
 
+   upstream thumbnail_api {
+            keepalive 10;
+            server ${THUMBNAIL_API_HOST};
+    }
+
     server {
         listen 80;
         root public;
@@ -35,7 +40,6 @@ http {
 
         # "upstream" servers do not use resolver settings by default (paid option),
         # so we proxy directly to the urls
-        set $thumbnail_api ${THUMBNAIL_API_HOST};
         set $oai_record ${OAI_RECORD_HOST};
         set $annotation_api ${ANNOTATION_API_HOST};
         set $entity_api ${ENTITY_API_HOST};
@@ -137,16 +141,16 @@ http {
         location = /api/v2/thumbnail-by-url.json {
             # Thumbnails are JPEGs; no need to gzip them
             gzip off;
-            proxy_set_header Host $thumbnail_api;
-            proxy_pass https://$thumbnail_api;
+            proxy_set_header Host ${THUMBNAIL_API_HOST};
+            proxy_pass http://thumbnail_api;
         }
         
         # Thumbnail API v2 (new style)
         location = /thumbnail/v2/url.json {
             # Thumbnails are JPEGs; no need to gzip them
             gzip off;
-            proxy_set_header Host $thumbnail_api;
-            proxy_pass https://$thumbnail_api/api/v2/thumbnail-by-url.json$is_args$args;
+            proxy_set_header Host ${THUMBNAIL_API_HOST};
+            proxy_pass http://thumbnail_api/api/v2/thumbnail-by-url.json$is_args$args;
         }
         
         location ~ /thumbnail/v2/(.*) {
@@ -158,8 +162,8 @@ http {
         location ~ /thumbnail/(v3/)?(.*) {
             # Thumbnails are JPEGs; no need to gzip them
             gzip off;
-            proxy_set_header Host $thumbnail_api;
-            proxy_pass https://$thumbnail_api/thumbnail/v3/$2$is_args$args;
+            proxy_set_header Host ${THUMBNAIL_API_HOST};
+            proxy_pass http://thumbnail_api/thumbnail/v3/$2$is_args$args;
         }
 
         # OAI-PMH requests
