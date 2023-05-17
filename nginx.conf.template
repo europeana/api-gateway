@@ -33,7 +33,7 @@ http {
 
     server {
         listen 80;
-        root public;
+        root /usr/share/nginx/html;
         index index.html;
 
         # HTTPS enforcement should be done within Kubernetes ingress
