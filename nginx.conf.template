@@ -61,6 +61,11 @@ http {
             return 302 ${ROOT_REDIRECT_URL};
         }
 
+        # Used by Kubernetes health checks
+        location /nginx-health {
+            default_type application/json;
+            return 200 '{"status":"healthy"}';
+        }
 
         # Old and deprecated (kept for the time being for backward compatibility)
         # ----------------------------------------------------------
