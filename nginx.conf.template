@@ -174,13 +174,13 @@ http {
         # OAI-PMH requests
         location = /oai/record {
             proxy_set_header Host $oai_record;
-            proxy_pass https://$oai_record/oai/$is_args$args;
+            proxy_pass http://$oai_record/oai/$is_args$args;
         }
         
         # OAI-PMH index page
         location = /oai/record/ {
             proxy_set_header Host $oai_record;
-            proxy_pass https://$oai_record/index.html;
+            proxy_pass http://$oai_record/index.html;
         }
         
         # Change all OAI-PMH .shtml form pages to .html
@@ -191,7 +191,7 @@ http {
         # OAI-PMH query forms
         location ~ ^/oai/record/(.*)\.html {
             proxy_set_header Host $oai_record;
-            proxy_pass https://$oai_record/$1.html;
+            proxy_pass http://$oai_record/$1.html;
         }
 
         # Annotation API
