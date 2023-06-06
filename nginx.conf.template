@@ -60,7 +60,7 @@ http {
             keepalive 10;
             server ${SEARCH_API_HOST};
     }
-    
+
     upstream set_api {
             keepalive 10;
             server ${SET_API_HOST};
@@ -150,8 +150,8 @@ http {
 
         # Recommendation API (alternative path, has to be defined before Search & Record)
         location ~ ^/record/(v2/)?(.*)/recommend {
-            proxy_set_header Host $recommendation_api;
-            proxy_pass http://$recommendation_api/recommend/record/$2$is_args$args;
+            proxy_set_header Host ${RECOMMENDATION_API_HOST};
+            proxy_pass http://recommendation_api/recommend/record/$2$is_args$args;
         }
 
         # Search API
@@ -207,14 +207,14 @@ http {
 
         # OAI-PMH requests
         location = /oai/record {
-            proxy_set_header Host $oai_record;
-            proxy_pass http://$oai_record/oai/$is_args$args;
+            proxy_set_header Host ${OAI_RECORD_HOST};
+            proxy_pass http://oai_record/oai/$is_args$args;
         }
         
         # OAI-PMH index page
         location = /oai/record/ {
-            proxy_set_header Host $oai_record;
-            proxy_pass http://$oai_record/index.html;
+            proxy_set_header Host ${OAI_RECORD_HOST};
+            proxy_pass http://oai_record/index.html;
         }
         
         # Change all OAI-PMH .shtml form pages to .html
@@ -224,56 +224,56 @@ http {
         
         # OAI-PMH query forms
         location ~ ^/oai/record/(.*)\.html {
-            proxy_set_header Host $oai_record;
-            proxy_pass http://$oai_record/$1.html;
+            proxy_set_header Host ${OAI_RECORD_HOST};
+            proxy_pass http://oai_record/$1.html;
         }
 
         # Annotation API
         location ~ ^/annotation/(.*) {
-            proxy_set_header Host $annotation_api;
-            proxy_pass http://$annotation_api/annotation/$1$is_args$args;
+            proxy_set_header Host ${ANNOTATION_API_HOST};
+            proxy_pass http://annotation_api/annotation/$1$is_args$args;
         }
 
         # Entity - search, resolve and suggest are routed to Entity API
         location ~ ^/entity/(search|suggest|resolve|enrich|stats)(.*) {
-            proxy_set_header Host $entity_api;
-            proxy_pass http://$entity_api/entity/$1$2$is_args$args;
+            proxy_set_header Host ${ENTITY_API_HOST};
+            proxy_pass http://entity_api/entity/$1$2$is_args$args;
         }
 
         # Entity - all other requests go to Entity Management
         location ~ ^/entity/(.*) {
-            proxy_set_header Host $entity_management;
-            proxy_pass http://$entity_management/entity/$1$is_args$args;
+            proxy_set_header Host ${ENTITY_MANAGEMENT_HOST};
+            proxy_pass http://entity_management/entity/$1$is_args$args;
         }
 
         # Manifest API
         location ~ ^/presentation/(.*)/manifest$ {
-            proxy_set_header Host $manifest_api;
-            proxy_pass http://$manifest_api/presentation/$1/manifest$is_args$args;
+            proxy_set_header Host ${MANIFEST_API_HOST};
+            proxy_pass http://manifest_api/presentation/$1/manifest$is_args$args;
         }
 
         # Fulltext API
         location ~ ^/(fulltext|presentation)/(.*) {
-            proxy_set_header Host $fulltext_api;
-            proxy_pass http://$fulltext_api/presentation/$2$is_args$args;
+            proxy_set_header Host ${FULLTEXT_API_HOST};
+            proxy_pass http://fulltext_api/presentation/$2$is_args$args;
         }
 
         # Recommendation API
         location ~ ^/recommend/(.*) {
-            proxy_set_header Host $recommendation_api;   
-            proxy_pass http://$recommendation_api/recommend/$1$is_args$args;
+            proxy_set_header Host ${RECOMMENDATION_API_HOST};
+            proxy_pass http://recommendation_api/recommend/$1$is_args$args;
         }
 
         # Recommendation API (alternative path)
         location ~ ^/set/(.*)/recommend {
-            proxy_set_header Host $recommendation_api;
-            proxy_pass http://$recommendation_api/recommend/set/$1$is_args$args;
+            proxy_set_header Host ${RECOMMENDATION_API_HOST};
+            proxy_pass http://recommendation_api/recommend/set/$1$is_args$args;
         }
 
         # Sets API
         location ~ ^/set/(.*) {
-            proxy_set_header Host $set_api;
-            proxy_pass http://$set_api/set/$1$is_args$args;
+            proxy_set_header Host ${SET_API_HOST};
+            proxy_pass http://set_api/set/$1$is_args$args;
         }
         
         # ----------------------------------------------------------
