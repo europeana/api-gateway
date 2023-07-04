@@ -14,3 +14,19 @@ body {
     margin: 0;
     background: #fafafa;
 }
+
+.swagger-ui .info {
+    margin: 20px 0;
+}
+
+.swagger-ui .info__tos {
+    display: none
+}
+
+.swagger-ui .info__contact {
+    display: none
+}
+
+.swagger-ui .info__license {
+    display: none
+}
