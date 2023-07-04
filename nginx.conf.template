@@ -69,10 +69,10 @@ http {
 
         # Local Swagger console with static OpenApi documents
         location /console/search {
-            return 307 https://$host/console/index.html?url=http://$host/openapidocs/search.json;
+            return 307 https://$host/console/index.html?url=https://$host/openapidocs/search.json;
         }
         location /console/record {
-            return 307 https://$host/console/index.html?url=http://$host/openapidocs/record.json;
+            return 307 https://$host/console/index.html?url=https://$host/openapidocs/record.json;
         }
 
         # Old and deprecated (kept for the time being for backward compatibility)
