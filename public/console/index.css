@@ -30,3 +30,11 @@ body {
 .swagger-ui .info__license {
     display: none
 }
+
+.swagger-ui .topbar {
+    display: none;
+}
+
+.swagger-ui section.models {
+    display: none;
+}
