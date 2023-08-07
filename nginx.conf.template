@@ -67,6 +67,14 @@ http {
             return 200 '{"status":"healthy"}';
         }
 
+        # Local Swagger console with static OpenApi documents
+        location /console/search {
+            return 307 https://$host/console/index.html?url=https://$host/console/docs/v2/search.json;
+        }
+        location /console/record {
+            return 307 https://$host/console/index.html?url=https://$host/console/docs/v2/record.json;
+        }
+
         # Old and deprecated (kept for the time being for backward compatibility)
         # ----------------------------------------------------------
         # Redirect old record url format (to be removed?)

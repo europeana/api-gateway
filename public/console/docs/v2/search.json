@@ -1,0 +1,370 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Europeana Search API",
+    "description": "This console provides an overview of the API methods publicly available for the Europeana Search API",
+    "version": "2.16.2",
+    "termsOfService": "https://www.europeana.eu/en/rights/api-terms-of-use",
+    "contact": {
+      "name": "API Mailbox",
+      "url": "https://pro.europeana.eu/page/apis",
+      "email": "api@europeana.eu"
+    },
+    "license": {
+      "name": "EUPL-1.2",
+      "url": "https://joinup.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
+    }
+  },
+  "host": "api.europeana.eu",
+  "schemes": [ "https" ],
+  "securityDefinitions": {
+    "wskey": {
+      "type": "apiKey",
+      "name": "wskey",
+      "in": "query"
+    }
+  },
+  "externalDocs": {
+    "description": "For more information, head to our comprehensive online documentation",
+    "url": "https://pro.europeana.eu/page/search"
+  },
+  "tags": [
+    {
+      "name": "Search",
+      "description": "Version agnostic endpoint (not recommended for production use)"
+    },
+    {
+      "name": "Search v2",
+      "description": "Official stable version of the Search API"
+    },
+    {
+      "name": "Search v3",
+      "description": "Coming soon..."
+    },
+    {
+      "name": "OpenSearch.RSS",
+      "externalDocs":  {
+        "description": "See official documentation for more information about OpenSearch.RSS",
+        "url": "https://github.com/dewitt/opensearch"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Returned if the method was successfully performed"
+    },
+    "401": {
+      "description": "Unauthorized"
+    },
+    "403": {
+      "description": "Forbidden"
+    },
+    "404": {
+      "description": "Not Found"
+    }
+  },
+  "paths": {
+    "/record/v2/search.json": {
+      "get": {
+        "tags": [
+          "Search v2"
+        ],
+        "summary": "general search for records",
+        "operationId": "searchRecords",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "wskey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "description": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "qf",
+            "in": "query",
+            "description": "qf",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "profile",
+            "in": "query",
+            "description": "profile",
+            "required": false,
+            "type": "string",
+            "default": "standard"
+          },
+          {
+            "name": "facet",
+            "in": "query",
+            "description": "facet",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "colourpalette",
+            "in": "query",
+            "description": "colourpalette",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "cursor",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "landingpage",
+            "in": "query",
+            "description": "landingpage",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "media",
+            "in": "query",
+            "description": "media",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "reusability",
+            "in": "query",
+            "description": "reusability",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "start",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32"
+          },
+          {
+            "name": "rows",
+            "in": "query",
+            "description": "rows",
+            "required": false,
+            "type": "integer",
+            "default": 12,
+            "format": "int32"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "sort",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "text_fulltext",
+            "in": "query",
+            "description": "text_fulltext",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "thumbnail",
+            "in": "query",
+            "description": "thumbnail",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "theme",
+            "in": "query",
+            "description": "theme",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "callback",
+            "in": "query",
+            "description": "callback",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "hit.fl",
+            "in": "query",
+            "description": "hit.fl",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "hit.selectors",
+            "in": "query",
+            "description": "hit.selectors",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "boost",
+            "in": "query",
+            "description": "boost",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "description": "lang",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "q.source",
+            "in": "query",
+            "description": "q.source",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "q.target",
+            "in": "query",
+            "description": "q.target",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/200"
+          },
+          "401": {
+            "$ref": "#/responses/401"
+          },
+          "403": {
+            "$ref": "#/responses/403"
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Search v2"
+        ],
+        "summary": "general search for records",
+        "operationId": "searchRecordsPost",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "wskey": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "SearchRequest",
+            "required": true,
+            "schema": {
+              "$ref": "https://rnd-2.eanadev.org/share/api/schema/json/search.schema.json#/definitions/SearchRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/record/opensearch.rss": {
+      "get": {
+        "tags": [
+          "OpenSearch.RSS"
+        ],
+        "summary": "search based on the OpenSearch specification",
+        "operationId": "openSearch",
+        "produces": [
+          "application/xml",
+          "application/rss+xml",
+          "application/xhtml+xml"
+        ],
+        "parameters": [
+          {
+            "name": "searchTerms",
+            "in": "query",
+            "description": "searchTerms",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startIndex",
+            "in": "query",
+            "description": "startIndex",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32"
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "count",
+            "required": false,
+            "type": "integer",
+            "default": 12,
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    }
+  }
+}
