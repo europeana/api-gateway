@@ -1,0 +1,40 @@
+html {
+    box-sizing: border-box;
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    background: #fafafa;
+}
+
+.swagger-ui .info {
+    margin: 20px 0;
+}
+
+.swagger-ui .info__tos {
+    display: none
+}
+
+.swagger-ui .info__contact {
+    display: none
+}
+
+.swagger-ui .info__license {
+    display: none
+}
+
+.swagger-ui .topbar {
+    display: none;
+}
+
+.swagger-ui section.models {
+    display: none;
+}
