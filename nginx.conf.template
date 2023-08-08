@@ -21,6 +21,7 @@ http {
     tcp_nopush on;
     keepalive_timeout 30;
 
+    # Note that for upstream servers all IP addresses/services need to be available on start-up!
     upstream annotation_api {
         keepalive 10;
         server ${ANNOTATION_API_HOST};
@@ -79,11 +80,7 @@ http {
 
         # HTTPS enforcement should be done within Kubernetes ingress
 
-        # "upstream" servers do not use resolver settings by default (paid option),
-        # so we proxy directly to the urls
-        #set $oai_record ${OAI_RECORD_HOST};
-        #set $annotation_api ${ANNOTATION_API_HOST};
-        #set $set_api ${SET_API_HOST};
+        # "upstream" servers do not use resolver settings by default (paid option), so we proxy directly to the urls
         #resolver ${RESOLVER_SETTINGS};
 
         add_header Link "<http://creativecommons.org/publicdomain/zero/1.0/>;rel=license";
