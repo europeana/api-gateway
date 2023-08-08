@@ -22,53 +22,53 @@ http {
     keepalive_timeout 30;
 
     upstream annotation_api {
-            keepalive 10;
-            server ${ANNOTATION_API_HOST};
+        keepalive 10;
+        server ${ANNOTATION_API_HOST};
     }
 
     upstream entity_api {
-            keepalive 10;
-            server ${ENTITY_API_HOST};
+        keepalive 10;
+        server ${ENTITY_API_HOST};
     }
 
     upstream entity_management {
-            keepalive 10;
-            server ${ENTITY_MANAGEMENT_HOST};
+        keepalive 10;
+        server ${ENTITY_MANAGEMENT_HOST};
     }
 
     upstream fulltext_api {
-            keepalive 10;
-            server ${FULLTEXT_API_HOST};
+        keepalive 10;
+        server ${FULLTEXT_API_HOST};
     }
 
     upstream manifest_api {
-            keepalive 10;
-            server ${MANIFEST_API_HOST};
+        keepalive 10;
+        server ${MANIFEST_API_HOST};
     }
 
     upstream oai_record {
-            keepalive 10;
-            server ${OAI_RECORD_HOST};
+        keepalive 10;
+        server ${OAI_RECORD_HOST};
     }
 
     upstream recommendation_api {
-            keepalive 10;
-            server ${RECOMMENDATION_API_HOST};
+        keepalive 10;
+        server ${RECOMMENDATION_API_HOST};
     }
 
     upstream search_api {
-            keepalive 10;
-            server ${SEARCH_API_HOST};
+        keepalive 10;
+        server ${SEARCH_API_HOST};
     }
 
     upstream set_api {
-            keepalive 10;
-            server ${SET_API_HOST};
+        keepalive 10;
+        server ${SET_API_HOST};
     }
 
     upstream thumbnail_api {
-            keepalive 10;
-            server ${THUMBNAIL_API_HOST};
+        keepalive 10;
+        server ${THUMBNAIL_API_HOST};
     }
 
 
