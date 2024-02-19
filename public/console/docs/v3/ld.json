@@ -1,0 +1,107 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Linked Data",
+        "description": "This console provides all the linked open data resources available on Europeana",
+        "version": "1.x",
+        "termsOfService": "https://www.europeana.eu/en/rights/api-terms-of-use",
+        "contact": {
+            "name": "API Mailbox",
+            "url": "https://pro.europeana.eu/page/apis",
+            "email": "api@europeana.eu"
+        },
+        "license": {
+            "name": "EUPL-1.2",
+            "url": "https://joinup.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
+        }
+    },
+    "servers": [
+        { "url": "https://data.europeana.eu" }
+    ],
+    "externalDocs": {
+        "description": "For more information, head to our comprehensive online documentation",
+        "url": "https://pro.europeana.eu/page/linked-open-data" 
+    },
+    "security": [
+        {
+            "X-Api-Key": [],
+            "wskey": [],
+            "token": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Resources",
+            "description": "Methods for retrieving entity data"
+        }
+    ],
+    "components": {
+        "parameters": {
+            "datasetId" : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/datasetId"      },
+            "recordId"  : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/recordId"       },
+            "entityType": { "$ref": "https://api.europeana.eu/console/docs/v3/entity.json#/components/parameters/type"           },
+            "entityId"  : { "$ref": "https://api.europeana.eu/console/docs/v3/entity.json#/components/parameters/identifier"     },
+            "annoId"    : { "$ref": "https://api.europeana.eu/console/docs/v3/annotation.json#/components/parameters/identifier" }
+        },
+        "responses": {
+            "303": {
+                "description": "The request was executed successfully.",
+                "content": {
+                    "application/ld+json": {},
+                    "application/json"   : {},
+                    "application/rdf+xml": {},
+                    "application/xml"    : {}
+                }
+            },
+            "404": {
+                "description": "The requested entity was not found."
+            }
+        }
+    },
+    "paths": {
+        "/item/{datasetId}/{recordId}": {
+            "get": {
+                "tags": [ "Resources" ],
+                "summary": "Retrieve data for an entity.",
+                "description": "Retrieves data available for a specific entity.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/datasetId" },
+                    { "$ref": "#/components/parameters/recordId"  }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/303" }, 
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/entity/{entityType}/{entityId}": {
+            "get": {
+                "tags": [ "Resources" ],
+                "summary": "Retrieve data for an entity.",
+                "description": "Retrieves data available for a specific entity.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/entityType" },
+                    { "$ref": "#/components/parameters/entityId"   }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/303" }, 
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/annotation/{annoId}": {
+            "get": {
+                "tags": [ "Resources" ],
+                "summary": "Retrieve data for an entity.",
+                "description": "Retrieves data available for a specific entity.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/annoId" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/303" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        }
+    }
+}

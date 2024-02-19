@@ -1,0 +1,234 @@
+{
+    "$id": "http://www.europeana.eu/schemas/json/iiif/v2/fulltext#",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",    
+    "title": "IIIF APIs - Full-text v2 schema",
+    "oneOf": [
+        { "$ref": "#/definitions/AnnotationPage"    },
+        { "$ref": "#/definitions/Annotation"        },
+        { "$ref": "#/definitions/FullTextResource"  },
+        { "$ref": "#/definitions/ResultPage"        }
+    ],
+    "definitions": {
+        "Context": {
+            "type": "array", "minItems": 2, 
+            "description": "The JSON-LD context.",
+            "example": [ "http://iiif.io/api/presentation/2/context.json", "https://www.europeana.eu/schemas/context/edm.jsonld" ],
+            "items": { "type": "string", 
+                       "enum": [ "http://iiif.io/api/presentation/2/context.json", "https://www.europeana.eu/schemas/context/edm.jsonld" ]
+            }
+        },
+        "ContextEDM": {
+            "type": "string",
+            "description": "The JSON-LD context.",
+            "const": "https://www.europeana.eu/schemas/context/edm.jsonld",
+            "example": "https://www.europeana.eu/schemas/context/edm.jsonld"
+        },
+        "AnnotationURI": { 
+             "type": "string", "format": "uri",
+             "description": "The unique identifier of the annotation.",
+             "example": "http://data.europeana.eu/annotation/9200396/BibliographicResource_3000118436341/28390eedbbb94dc680b76078fdfd6f8f"
+        },
+        "AnnotationPageURI": { 
+            "type": "string", "format": "uri",
+            "description": "The unique identifier for the annotation page.",
+            "example": "https://iiif.europeana.eu/presentation/9200396/BibliographicResource_3000118436341/annopage/08a3298?lang=fr"
+        },
+        "ResultPageURI": { 
+            "type": "string", "format": "uri",
+            "description": "The unique identifier for the result page.",
+            "example": "https://iiif.europeana.eu/presentation/9200396/BibliographicResource_3000118436341/search?q=fox&textGranularity=word&lang=en"
+        },
+        "FullTextResourceURI": {
+            "type": "string", "format": "uri",
+            "description": "The unique identifier of the full-text resource.",
+            "example": "http://data.europeana.eu/fulltext/9200396/BibliographicResource_3000118436341/d4c438b"
+        },
+        "AnnotationPage": {
+            "type": "object",
+            "description": "A page containing all fulltext annotations in a specific language and for a media resource.",
+            "properties": {
+                "@context"       : { "$ref": "#/definitions/Context"             },
+                "@id"            : { "$ref": "#/definitions/AnnotationPageURI"   },
+                "@type"          : { 
+                    "type": "string", 
+                    "const": "sc:AnnotationList", "example": "sc:AnnotationList"
+                },
+                "language"       : { "$ref": "#/definitions/Language"            },
+                "textGranularity": { "$ref": "#/definitions/TextGranularityList" },
+                "resources"      : { "$ref": "#/definitions/Annotations"         }
+             },
+            "required": [ "@id", "@type", "language", "resources" ],
+            "additionalProperties": false
+        },
+        "ResultPage": {
+            "type": "object",
+            "description": "A page containing the full-text annotations that match the search criteria.",
+            "properties": {
+                "@context"       : { "$ref": "#/definitions/Context"             },
+                "@id"            : { "$ref": "#/definitions/ResultPageURI"       },
+                "@type"          : { 
+                    "type": "string", 
+                    "const": "sc:AnnotationList", "example": "sc:AnnotationList"
+                },
+                "language"       : { "$ref": "#/definitions/Language"            },
+                "textGranularity": { "$ref": "#/definitions/TextGranularityList" },
+                "resources"      : { "$ref": "#/definitions/Annotations"         },
+                "hits"           : { 
+                    "type": "array", "minItems": 0, 
+                    "items": { "$ref": "#/definitions/Hit" }
+                }
+             },
+            "required": [ "@id", "@type", "language", "resources" ],
+            "additionalProperties": false
+        },
+        "Annotation": {
+            "type": "object",
+            "properties": {
+                "@context"       : { "$ref": "#/definitions/Context"         },
+                "@id"            : { "$ref": "#/definitions/AnnotationURI"   },
+                "@type"          : { 
+                    "type": "string", 
+                    "const": "oa:Annotation", "example": "oa:Annotation"
+                },
+                "motivation"     : { 
+                    "type": "string", 
+                    "description": "The motivation of the annotation.",
+                    "const": "sc:painting", "example": "sc:painting"
+                },
+                "textGranularity": { "$ref": "#/definitions/TextGranularity" },
+                "resource"       : {
+                    "oneOf": [ 
+                        { "$ref": "#/definitions/FullTextResourceReference" },
+                        { "$ref": "#/definitions/FullTextResource"          } 
+                    ]
+                },
+                "on"            : { "$ref": "#/definitions/Targets"          }
+            },
+            "required": [ "@id", "@type", "motivation", "textGranularity", "resource", "on" ],
+            "additionalProperties": false
+        },
+        "FullTextResource": {
+            "type": "object",
+            "description": "A textual representation of the media resource.",
+            "properties": {
+                "@context"  : { "$ref": "#/definitions/ContextEDM"          },
+                "@id"       : { "$ref": "#/definitions/FullTextResourceURI" },
+                "type"      : { 
+                    "type": "string", 
+                    "const": "FullTextResource", "example": "FullTextResource"
+                },
+                "edmRights" : { "$ref": "#/definitions/Rights"              },
+                "language"  : { "$ref": "#/definitions/Language"            },
+                "value"     : { "$ref": "#/definitions/BodyValue"           }
+             },
+            "required": [ "@id", "type", "edmRights", "language", "value" ],
+            "additionalProperties": false
+        },
+        "FullTextResourceReference": {
+            "type": "object",
+            "description": "A reference to a textual representation of the media resource.",
+            "properties": {
+                "@id": { "$ref": "#/definitions/FullTextResourceURI" }
+            },
+            "required": [ "@id" ],
+            "additionalProperties": false
+        },
+        "Annotations": {
+            "type": "array", "minItems": 0, 
+            "description": "The list of annotations that are part of this page.",
+            "items": { 
+                "type": "object",
+                "oneOf": [
+                    { "$ref": "#/definitions/Annotation" }
+                ],
+                "not": { 
+                    "type": "object", 
+                    "required": [ "@context" ] 
+                }
+            }
+        },
+        "BodyValue": {
+            "type": "string", 
+            "description": "The text content of the full-text resource.",
+            "example": "The quick brown fox jumps over the lazy dog"
+        },
+        "Hit": {
+            "type": "object",
+            "description": "The occurrence of the search term within the full-text.",
+            "properties": {
+                "@type"       : { 
+                    "type": "string", 
+                    "const": "search:Hit", "example": "search:Hit" 
+                },
+                "annotations" : {
+                    "type": "array", "minItems": 0, 
+                    "description": "The annotation, or sequence of annotations, that target whole or (part of) the search term.",
+                    "items": { "$ref": "#/definitions/AnnotationURI" }
+                },
+                "selectors"   : { 
+                    "type": "array", "minItems": 0, 
+                    "items": { "$ref": "#/definitions/Selector" }
+                }
+             },
+            "required": [ "@type", "annotations" ],
+            "additionalProperties": false
+        },
+        "Targets": {
+            "type": "array", "minItems": 1, 
+            "description": "The target(s) of the annotation. Always refers to the media resource (or a portion of it) that this textual representation correspond to.",
+            "items": { 
+                "type": "string",  "format": "uri",
+                "example": "https://iiif.europeana.eu/image/GPNNPGBENPQFFOB7PHRRSCK4GJFXZCJ7YFLGCZCJ5QMNJOWVVRJA/presentation_images/c5927d61-022b-11e6-a696-fa163e2dd531/node-3/image/BNL/La_clef_du_cabinet_des_princes_de_l'Europe/1704/09/01/00159/full/full/0/default.jpg"
+            }
+        },
+        "Selector": {
+            "type": "object",
+            "description": "The selection of the text where the search term was found.",
+            "properties": {
+                "@type" : { 
+                    "type": "string", 
+                    "const": "oa:TextQuoteSelector", "example": "oa:TextQuoteSelector"
+                },
+                "prefix": { 
+                    "type": "string",
+                    "description": "A portion of the text preceding the search term",
+                    "example": "The quick brown"
+                },
+                "exact" : { 
+                    "type": "string",
+                    "description": "The text that matched the search term",
+                    "example": "fox"
+                },
+                "suffix": { 
+                    "type": "string",
+                    "description": "A portion of the text succeeding the search term",
+                    "example": "jumps over the lazy dog"
+                }
+             },
+            "required": [ "@type", "prefix", "exact", "suffix" ],
+            "additionalProperties": false
+        },
+        "TextGranularityList": { 
+          "type": "array", "minItems": 1,
+          "description": "The several levels of granularity represented on this page.", 
+          "items": { "$ref": "#/definitions/TextGranularity" } 
+        },
+        "TextGranularity": {
+          "type": "string",
+          "description": "The granularity level of the text within the full-text resource.",
+          "example": "page",
+          "enum": [ "page", "block", "line", "word", "media", "caption" ]
+        },
+        "Rights": {
+            "type": "string", "format": "uri",
+            "description": "A rights statement that indicates the copyright, usage and access rights that apply to the full-text resource.",
+            "example": "http://creativecommons.org/licenses/by-sa/1.0/"
+        },
+        "Language": {
+          "type": "string",
+          "description": "The language of the text represented as a two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a> and match the languages that are supported by Europeana.",
+          "example": "en",
+          "enum": [ "en", "nl", "fr", "de", "es", "sv", "it", "fi", "da", "el", "cs", "sk", "sl", "pt", "hu", "lt", "pl", "ro", "bg", "hr", "lv", "ga", "mt", "et", "no", "ca", "ru", "eu"]
+        }
+    }
+}

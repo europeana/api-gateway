@@ -1,0 +1,190 @@
+{
+    "$id": "https://api.europeana.eu/schemas/json/annotation/model#",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "title": "Annotation API - Model schema",
+    "type": "object",
+    "properties": {
+        "@context"   : { "$ref": "#/definitions/Context"          },
+        "id"         : { "$ref": "#/definitions/AnnotationURI"    },
+        "type"       : { "type": "string", "const": "Annotation", "example": "Annotation" },
+        "created"    : {
+            "type"  : "string", "format": "date-time",
+            "description": "The time at which the annotation was created. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
+            "example": "2020-11-12T15:56:44Z"
+        },
+        "modified"   : {
+            "type"  : "string", "format": "date-time",
+            "description": "The time at which the annotation was modified as a result of an update. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
+            "example": "2021-11-12T15:56:44Z"
+        },
+        "creator"    : { "$ref": "#/definitions/Creator"          },
+        "generated"    : {
+            "type"  : "string", "format": "date-time",
+            "description": "The time at which the annotation was submited to Europeana. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
+            "example": "2020-11-12T15:56:44Z"
+        },
+        "generator"  : { "$ref": "#/definitions/Generator"        },
+        "motivation" : { 
+            "type": "string",
+            "description": "The reason why the Annotation was created.",
+            "example": "tagging",
+            "enum": [ "tagging", "linking", "linkForContributing", "describing", "transcribing", "translating", "subtitling", "captioning" ]
+        },
+        "bodyValue"  : { 
+            "type": "string",
+            "description": "The string literal conveying the text for an annotation.",
+            "example": "vase"
+        },
+        "body"       : { "$ref": "#/definitions/Body"             },
+        "target"     : { "$ref": "#/definitions/Target"           }
+    },
+    "required": [ "@context", "id", "type", "created", "generated", "motivation", "target" ],
+    "additionalProperties": false,
+    "definitions": {
+        "Context": {
+            "type": "string", "format": "uri", 
+            "description": "The JSON-LD context.",
+            "const": "http://www.w3.org/ns/anno.jsonld",
+            "example": "http://www.w3.org/ns/anno.jsonld"
+        },
+        "AnnotationURI": {
+            "type": "string", "format": "uri",
+            "regex": "http[:]//data[.]europeana[.]eu/annotation/[0-9]+",
+            "description": "The unique identifier of the Annotation",
+            "example": "http://data.europeana.eu/annotation/1"
+        },
+        "Creator": {
+            "type"  : "object",
+            "description": "The user that created this Annotation.",
+            "properties": {
+                "id"  : { 
+                    "type": "string", "format": "uri",
+                    "regex": "http[:]//data[.]europeana[.]eu/user/.+",
+                    "example": "http://data.europeana.eu/user/df872745-6ab5-4822-802e-34082c0da0b8"
+                },
+                "type": {
+                    "type": "string", "const": "Person",
+                    "example": "Person"
+                }
+            },
+            "required": [ "id", "type" ],
+            "additionalProperties": false
+        },
+        "Generator": {
+            "type"  : "object",
+            "description": "The client application through which the Annotation was created.",
+            "properties": {
+                "id"  : { 
+                    "type": "string", "format": "uri",
+                    "regex": "https[:]//api[.]europeana[.]eu/apikey/.+",
+                    "example": "https://api.europeana.eu/apikey/8d18a824-8d98-4251-af2c-56514732ce5a"
+                },
+                "type": { 
+                    "type": "string", "const": "Software",
+                    "example": "Software"
+                }
+            },
+            "required": [ "id", "type" ],
+            "additionalProperties": false
+        },
+    	"Body": {
+            "description": "A body conveys what is intended to be said about a target. The simplest form of a body is a literal (without language information) which can be supplied using the oa:bodyValue property. Other more complex bodies can also be represented such as a text or fulltext object, a semantic resource, or a graph for more advanced scenarios.",
+            "oneOf": [
+                { 
+                    "type": "string", "format": "uri",
+                    "example": "http://www.wikidata.org/entity/Q57262093"
+                },
+                { "$ref": "#/definitions/SemanticBody"     },
+                { "$ref": "#/definitions/TextualBody"      },
+                { "$ref": "#/definitions/FullTextResource" }
+            ]            
+        },
+    	"SemanticBody": {
+            "type": "object",
+            "description": "A body representing a semantic resource.",
+            "properties"  : {
+                "id": { "type": "string", "format": "uri" }
+            }
+    	},
+    	"TextualBody": {
+            "type": "object",
+            "description": "A body representing a text object that can be further described with e.g. the language and the format that it is conveyed in.",
+            "properties"  : {
+                "type"    : { "type": "string", "const": "TextualBody", "example": "TextualBody" },
+                "language": { "$ref": "#/definitions/Language" },
+                "value"   : { "$ref": "#/definitions/Value"    }
+            },
+            "required": [ "type", "language", "value" ],
+            "additionalProperties": false
+        },
+    	"FullTextResource": {
+            "type": "object",
+            "description": "A body representing a fulltext object.",
+            "properties": {
+                "type"     : { "type": "string", "const": "FullTextResource", "example": "FullTextResource" },
+                "format"   : { "$ref": "#/definitions/Format"   },
+                "language" : { "$ref": "#/definitions/Language" },
+                "edmRights": { "$ref": "#/definitions/Rights"   },
+                "value"    : { "$ref": "#/definitions/Value"    }
+            },
+            "required": [ "type", "format", "language", "edmRights", "value" ],
+            "additionalProperties": false
+        },
+	    "Target": {
+            "oneOf": [
+                { "$ref": "#/definitions/RecordURI"        },
+                { "$ref": "#/definitions/SpecificResource" },
+                { 
+                    "type": "array", "minItems": 1, 
+                    "items": { 
+                        "oneOf": [
+                            { "$ref": "#/definitions/RecordURI"        },
+                            { "$ref": "#/definitions/SpecificResource" }
+                        ]
+            		}
+                }
+            ]
+        },
+	    "SpecificResource": {
+            "type": "object",
+            "description": "Reference to a media resource that is part of a cultural heritage object.",
+            "properties": {
+                "type"  : { "type": "string", "const": "SpecificResource", "example": "SpecificResource" },
+                "scope" : { "$ref": "#/definitions/RecordURI" },
+                "source": { 
+                    "type": "string", "format": "uri",
+                    "description": "The URL of the media resource which is the ultimate target of the Annotation."
+                }
+            },
+            "required": [ "scope", "source" ],
+            "additionalProperties": false
+        },
+        "RecordURI": {
+            "type"  : "string", "format": "uri",
+            "description": "Reference to a cultural heritage object.",
+            "example": "http://data.europeana.eu/item/2024909/photography_ProvidedCHO_United_Archives___Hidden_Archive_02407830",
+            "regex": "http[:]//data[.]europeana[.]eu/item/.+"
+        },
+        "Language": {
+            "type"  : "string",
+            "description": "A language supported by Europeana represented as a two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a>.",
+            "example": "de",
+            "enum": [ "en", "nl", "fr", "de", "es", "sv", "it", "fi", "da", "el", "cs", "sk", "sl", "pt", "hu", "lt", "pl", "ro", "bg", "hr", "lv", "ga", "mt", "et", "no", "ca", "ru", "eu"]
+        },
+        "Format"  : { 
+            "type": "string",
+            "description": "The format of the text. It is intended for cases when the text is represented using a specific format, e.g., HTML. The value of the property should be the media-type of the format, following the <a href='https://tools.ietf.org/html/rfc5147'>RFC 6838</a> specification.",
+            "enum": [ "text/plain", "application/alto+xml", "application/vnd.prima.page+xml", "text/vtt", "application/x-subrip" ]
+        },
+        "Rights": {
+            "type": "string", "format": "uri",
+            "description": "A rights statement that indicates the copyright, usage and access rights that apply to this digital representation.",
+            "example": "http://creativecommons.org/licenses/by-sa/1.0/"
+        },
+        "Value": {
+            "type": "string",
+            "description": "The literal value conveying the text of the annotation, i.e., the content of the textual body. Language tags are not allowed on this value, use dc:language instead.",
+            "example": "This is the text of the body"
+        }
+    }
+}

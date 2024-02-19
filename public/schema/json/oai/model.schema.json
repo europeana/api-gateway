@@ -1,0 +1,327 @@
+{
+    "$id": "https://api.europeana.eu/schemas/json/oai/model.openapi#",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "title": "OAI-PMH - Runscope schema",
+    "type": "object",
+    "properties": {
+        "OAI-PMH": { "$ref": "#/definitions/oai" }
+    },
+    "required": [ "OAI-PMH" ],
+    "additionalProperties": false,
+    "definitions": {
+        "oai": {
+            "type": "object",
+            "oneOf": [
+              { "$ref": "#/definitions/Error"                   },
+              { "$ref": "#/definitions/IdentifyVerb"            },
+              { "$ref": "#/definitions/ListMetadataFormatsVerb" },
+              { "$ref": "#/definitions/ListSetsVerb"            },
+              { "$ref": "#/definitions/ListIdentifiersVerb"     },
+              { "$ref": "#/definitions/GetRecordVerb"           },
+              { "$ref": "#/definitions/ListRecordsVerb"         }
+            ]
+    },
+
+    "SetSpec": {
+       "type": "object",
+           "properties": {
+           "text" : { "type": "string", "pattern": "[0-9]+" },
+           "attrs": { "type": "object" }
+       },
+           "required": [ "text" ],
+           "additionalProperties": false
+    },
+    "TextString": {
+       "type": "object",
+           "properties": {
+           "text" : { "type": "string" },
+           "attrs": { "type": "object" }
+       },
+           "required": [ "text" ],
+           "additionalProperties": false
+    },
+    "TextURI": {
+       "type": "object",
+           "properties": {
+           "text" : { "type": "string", "format": "uri" },
+           "attrs": { "type": "object" }
+       },
+           "required": [ "text" ],
+           "additionalProperties": false
+    },
+    "TextProtocolVersion": {
+       "type": "object",
+           "properties": {
+           "text" : { "const": "2.0" },
+           "attrs": { "type": "object" }
+       },
+           "required": [ "text" ],
+           "additionalProperties": false
+    },
+    "TextEmail": {
+       "type": "object",
+           "properties": {
+           "text" : { "type": "string", "format": "email" },
+           "attrs": { "type": "object" }
+       },
+           "required": [ "text" ],
+           "additionalProperties": false
+    },
+    "TextDeletedRecord": {
+       "type": "object",
+           "properties": {
+           "text" : { "enum": [ "no", "persistent", "transient" ] },
+           "attrs": { "type": "object" }
+       },
+           "required": [ "text" ],
+           "additionalProperties": false
+    },
+    "TextGranularity": {
+       "type": "object",
+           "properties": {
+           "text" : { "const": "YYYY-MM-DDThh:mm:ssZ" },
+           "attrs": { "type": "object" }
+       },
+           "required": [ "text" ],
+           "additionalProperties": false
+    },
+    "TextCompression": {
+       "type": "object",
+           "properties": {
+           "text" : { "enum": [ "gzip", "compress", "deflate" ] },
+           "attrs": { "type": "object" }
+       },
+       "required": [ "text" ],
+       "additionalProperties": false
+    },
+    "TextUTC": {
+       "type": "object",
+       "example": "2023-12-03T11:47:46Z",
+           "properties": {
+           "text" : { "type": "string" },
+           "attrs": { "type": "object" }
+       },
+       "required": [ "text" ],
+       "additionalProperties": false
+    },
+
+    "Request": {
+       "type": "object",
+           "properties": {
+           "text" : { "type": "string" },
+           "attrs": { 
+               "type": "object",
+                   "properties": {
+                "verb"           : { "type": "string" },
+                "metadataPrefix" : { "type": "string" },
+                "from"           : { "type": "string" },
+                "until"          : { "type": "string" },
+                "set"            : { "type": "string" },
+                "identifier"     : { "type": "string" },
+                "resumptionToken": { "type": "string" },
+                "verb"           : { "type": "string" }
+           },
+                   "required": [ "verb" ],
+                   "additionalProperties": false
+           }
+       },
+           "required": [ "text" ],
+           "additionalProperties": false
+    },
+    "Header": {
+       "type": "object",
+           "properties": {
+                "datestamp" : { "$ref": "#/definitions/TextUTC" },
+                "identifier": { "$ref": "#/definitions/TextURI" },
+                "setSpec"   : { "$ref": "#/definitions/SetSpec" },
+        "attrs"     : {},
+        "text"      : {}
+       },
+           "required": [ "datestamp", "identifier", "setSpec" ],
+           "additionalProperties": false
+    },
+    "ResumptionToken": {
+       "type": "object",
+           "properties": {
+           "text" : { "type": "string" },
+           "attrs": { 
+               "type": "object",
+                   "properties": {
+                "completeListSize" : { "type": "string", "pattern": "[0-9]+"   },
+                "expirationDate"   : { "type": "string", "format": "date-time" },
+                "cursor"           : { "type": "string", "pattern": "[0-9]+"   }
+           },
+                   "required": [ "completeListSize", "expirationDate", "cursor" ],
+                   "additionalProperties": false
+           }
+       },
+           "required": [ "text" ],
+           "additionalProperties": false
+    },
+    "Metadata": {
+       "type": "object"
+    },
+    "Record": {
+       "type": "object",
+           "properties": {
+                "header"  : { "$ref": "#/definitions/Header"   },
+                "metadata": { "$ref": "#/definitions/Metadata" },
+        "attrs"   : {},
+        "text"    : {}
+       },
+           "required": [ "header", "metadata" ],
+           "additionalProperties": false
+    },
+
+    "Identify": {
+            "type": "object",
+            "properties": {
+                "repositoryName"   : { "$ref": "#/definitions/TextString"          },
+                "baseURL"          : { "$ref": "#/definitions/TextURI"             },
+        "protocolVersion"  : { "$ref": "#/definitions/TextProtocolVersion" },
+        "earliestDatestamp": { "$ref": "#/definitions/TextUTC"             },
+        "deletedRecord"    : { "$ref": "#/definitions/TextDeletedRecord"   },
+        "granularity"      : { "$ref": "#/definitions/TextGranularity"     },
+        "adminEmail"       : { "$ref": "#/definitions/TextEmail"           },
+        "compression"      : { "$ref": "#/definitions/TextCompression"     },
+        "description"      : { "$ref": "#/definitions/TextString"          },
+        "attrs"            : {},
+        "text"             : {}
+        },
+            "required": [ "repositoryName", "baseURL", "protocolVersion", "earliestDatestamp"
+                    , "deletedRecord", "granularity", "adminEmail", "compression" ],
+            "additionalProperties": false
+    },
+    "ListMetadataFormats": { "type": "object" },
+    "ListSets": { "type": "object" },
+    "ListIdentifiers": { 
+        "type": "object",
+            "properties": {
+                "header": { 
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "oneOf": [ { "$ref": "#/definitions/Header" } ] 
+                }
+        },
+        "resumptionToken": { "$ref": "#/definitions/ResumptionToken" },
+        "attrs" : {},
+        "text"  : {}
+            },
+        "required": [ "header" ],
+            "additionalProperties": false
+    },
+    "GetRecord": { 
+        "type": "object",
+            "properties": {
+                "record": { "$ref": "#/definitions/Record" },
+        "attrs" : {},
+        "text"  : {}
+            },
+        "required": [ "record" ],
+            "additionalProperties": false
+    },
+    "ListRecords": { "type": "object" },
+
+        "ErrorType": {
+            "type": "object",
+            "properties": {
+                "attrs": {
+                     "type"      : "object",
+                     "properties": {
+                         "code": { "enum": [ "badArgument", "badResumptionToken", "badVerb"
+                               , "cannotDisseminateFormat", "idDoesNotExist", "noRecordsMatch"
+                       , "noMetadataFormats", "noSetHierarchy", "badMethod" ] }
+                     }
+                },
+                "text" : { "type": "string" }
+            },
+            "required": [ "attrs", "text" ],
+            "additionalProperties": false
+    },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "responseDate": { "$ref": "#/definitions/TextUTC"   },
+        "request"     : { "$ref": "#/definitions/Request"   },
+                "error"       : { "$ref": "#/definitions/ErrorType" },
+        "attrs"       : {},
+        "text"        : {}
+             },
+            "required": [ "responseDate", "request", "error" ],
+            "additionalProperties": false
+        },
+        "IdentifyVerb": {
+            "type": "object",
+            "properties": {
+                "responseDate": { "$ref": "#/definitions/TextUTC"  },
+        "request"     : { "$ref": "#/definitions/Request"  },
+        "Identify"    : { "$ref": "#/definitions/Identify" },
+        "attrs"       : {},
+        "text"        : {}
+             },
+            "required": [ "responseDate", "request", "Identify" ],
+            "additionalProperties": false
+        },
+        "ListMetadataFormatsVerb": {
+            "type": "object",
+            "properties": {
+                "responseDate"       : { "$ref": "#/definitions/TextUTC"             },
+        "request"            : { "$ref": "#/definitions/Request"             },
+        "ListMetadataFormats": { "$ref": "#/definitions/ListMetadataFormats" },
+        "attrs"       : {},
+        "text"        : {}
+             },
+            "required": [ "responseDate", "request", "ListMetadataFormats" ],
+            "additionalProperties": false
+        },
+        "ListSetsVerb": {
+            "type": "object",
+            "properties": {
+                "responseDate": { "$ref": "#/definitions/TextUTC"  },
+        "request"     : { "$ref": "#/definitions/Request"  },
+        "ListSets"    : { "$ref": "#/definitions/ListSets" },
+        "attrs"       : {},
+        "text"        : {}
+             },
+            "required": [ "responseDate", "request", "ListSets" ],
+            "additionalProperties": false
+        },
+        "ListIdentifiersVerb": {
+            "type": "object",
+            "properties": {
+                "responseDate"   : { "$ref": "#/definitions/TextUTC"         },
+        "request"        : { "$ref": "#/definitions/Request"         },
+        "ListIdentifiers": { "$ref": "#/definitions/ListIdentifiers" },
+        "attrs"       : {},
+        "text"        : {}
+             },
+            "required": [ "responseDate", "request", "ListIdentifiers" ],
+            "additionalProperties": false
+        },
+        "GetRecordVerb": {
+            "type": "object",
+            "properties": {
+                "responseDate": { "$ref": "#/definitions/TextUTC"   },
+        "request"     : { "$ref": "#/definitions/Request"   },
+        "GetRecord"   : { "$ref": "#/definitions/GetRecord" },
+        "attrs"       : {},
+        "text"        : {}
+             },
+            "required": [ "responseDate", "request", "GetRecord" ],
+            "additionalProperties": false
+        },
+        "ListRecordsVerb": {
+            "type": "object",
+            "properties": {
+                "responseDate": { "$ref": "#/definitions/TextUTC"     },
+        "request"     : { "$ref": "#/definitions/Request"     },
+        "ListRecords" : { "$ref": "#/definitions/ListRecords" },
+        "attrs"       : {},
+        "text"        : {}
+             },
+            "required": [ "responseDate", "request", "ListRecords" ],
+            "additionalProperties": false
+        }
+    }
+}

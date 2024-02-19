@@ -1,0 +1,216 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Annotation API",
+        "description": "This console provides an overview of the methods publicly available for the Europeana Annotation API",
+        "version": "1.x",
+        "termsOfService": "https://www.europeana.eu/en/rights/api-terms-of-use",
+        "contact": {
+            "name": "API Mailbox",
+            "url": "https://pro.europeana.eu/page/apis",
+            "email": "api@europeana.eu"
+        },
+        "license": {
+            "name": "EUPL-1.2",
+            "url": "https://joinup.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
+        }
+    },
+    "servers": [
+        { 
+            "url": "https://api.europeana.eu/annotation",
+            "description": "Public endpoint for the production service."
+        }
+    ],
+    "externalDocs": {
+        "description": "For more information, head to our comprehensive online documentation",
+        "url": "https://pro.europeana.eu/page/annotation"
+    },
+    "security": [
+        {
+            "X-Api-Key": [],
+            "wskey": [],
+            "token": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Retrieval",
+            "description": "Methods for retrieving annotation data"
+        },
+        {
+            "name": "Discovery",
+            "description": "Methods for discovering annotations"
+        },
+        {
+            "name": "Provision",
+            "description": "Methods available for partners to submit annotations (requires a partnership aggreement)"
+        },
+        {
+          "name": "Management",
+          "description": "Methods restricted to Europeana staff or internal systems"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "X-Api-Key": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
+            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token"     }
+        },
+        "schemas": {
+            "ErrorResponse"    : { "$ref": "https://api.europeana.eu/schema/json/error.schema.json"             },
+            "RetrievalResponse": { "$ref": "https://api.europeana.eu/schema/json/annotation/model.schema.json"  },
+            "SearchResponse"   : { "$ref": "https://api.europeana.eu/schema/json/annotation/search.schema.json" }
+        },
+        "parameters": {
+            "identifier": {
+                "name": "identifier",
+                "in": "path",
+                "description": "The local identifier for the annotation.",
+                "required": true,
+                "example": "65271",
+                "schema": {
+                    "type"   : "integer",
+                    "format" : "int64",
+                    "minimum": 1
+                }
+            },
+            "profile": {
+                "name": "profile",
+                "in": "query",
+                "description": "A parameter used to define the extent of the response",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [ "dereference" ]
+                }
+            },
+            "SearchProfile": {
+                "name": "profile",
+                "in": "query",
+                "description": "A parameter used to define the extent of the response",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [ "minimal", "standard", "facets" ]
+                }
+            },
+
+            "query"   : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/query"    },
+            "qf"      : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/qf"       },
+            "sort"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/sort"     },
+            "page"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/page"     },
+            "pageSize": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/pageSize" },
+            "facet"   : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/facet"    }
+        },
+        "responses": {
+            "200": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/200" },
+            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
+            "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" },
+            "404": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" }
+        }
+    },
+    "paths": {
+        "/{identifier}": {
+            "get": {
+                "tags": [ "Retrieval" ],
+                "summary": "Retrieve data for an annotation.",
+                "description": "Retrieves data available for a specific annotation.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/identifier" },
+                    { "$ref": "#/components/parameters/profile" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json": {
+                        	    "schema": { "$ref": "#/components/schemas/RetrievalResponse" }
+	                        },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/RetrievalResponse" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" }, 
+                    "401": { "$ref": "#/components/responses/401" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/{identifier}.{format}": {
+            "get": {
+                "tags": [ "Retrieval" ],
+                "summary": "Retrieve data for an annotation using format extension (not recommended).",
+                "description": "Convenient method to retrieve data available for a specific annotation using the format extension in alternative to the Accept header.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/identifier" },
+                    {
+                        "name": "format",
+                        "in": "path",
+                        "description": "The extension of the format in which the entity should serialised in the response",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [ "json", "jsonld" ]
+                        }
+                    },
+                    { "$ref": "#/components/parameters/profile" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "*/*": {
+                                "schema": { "$ref": "#/components/schemas/RetrievalResponse" }
+                            }
+                        }
+                    }, 
+                    "400": { "$ref": "#/components/responses/400" }, 
+                    "401": { "$ref": "#/components/responses/401" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/search": {
+            "get": {
+                "tags": [ "Discovery" ],
+                "summary": "Search for annotations",
+                "description": "Search for annotations based on a given selection criteria.<p><b>Fields available for search:</b> motivation, anno_uri, anno_id, generator_uri, generator_name, generated, creator_uri, creator_name, created, modified, moderation_score, text, body_value, body_value.<lang>, body_uri, target_uri, target_record_id, link_resource_uri, link_relation.</p><p><b>Fields available for sorting:</b> motivation, anno_uri, anno_id, generator_uri, generator_name, generated, creator_uri, creator_name, created, modified, moderation_score, body_value, body_value.<lang>, body_uri, link_resource_uri, link_relation.</p><p><b>Fields available for faceting:</b> motivation, generator_uri, generator_name, creator_uri, creator_name, moderation_score, body_value, body_uri, target_uri, target_record_id, link_resource_uri, link_relation.</p>",
+                "parameters": [
+                    { "$ref": "#/components/parameters/query"         },
+                    { "$ref": "#/components/parameters/qf"            },
+                    { "$ref": "#/components/parameters/SearchProfile" },
+                    { "$ref": "#/components/parameters/sort"          },
+                    { "$ref": "#/components/parameters/page"          },
+                    { "$ref": "#/components/parameters/pageSize"      },
+                    { "$ref": "#/components/parameters/facet"         }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json": {
+                        	    "schema": { "$ref": "#/components/schemas/SearchResponse" }
+	                        },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/SearchResponse" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "401": { "$ref": "#/components/responses/401" }
+                }
+            }
+        },
+        "/stats": {
+            "get": {
+                "tags": [ "Management" ],
+                "summary": "Obtain statistics about available annotations (non-official, use at your discretion)",
+                "description": "Presents an overview of the annotations available in the database based on a range of categories. The structure and content of this method will evolve with time and may suffer changes that are not backward compatibility.",
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200" }
+                }
+            }
+        }
+    }
+}

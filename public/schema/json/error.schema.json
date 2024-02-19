@@ -1,0 +1,69 @@
+{
+    "$id": "https://api.europeana.eu/schemas/json/error",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "title": "Europeana APIs - error response schema",
+    "type": "object",
+    "properties": {
+        "@context": { 
+        	"type": "string", "format": "uri", 
+        	"const": "http://www.europeana.eu/schemas/context/api.jsonld",
+        	"description": "The JSON-LD context. Always set to 'http://www.europeana.eu/schemas/context/api.jsonld' for error responses.",
+        	"example": "http://www.europeana.eu/schemas/context/api.jsonld"
+        },
+        "type": { 
+    		"type": "string", 
+    		"const": "ErrorResponse",
+    		"description": "Type of the resource. Always set to 'ErrorResponse' for error responses.",
+    		"example": "ErrorResponse"
+    	},
+    	"success": { 
+    		"type": "boolean", 
+    		"const": false,
+    		"description": "Boolean indicating whether the request was successful or not. It is always set to 'false' for error responses.",
+    		"example": false
+    	},
+    	"status": { 
+    		"type": "number",
+    		"description": "The HTTP status code of the response.",
+    		"example": 500
+    	},
+    	"code": { 
+    		"type": "string", 
+    		"format": "regex", "pattern": "^[0-9a-zA-Z_\\-]+$",
+    		"description": "",
+    		"example": "500-unknown"
+    	},
+    	"error"    : { 
+    		"type": "string",
+    		"description": "A label indicating the type of error.",
+    		"example": "Internal Server Error"
+    	}, 
+    	"message"  : { 
+    		"type": "string",
+    		"description": "A message explaining the error and when appropriate indicating what is needed to address it.",
+    		"example": "A problem prevented sending a confirmation email 'Your Europeana API keys' to my_email@europeana.eu"
+    	},
+    	"seeAlso"  : { 
+    		"type": "string", "format": "uri",
+    		"description": "The URL of the public version of the API documentation",
+    		"example": "https://pro.europeana.eu/page/apis"
+    	},
+    	"timestamp": { 
+    		"type": "string", "format": "datetime",
+    		"description": "The timestamp when the request was processed by the server in human-readable format (ie. ISO8601).",
+    		"example": "2019-11-23T09:10:28Z"
+    	},
+    	"path"     : { 
+    		"type": "string",
+    		"description": "Request path and parameters.",
+    		"example": "/record/search"
+    	},
+    	"trace"    : { 
+    		"type": "string",
+    		"description": "In case the error results from an exception, it displays the complete stack trace starting from the location in the code where it was thrown. This field is not displayed by default, only in case 'debug' is indicated using the profile parameter.",
+    		"example": "Java.lang.Exception: Stack trace\nat java.base/java.lang.Thread.dumpStack(Thread.java:1383)\nat eu.europeana.api.stacktrace.StackTrace.main(StackTrace.java:7)"
+    	}
+    },
+    "required": [ "success", "status", "error", "message", "timestamp", "path" ],
+    "additionalProperties": false
+}
