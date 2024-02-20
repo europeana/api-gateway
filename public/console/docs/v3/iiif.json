@@ -1,0 +1,542 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "IIIF APIs",
+        "description": "This console provides an overview of all the methods that make up the <a href='https://iiif.io/'>IIIF</a> range of APIs. At the moment, Europeana supports four specifications, namely: Presentation API, Image API and Content Search.",
+        "version": "1.x",
+        "termsOfService": "https://www.europeana.eu/en/rights/api-terms-of-use",
+        "contact": {
+            "name": "API Mailbox",
+            "url": "https://pro.europeana.eu/page/apis",
+            "email": "api@europeana.eu"
+        },
+        "license": {
+            "name": "EUPL-1.2",
+            "url": "https://joinup.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
+        } 
+    },
+    "externalDocs": {
+        "description": "For more information, head to our comprehensive online documentation",
+        "url": "https://pro.europeana.eu/page/iiif"
+    },
+    "servers": [
+        {
+            "url": "https://iiif.europeana.eu/",
+            "description": "Public endpoint for the IIIF range of APIs."
+        }
+    ],
+    "security": [
+        {
+            "X-Api-Key": [],
+            "wskey": [],
+            "token": []
+        }
+    ],
+    "tags": [
+        {
+          "name": "Manifest",
+          "description": "Methods for retrieving entity data"
+        },
+        {
+          "name": "Images",
+          "description": "Methods for retrieving images"
+        },
+        {
+          "name": "Annotations",
+          "description": "Methods for retrieving annotations associated to manifests"
+        },
+        {
+          "name": "Text Content",
+          "description": "Methods for retrieving textual resources associated to manifests (served via api.europeana.eu)"
+        },
+        {
+          "name": "Search",
+          "description": "Methods for searching across all items where fulltext is available or within the fulltext of a single item"
+        },
+        {
+          "name": "Management",
+          "description": "Methods restricted to Europeana staff or internal systems"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "X-Api-Key": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
+            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token"     }
+        },
+        "schemas": {
+            "ManifestV2"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/manifest.schema.json" },
+            "ManifestV3"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/manifest.schema.json" },
+            "AnnoPageV2"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/fulltext.schema.json#/definitions/AnnotationPage"    },
+            "ResultPageV2"    : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/fulltext.schema.json#/definitions/ResultPage"        },
+            "AnnoV2"          : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/fulltext.schema.json#/definitions/Annotation"        },
+            "AnnoPagesV3"     : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/AnnotationSummary" },
+            "AnnoPageV3"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/AnnotationPage"    },
+            "ResultPageV3"    : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/ResultPage"        },
+            "AnnoV3"          : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/Annotation"        },
+            "FullTextResource": { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/FullTextResource"  },
+            "ErrorResponse"   : { "$ref": "https://api.europeana.eu/schema/json/error.schema.json" },
+            
+            "LanguageList"            : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/LanguageList"        },
+            "TextGranularityList"     : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/TextGranularityList" }
+        },
+        "parameters": {
+            "datasetId": {
+                "name": "datasetId",
+                "in": "path",
+                "description": "The identifier of the dataset containing the record.",
+                "required": true,
+                "example": "9200338",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "recordId": {
+                "name": "recordId",
+                "in": "path",
+                "description": "The local identifier of a record. It uniquely identifies the record within a dataset.",
+                "required": true,
+                "example": "BibliographicResource_3000094647100",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "pageId": {
+                "name": "pageId",
+                "in": "path",
+                "description": "The identifier of the annotation page.",
+                "required": true,
+                "example": "40eaa4e",
+                "schema": {
+                    "type": "string",
+                    "format": "[0-9a-z]+"
+                }
+            },
+            "annoId": {
+                "name": "annoId",
+                "in": "path",
+                "description": "The identifier of the annotation.",
+                "required": true,
+                "example": "9c6d695a5bb4c12f8fe4bcccee9e4308",
+                "schema": {
+                    "type": "string",
+                    "format": "[0-9a-z]+"
+                }
+            },
+            "contentId": {
+                "name": "contentId",
+                "in": "path",
+                "description": "The identifier of the content.",
+                "required": true,
+                "example": "40eaa4e",
+                "schema": {
+                    "type": "string",
+                    "format": "[0-9a-z]+"
+                }
+            },
+            "imageId": {
+                "name": "imageId",
+                "in": "path",
+                "description": "The identifier of the image.",
+                "required": true,
+                "example": "HPNVTZIRAFIWLRLECA3OQOUSOT5COTJSYUZJSQKHIUT7KYDQTBNA/presentation_images/62714680-020d-11e6-a696-fa163e2dd531/node-1/image/SUBHH/Hamburger_Anzeiger/1918/04/24/00000001",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "format": {
+                "name": "format",
+                "in": "query",
+                "description": "A convenience parameter used to indicate the version of the <a href='https://iiif.io/api/presentation/'>IIIF Presentation API</a>. Indicating the format within the Accept header is the preferred way to request a specific version. This parameter should not be used if a profile is indicated in the Accept header.",
+                "required": false,
+                "example": "2",
+                "schema": {
+                    "type": "string",
+                    "enum": [ "2", "3" ]
+                }
+            },
+            "textGranularity": {
+                "name": "textGranularity",
+                "in": "query",
+                "description": "Filters the annotations based on their granularity.",
+                "required": false,
+                "example": "word",
+                "schema": { "$ref": "#/components/schemas/TextGranularityList" }
+            },
+            "lang": {
+                "name": "lang",
+                "in": "query",
+                "description": "A parameter used to request full-text in a specific language, if exist. The value must be a two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a> and match the languages that are supported by Europeana.",
+                "required": false,
+                "example": "de",
+                "schema": { "$ref": "#/components/schemas/LanguageList" }
+            },
+            "profile": {
+                "name": "profile",
+                "in": "query",
+                "description": "A parameter used to define the extent of the response. The only value supported is 'text' which is used to request the response to be extended with the content of the text resource.",
+                "required": false,
+                "schema": {
+                  "type": "string",
+                  "enum": [ "text" ]
+                }
+            }
+        },
+        "responses": {
+            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
+            "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" },
+            "404": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/404" }
+        }
+    },
+    "paths": {
+        "/presentation/{datasetId}/{recordId}/manifest": {
+            "get": {
+                "tags": [ "Manifest" ],
+                "summary": "Retrieve a manifest for an Item.",
+                "description": "A manifest describes the information needed for a viewer to present a digital object to an end-user, such as the title and the sequence of views/images.<br/><br/> The manifest is not meant to present all the descriptive metadata associated to a given digital object but just the bare minimum for a user to grasp what it is about. If you wish to access the full metadata for an item, see the Record API.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/datasetId" },
+                    { "$ref": "#/components/parameters/recordId" },
+                    { "$ref": "#/components/parameters/format" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json;profile=\"http://iiif.io/api/presentation/3/context.json\"": {
+                                "schema": { "$ref": "#/components/schemas/ManifestV3" }
+                            },
+                            "application/ld+json;profile=\"http://iiif.io/api/presentation/2/context.json\"": {
+                                "schema": { "$ref": "#/components/schemas/ManifestV2" }
+                            },
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/ManifestV2" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/ManifestV2" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/image/{imageId}/{region}/{size}/{rotation}/{quality}.{format}": {
+            "get": {
+                "tags": [ "Images" ],
+                "summary": ".",
+                "description": "Retrieves an image by applying the operations indicated in the path. At this moment, Europeana only has available high resolution scans that were produced under the Europeana Newspapers project.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/imageId" },
+                    {
+                        "name": "region",
+                        "in": "path",
+                        "description": "The region parameter defines the rectangular portion of the underlying image content to be returned. Region can be specified by pixel coordinates, percentage or by the value full, which specifies that the full image should be returned.",
+                        "required": true,
+                        "example": "full",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "size",
+                        "in": "path",
+                        "description": "The size parameter specifies the dimensions to which the extracted region, which might be the full image, is to be scaled.",
+                        "required": true,
+                        "example": "full",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "rotation",
+                        "in": "path",
+                        "description": "The rotation parameter specifies mirroring and rotation. A leading exclamation mark (\"!\") indicates that the image should be mirrored by reflection on the vertical axis before any rotation is applied. The numerical value represents the number of degrees of clockwise rotation, and may be any floating point number from 0 to 360.",
+                        "required": true,
+                        "example": "0",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "quality",
+                        "in": "path",
+                        "description": "The quality parameter determines whether the image is delivered in color, grayscale or black and white.",
+                        "required": true,
+                        "example": "default",
+                        "schema": {
+                            "type": "string",
+                            "enum": [ "color", "gray", "bitonal", "default" ]
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "path",
+                        "description": "The format of the returned image is expressed as a suffix, mirroring common filename extensions, at the end of the URI.",
+                        "required": true,
+                        "example": "jpg",
+                        "schema": {
+                            "type": "string",
+                            "enum": [ "jpg", "tif", "png", "gif", "jp2", "pdf", "webp" ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The image was returned successfully."
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/image/{imageId}/info.json": {
+            "get": {
+                "tags": [ "Images" ],
+                "summary": ".",
+                "description": "Retrieves information about the image and the available operations that can be done on the image.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/imageId" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The image information was returned successfully."
+                    },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/fulltext/{datasetId}/{recordId}/{pageId}": {
+            "get": {
+                "tags": [ "Text Content" ],
+                "summary": "Retrieves a textual resource that has been extracted from a media resource.",
+                "servers": [
+                    {
+                        "url": "https://api.europeana.eu",
+                        "description": "Public endpoint for all production api services."
+                    }
+                ],
+                "description": "",
+                "parameters": [
+                    { "$ref": "#/components/parameters/datasetId" },
+                    { "$ref": "#/components/parameters/recordId"  },
+                    { "$ref": "#/components/parameters/pageId"    },
+                    { "$ref": "#/components/parameters/lang"      }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json;profile=\"http://iiif.io/api/presentation/3/context.json\"": {
+                                "schema": { "$ref": "#/components/schemas/FullTextResource" }
+                            },
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/FullTextResource" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/FullTextResource" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/presentation/{datasetId}/{recordId}/annopage/": {
+            "get": {
+                "tags": [ "Annotations" ],
+                "summary": "List all annotation pages for an Item.",
+                "description": "This method is a convenience method to obtain all pages of annotations that are available for a given item, including all available translations. Being a convienence method, it is only made available in the latest version of the IIIF Presentation API (v3). For the moment, translations are only available for A/V resources (ie. subtitles).",
+                "parameters": [
+                    { "$ref": "#/components/parameters/datasetId" },
+                    { "$ref": "#/components/parameters/recordId"  }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json;profile=\"http://iiif.io/api/presentation/3/context.json\"": {
+                                "schema": { "$ref": "#/components/schemas/AnnoPagesV3" }
+                            },
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/AnnoPagesV3" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/AnnoPagesV3" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/presentation/{datasetId}/{recordId}/annopage/{pageId}": {
+            "get": {
+                "tags": [ "Annotations" ],
+                "summary": "Retrieve a single annotation page.",
+                "description": "This method is used to get a specific annotation page for a given item.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/datasetId" },
+                    { "$ref": "#/components/parameters/recordId" },
+                    { "$ref": "#/components/parameters/pageId" },
+                    { "$ref": "#/components/parameters/textGranularity" },
+                    { "$ref": "#/components/parameters/lang" },
+                    { "$ref": "#/components/parameters/profile" },
+                    { "$ref": "#/components/parameters/format" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json;profile=\"http://iiif.io/api/presentation/3/context.json\"": {
+                                "schema": { "$ref": "#/components/schemas/AnnoPageV3" }
+                            },
+                            "application/ld+json;profile=\"http://iiif.io/api/presentation/2/context.json\"": {
+                                "schema": { "$ref": "#/components/schemas/AnnoPageV2" }
+                            },
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/AnnoPageV2" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/AnnoPageV2" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/presentation/{datasetId}/{recordId}/anno/{annoId}": {
+            "get": {
+                "tags": [ "Annotations" ],
+                "summary": "Retrieve a single annotation of full-text.",
+                "description": "This method is used to get a single annotation of the full-text associated with a given page of the item.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/datasetId" },
+                    { "$ref": "#/components/parameters/recordId" },
+                    { "$ref": "#/components/parameters/annoId" },
+                    { "$ref": "#/components/parameters/profile" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json;profile=\"http://iiif.io/api/presentation/3/context.json\"": {
+                                "schema": { "$ref": "#/components/schemas/AnnoV3" }
+                            },
+                            "application/ld+json;profile=\"http://iiif.io/api/presentation/2/context.json\"": {
+                                "schema": { "$ref": "#/components/schemas/AnnoV2" }
+                            },
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/AnnoV2" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/AnnoV2" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/api/v2/search.json": {
+            "get": {
+                "tags": [ "Search" ],
+                "summary": "Search across all items where fulltext is available",
+                "description": "This endpoint is used to search in fulltext across all items. It adopts the same API signature as the Search API.",
+                "servers": [
+                    {
+                        "url": "https://newspapers.eanadev.org",
+                        "description": "Temporary public endpoint for fulltext search."
+                    }
+                ],
+                "parameters": [
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Query"         },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Profile"       },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Facet"         },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/FacetLimit"    },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/FacetOffset"   },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/HitFl"         },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/HitSelectors"  },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Sort"          },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Start"         },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Rows"          },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Cursor"        },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/QF"            },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Theme"         },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Reusability"   },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/LandingPage"   },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Media"         },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Thumbnail"     },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/TextFulltext"  },
+                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Callback"      }
+                ],
+                "responses": {
+                    "200": { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/responses/200" },
+                    "400": { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/responses/400" },
+                    "401": { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/responses/401" }
+                }
+            }
+        },
+        "/presentation/{datasetId}/{recordId}/search": {
+            "get": {
+                "tags": [ "Search" ],
+                "summary": "Search withiin the full-text of an item.",
+                "description": "This method is used to search within all the full-text resources that are associated to an item. For a Newspapers item, this will mean searching in the text of all the pages that make up the Newspaper.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/datasetId" },
+                    { "$ref": "#/components/parameters/recordId" },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "The text to be used for searching.",
+                        "required": true,
+                        "example": "Dickens",
+                        "schema": {
+                            "type"  : "string"
+                        }
+                    },
+                    {
+                        "name": "qf",
+                        "in": "query",
+                        "description": "A search query filter, ie. a filter is applied on the result list to remove unwanted results and therefore has no effect on ranking. This parameter can be used multiple types if more than one query filter is needed.",
+                        "required": false,
+                        "example": "Dickens",
+                        "schema": {
+                            "type"  : "array",
+                            "items": { "type": "string" }
+                        }
+                    },
+                    { "$ref": "#/components/parameters/textGranularity" },
+                    { "$ref": "#/components/parameters/lang" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json;profile=\"http://iiif.io/api/presentation/3/context.json\"": {
+                                "schema": { "$ref": "#/components/schemas/ResultPageV3" }
+                            },
+                            "application/ld+json;profile=\"http://iiif.io/api/presentation/2/context.json\"": {
+                                "schema": { "$ref": "#/components/schemas/ResultPageV2" }
+                            },
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/ResultPageV2" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/ResultPageV2" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        }
+    }
+}

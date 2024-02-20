@@ -1,0 +1,126 @@
+{
+    "$id": "https://api.europeana.eu/schemas/json/entity/suggest#",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "title": "Entity API - Suggester schema",
+    "type": "object",
+    "properties": {
+        "@context": {
+            "type": "array",
+            "description": "The JSON-LD context.",
+            "items": {
+                "enum": [ "https://www.w3.org/ns/ldp.jsonld", "http://www.europeana.eu/schemas/context/entity.jsonld" ]
+            }
+        },
+        "type": {
+            "enum": [ "ResultPage" ]
+        },
+        "total": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50
+        },
+        "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "items": {
+                "oneOf": [
+                    { "$ref": "#/definitions/agent" },
+                    { "$ref": "#/definitions/place" },
+                    { "$ref": "#/definitions/concept" }
+                ]
+            }
+        }
+    },
+    "patternProperties": {
+        "^(/[^/]+)+$": {}
+    },
+    "required": [ "@context", "type", "total" ],
+    "additionalProperties": false,
+    "definitions": {
+        "langMap": {
+            "type": "object",
+            "patternProperties": {
+                "^(|[a-z]{2})$": { "type": "string" }
+            },
+            "additionalProperties": false
+        },
+        "langMapArray": {
+            "type": "object",
+            "patternProperties": {
+                "^(|[a-z]{2})$": { 
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1
+                }
+            },
+            "additionalProperties": false
+        },
+        "isShownBy": {
+            "type": "object",
+            "properties": {
+                "id"       : { "type": "string", "format": "uri"     },
+                "type"     : { "enum": [ "WebResource" ]             },
+                "source"   : { "type": "string", "format": "uri"     },
+                "thumbnail": { "type": "string", "format": "uri"     }
+            },
+            "required": [ "id", "type", "source", "thumbnail" ],
+            "additionalProperties": false
+        },
+        "agent": {
+            "type": "object",
+            "properties": {
+                "id"                    : { "type": "string", "format": "uri"    },
+                "type"                  : { "enum": [ "Agent" ]                  },
+                "depiction"             : { "type": "string", "format": "uri"    },
+                "isShownBy"             : { "$ref": "#/definitions/isShownBy"    },
+                "prefLabel"             : { "$ref": "#/definitions/langMap"      },
+                "altLabel"              : { "$ref": "#/definitions/langMapArray" },
+                "hiddenLabel"           : { "$ref": "#/definitions/langMapArray" },
+                "dateOfBirth"           : { "type": "string"                     },
+                "dateOfDeath"           : { "type": "string"                     },
+                "professionOrOccupation": { "$ref": "#/definitions/langMapArray" }
+            },
+            "required": [ "id", "type", "prefLabel" ],
+            "additionalProperties": false
+        },
+        "place": {
+            "properties": {
+                "id"                    : { "type": "string", "format": "uri"    },
+                "type"                  : { "enum": [ "Place" ]                  },
+                "depiction"             : { "type": "string", "format": "uri"    },
+                "isShownBy"             : { "$ref": "#/definitions/isShownBy"    },
+                "prefLabel"             : { "$ref": "#/definitions/langMap"      },
+                "altLabel"              : { "$ref": "#/definitions/langMapArray" },
+                "hiddenLabel"           : { "$ref": "#/definitions/langMapArray" },
+                "isPartOf"              : {
+		    "type": "array",
+		    "minItems": 1,
+                    "items": {
+		        "type": "object",
+                        "properties": {
+			    "id"       : { "type": "string", "format": "uri" },
+			    "prefLabel": { "$ref": "#/definitions/langMap"   }
+			},
+			"additionalProperties": false
+		    }
+                }
+            },
+            "required": [ "id", "type", "prefLabel" ],
+            "additionalProperties": false
+        },
+        "concept": {
+            "properties": {
+                "id"                    : { "type": "string", "format": "uri"    },
+                "type"                  : { "enum": [ "Concept" ]                },
+                "depiction"             : { "type": "string", "format": "uri"    },
+                "isShownBy"             : { "$ref": "#/definitions/isShownBy"    },
+                "prefLabel"             : { "$ref": "#/definitions/langMap"      },
+                "altLabel"              : { "$ref": "#/definitions/langMapArray" },
+                "hiddenLabel"           : { "$ref": "#/definitions/langMapArray" }
+            },
+            "required": [ "id", "type", "prefLabel" ],
+            "additionalProperties": false
+        }
+    }
+}

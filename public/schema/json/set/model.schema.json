@@ -1,0 +1,259 @@
+{
+    "$id": "https://api.europeana.eu/schemas/json/set/model#",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "title": "Sets API - Model & pagination schema",
+    "type": "object",
+    "oneOf": [
+        { "$ref": "#/definitions/Set"     },
+        { "$ref": "#/definitions/SetPage" }
+    ],
+    "definitions": {
+        "Set": {
+            "type": "object",
+            "properties": {
+                "context"    : { "$ref": "#/definitions/Context"     },
+                "id"         : { "$ref": "#/definitions/SetURI"      },
+                "type"       : { "$ref": "#/definitions/SetType"     },
+                "visibility" : { "$ref": "#/definitions/Visibility"  },
+                "title"      : { "$ref": "#/definitions/Title"       },
+                "description": { "$ref": "#/definitions/Description" },
+                "subject"    : { "$ref": "#/definitions/Subject"     },
+                "pinned"     : { "$ref": "#/definitions/Pinned"      },
+                "creator"    : { "$ref": "#/definitions/Creator"     },
+                "contributor": { "$ref": "#/definitions/Contributor" },
+                "provider"   : { "$ref": "#/definitions/Provider"    },
+                "created"    : { "$ref": "#/definitions/Created"     },
+                "modified"   : { "$ref": "#/definitions/Modified"    },
+                "issued"     : { "$ref": "#/definitions/Issued"      },
+                "isDefinedBy": { "$ref": "#/definitions/IsDefinedBy" },
+                "total"      : { "$ref": "#/definitions/Total"       },
+                "first"      : { "$ref": "#/definitions/First"       },
+                "last"       : { "$ref": "#/definitions/Last"        }
+            },
+            "required": [ "@context", "id", "type", "visibility", "created", "creator", "modified", "total" ],
+            "additionalProperties": false
+        },
+        "SetPage": {
+            "type": "object",
+            "properties": {
+                "context"    : { "$ref": "#/definitions/Context"     },
+                "id"         : { "$ref": "#/definitions/SetPageURL"  },
+                "type"       : { 
+                    "const": "CollectionPage",
+                    "description": "The type of the page. All pages of a set are classified as 'CollectionPage'.",
+                    "example": "CollectionPage"
+                },
+                "partOf"     : { "$ref": "#/definitions/Collection" },
+                "startIndex" : {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "A non-negative integer specifying the position in sequence of the first item in the set page.",
+                    "example": "1"
+                },
+                "total"      : { "$ref": "#/definitions/TotalPage"  },
+                "items"      : { "$ref": "#/definitions/Items"      },
+                "prev"       : { "$ref": "#/definitions/Prev"       },
+                "next"       : { "$ref": "#/definitions/Next"       }
+            },        
+            "required": [ "@context", "id", "type", "partOf", "startIndex", "total" ],
+            "additionalProperties": false
+        },
+        "Collection": {
+            "type": "object",
+            "properties": {
+                "id"         : { "$ref": "#/definitions/SetURI"     },
+                "type"       : { "$ref": "#/definitions/SetType"    },
+                "total"      : { "$ref": "#/definitions/Total"      },
+                "first"      : { "$ref": "#/definitions/First"      },
+                "last"       : { "$ref": "#/definitions/Last"       }
+            },
+            "required": [ "id", "type", "total" ],
+            "additionalProperties": false
+        },
+        "Context": {
+            "type": "string", "format": "uri", 
+            "description": "The JSON-LD context.",
+            "const": "http://www.europeana.eu/schemas/context/collection.jsonld",
+            "example": "http://www.europeana.eu/schemas/context/collection.jsonld"
+        },
+        "SetURI": {
+            "type"  : "string",
+            "format": "http[:]//data[.]europeana[.]eu/set/[0-9]+",
+            "description": "The unique identifier of the set",
+            "example": "http://data.europeana.eu/set/91"
+        },
+        "SetPageURL": {
+            "type" : "string", "format": "uri",
+            "regex": "https[:]//api[.]europeana[.]eu/set/[0-9]+.*",
+            "description": "The URL for the page of the set",
+            "example": "https://api.europeana.eu/set/91?page=0&pageSize=10"
+        },
+        "SetType": {
+            "enum": [ "Collection", "BookmarkFolder", "EntityBestItemsSet" ],
+            "description": "The type of the set. By default all sets are classified as 'Collection'. The 'BookmarkFolder' and 'EntityBestItemsSet' are types that are used by power specific functionality in the Europeana Website.",
+            "example": "Collection"
+        },
+        "Visibility": {
+            "enum": [ "private", "public", "published" ],
+            "description": "Access visibility of the set. The possible states are “private”, “public” and “published”. The default value assigned at the creation of the set when omitted is “private”. For “BookmarkFolder” sets, the visibility is immutable and cannot be changed to another value besides “private”.",
+            "example": "public"
+        },
+        "Title": {
+            "type": "object",
+            "description": "Name given by the user to the set.",
+            "example": { "en": "Beautiful Flowers" },
+            "patternProperties": {
+                "^(|[a-z]{2})$": { "type": "string" }
+            },
+            "additionalProperties": false
+        },
+        "Description": {
+            "type": "object",
+            "description": "A summary of the content and topics of the user set.",
+            "example": { "en": "The beautiful flowers I found in Europeana" },
+            "patternProperties": {
+                "^(|[a-z]{2})$": { "type": "string" }
+            },
+            "additionalProperties": false
+        },
+        "Subject": {
+            "type": "array",
+            "description": "Overall topical content of the items in the set. These topics are restricted to URIs of the Europeana Entities. This property is repeatable when several subjects apply to the whole set.",
+            "example": "http://data.europeana.eu/concept/2352",
+            "minItems": 1,
+            "items": {
+                "oneOf": [
+                    { "type": "string", "format": "uri" }
+                ]
+            }
+        },
+        "Pinned": {
+            "type": "number",
+            "description": "The number of pinned items in the “EntityBestItemsSet” (only applicable for this kind of set). This is a temporary field while a more suitable option is found to handle user suggestions for Entities.",
+            "example": "0"
+        },
+        "Creator": {
+            "type": "object",
+            "description": "Refers to a registered user which is the creator and owner of the set.",
+            "properties": {
+                "id"         : { "$ref": "#/definitions/UserURI" },
+                "nickname"   : { 
+                    "type": "string",
+                    "description": "The username of the user. For privacy reasons, this is the only personal information made publicly available.",
+                    "example": "my_username"
+                }
+            },
+            "required": [ "id", "nickname" ],
+            "additionalProperties": false
+        },
+        "Contributor": {
+            "type": "array",
+            "description": "Refers to the registered users which have requested changes to the set. The API will list the URIs of all users that co-created the set.",
+            "minItems": 1,
+            "items": {
+                "oneOf": [
+                    { "$ref": "#/definitions/UserURI" }
+                ]
+            }
+        },
+        "Provider": {
+            "type": "object",
+            "description": "Holds a reference to an Organisation entity in Europeana or the URL of the project page in Europeana Pro together with the project name.",
+            "properties": {
+                "id"  : { "$ref": "#/definitions/OrgURI" },
+                "name": { 
+                    "type": "string",
+                    "description": "The name of the project that contributed the set",
+                    "example": "Europeana Media"
+                }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+        },
+        "Created": {
+            "type"  : "string",
+            "format": "date-time",
+            "description": "The time at which the set was created by the user. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
+            "example": "2020-11-12T15:56:44Z"
+        },
+        "Modified": {
+            "type"  : "string",
+            "format": "date-time",
+            "description": "The time at which the set was modified, after creation. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
+            "example": "2021-11-12T15:56:44Z"
+        },
+        "Issued": {
+            "type"  : "string",
+            "format": "date-time",
+            "description": "The time at which the set was published for a wider audience in the Europeana website. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
+            "example": "2022-11-12T15:56:44Z"
+        },
+        "IsDefinedBy": {
+            "type"  : "string",
+            "format": "https[:]//api[.]europeana[.]eu/record/search.json?query=.*",
+            "description": "Defines a search request to the Search API which selects the items that are part of the Set (only relevant for open sets).",
+            "example": "https://api.europeana.eu/record/search.json?query=bridge"
+        },
+        "Items": {
+            "type": "array",
+            "description": "The items that are part of the set page.",
+            "example": [ "http://data.europeana.eu/item/10501/bib_rnod_277025" ],
+            "minItems": 0, "maxItems": 50,
+            "items": {
+                "oneOf": [
+                    { "$ref": "#/definitions/RecordURI" },
+                    { "type": "object" }
+                ]
+            }
+        },
+        "RecordURI": {
+            "type": "string",
+            "regex": "http[:]//data[.]europeana[.]eu/item/.*",
+            "description": "The unique identifier of a record in Europeana",
+            "example": "http://data.europeana.eu/item/10501/bib_rnod_277025"
+        },
+        "UserURI": {
+            "type": "string",
+            "regex": "http[:]//data[.]europeana[.]eu/user/.*",
+            "description": "The unique identifier of the user in Europeana.",
+            "example": "http://data.europeana.eu/user/b6446844-0ce9-4a96-ba02-fed782ceb159"
+        },
+        "OrgURI": {
+            "type": "string",
+            "format": "uri",
+            "regex": "http[:]//data[.]europeana[.]eu/organization/.*",
+            "description": "Holds a reference to an Organisation entity in Europeana or the URL of the project page in Europeana Pro",
+            "example": "http://data.europeana.eu/organization/1482250000002112001"
+        },
+        "Total": {
+            "type": "number", "minimum": 0,
+            "description": "A non-negative integer specifying the total number of items that are contained within this set.",
+            "example": "1"
+        },
+        "TotalPage": {
+            "type": "number", "minimum": 0, "maximum": 50,
+            "description": "A non-negative integer specifying the total number of items in the set page.",
+            "example": "1"
+        },
+        "First": {
+            "type": "string", "format": "uri",
+            "description": "Indicates the first preceding page of items in the set.",
+            "example": "https://api.europeana.eu/set/91?page=0&pageSize=10"
+        },
+        "Last": {
+            "type": "string", "format": "uri",
+            "description": "Indicates the furthest proceeding page of the set.",
+            "example": "https://api.europeana.eu/set/91?page=0&pageSize=10"
+        },
+        "Prev": { 
+            "type": "string", "format": "uri",
+            "description": "A reference to the previous page in the sequence of pages that make up the set.",
+            "example": "https://api.europeana.eu/set/91?page=0&pageSize=10"
+        },
+        "Next": {
+            "type": "string", "format": "uri",
+            "description": "A reference to the next page in the sequence of pages that make up the set.",
+            "example": "https://api.europeana.eu/set/91?page=0&pageSize=10"
+        }
+    }
+}

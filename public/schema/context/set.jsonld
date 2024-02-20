@@ -1,0 +1,44 @@
+{
+    "@context": {
+
+        "@version": 1.1,
+
+        "dcterms": "http://purl.org/dc/terms/",
+        "edm"    : "http://www.europeana.eu/schemas/edm/",
+        "rdfs"   : "http://www.w3.org/2000/01/rdf-schema#",
+        "xsd"    : "http://www.w3.org/2001/XMLSchema#",
+        "as"     : "http://www.w3.org/ns/activitystreams#",
+        
+        "id"   : { "@id": "@id"   , "@type": "@id" },
+        "type" : { "@id": "@type" , "@type": "@id" },
+
+        "Collection"        : { "@id": "as:Collection" },
+        "BookmarkFolder"    : { "@id": "http://rdfs.org/sioc/types#BookmarksFolder" },
+        "EntityBestItemsSet": { "@id": "edm:EntityBestItemsSet" },
+        "CollectionPage"    : { "@id": "as:OrderedCollectionPage" },
+        
+        "visibility"        : { "@id": "edm:visibility" },
+        "title"             : { "@id": "dcterms:title", "@container": "@language" },
+        "description"       : { "@id": "dcterms:description", "@container": "@language" },
+        "subject"           : { "@id": "dcterms:subject", "@type": "@id" },
+        "pinned"            : { "@id": "edm:pinned" },
+        "creator"           : { "@id": "dcterms:creator", "@type": "@id" },
+        "contributor"       : { "@id": "dcterms:contributor", "@type": "@id" },
+        "provider"          : { "@id": "edm:provider" },
+        "created"           : { "@id": "dcterms:created", "@type": "xsd:dateTime" },
+        "modified"          : { "@id": "dcterms:modified", "@type": "xsd:dateTime" },
+        "issued"            : { "@id": "dcterms:issued", "@type": "xsd:dateTime" },
+        "isDefinedBy"       : { "@id": "rdfs:isDefinedBy", "@type": "@id" },
+
+        "ResultList"        : { "@id": "as:OrderedCollection"     },
+        "ResultPage"        : { "@id": "as:OrderedCollectionPage" },
+        "total"             : { "@id": "as:totalItems", "@type": "xsd:nonNegativeInteger" },
+        "items"             : { "@id": "as:items" , "@type": "@id", "@container": "@list" },
+        "partOf"            : { "@id": "as:partOf", "@type": "@id" },
+        "first"             : { "@id": "as:first" , "@type": "@id" },
+        "last"              : { "@id": "as:last"  , "@type": "@id" },
+        "next"              : { "@id": "as:next"  , "@type": "@id" },
+        "prev"              : { "@id": "as:prev"  , "@type": "@id" },
+        "facets"            : null
+    }
+}

@@ -1,0 +1,100 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Record API",
+        "description": "This console provides an overview of the API methods publicly available for the Europeana Record API",
+        "version": "2.X",
+        "termsOfService": "https://www.europeana.eu/en/rights/api-terms-of-use",
+        "contact": {
+            "name": "API Mailbox",
+            "url": "https://pro.europeana.eu/page/apis",
+            "email": "api@europeana.eu"
+        },
+        "license": {
+            "name": "EUPL-1.2",
+            "url": "https://joinup.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
+        }
+    },
+    "externalDocs": {
+        "description": "For more information, head to our comprehensive online documentation",
+        "url": "https://pro.europeana.eu/page/record"
+    },
+    "servers": [
+        {
+            "url": "https://api.europeana.eu/record",
+            "description": "Public endpoint for the Record API."
+        }
+    ],
+    "security": [
+        {
+            "X-Api-Key": [],
+            "wskey": [],
+            "token": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Record",
+            "description": "Version agnostic endpoint (not recommended for production use)"
+        },
+        {
+            "name": "Record v2",
+            "description": "Official stable version of the Record API"
+        },
+        {
+            "name": "Record v3",
+            "description": "Coming soon..."
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "X-Api-Key": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
+            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token"     }
+        },
+        "parameters": {
+            "datasetId": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/datasetId" },
+            "recordId" : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/recordId" }
+        }
+    },
+    "paths": {
+        "/v2/{datasetId}/{recordId}": {
+            "get": {
+                "tags": [ "Record v2" ],
+                "summary": "coming soon...",
+                "parameters": [
+                    { "$ref": "#/components/parameters/recordId"  },
+                    { "$ref": "#/components/parameters/datasetId" }
+                ],
+                "responses": {
+                    "200": { "description": "The request was executed successfully." }
+                }
+            }
+        },
+        "/v2/{datasetId}/{recordId}.{format}": {
+            "get": {
+                "tags": [ "Record v2" ],
+                "summary": "Retrieve data for a record in specific format.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/recordId"  },
+                    { "$ref": "#/components/parameters/datasetId" },
+                    {
+                        "name": "format",
+                        "in": "path",
+                        "description": "The extension of the format in which the record should be serialised in the response",
+                        "required": true,
+                        "schema": {
+                          "type": "string",
+                          "enum": [ "json", "jsonld", "xml", "rdf", "ttl", "schema.jsonld" ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": { "description": "The request was executed successfully." },
+                    "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
+                    "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" }
+                }
+            }
+        }
+    }
+}

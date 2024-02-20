@@ -1,0 +1,358 @@
+{
+    "$id": "http://www.europeana.eu/schemas/json/iiif/v2/manifest#",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",    
+    "title": "IIIF APIs - Manifest v2 schema",
+    "oneOf": [
+        { "$ref": "#/definitions/Manifest" }
+    ],
+    "definitions": {
+        "Context": { 
+            "type": "string", "format": "uri", 
+            "description": "The JSON-LD context.",
+            "const": "http://iiif.io/api/presentation/2/context.json",
+            "example": "http://iiif.io/api/presentation/2/context.json"
+        },
+        "ManifestURI": { 
+             "type": "string", "format": "uri",
+             "description": "The unique identifier of the Manifest.",
+             "example": "https://iiif.europeana.eu/presentation/9200338/BibliographicResource_3000094647100/manifest"
+        },
+        "Manifest": {
+            "type": "object",
+            "description": "A Manifest resource for an item in Europeana. A Manifest describes the information necessary to display the item in a IIIF compatible viewer.",
+            "properties": {
+                "@context"   : { "$ref": "#/definitions/Context"      },
+                "@id"        : { "$ref": "#/definitions/ManifestURI"  },
+                "@type"      : { 
+                    "type": "string", 
+                    "const": "sc:Manifest", "example": "sc:Manifest" 
+                },
+                "label"      : { 
+                    "type": "array", "minItems": 1, 
+                    "description": "A human readable label, name or title for the item.",
+                    "example": [ { "@language": "de", "@value": "Hamburger Anzeiger - 1918-04-24" } ],
+                    "items": { "$ref": "#/definitions/LanguageValue" }
+                },
+                "description": {  
+                    "type": "array", "minItems": 1, 
+                    "description": "A longer-form prose description of the item.",
+                    "example": [ { "@language": "en", "@value": "A long description for this item" } ],
+                    "items": { "$ref": "#/definitions/LanguageValue" }
+                },
+                "metadata"   : { 
+                    "type": "array", "minItems": 1, 
+                    "description": "A section dedicated to present a portion of the metadata for this item for display purposes.",
+                    "items": { "$ref": "#/definitions/MetadataProperty" } 
+                },
+                "thumbnail"  : { "$ref": "#/definitions/Thumbnail"    },
+                "navDate"    : { 
+                    "type": "string", "format": "date-time",
+                    "description": "A date that can be used for navigation purposes when presenting the resource to the user in a time-based user interface, such as a calendar or timeline.",
+                    "example": "1918-04-24T00:00:00Z"
+                },
+                "attribution": { "$ref": "#/definitions/Attribution"  },
+                "license"    : { "$ref": "#/definitions/Rights"       },
+                "logo"       : { 
+                    "type": "string", "format": "uri", 
+                    "description": "The URL of the Europeana logo to be used for display.",
+                    "example": "https://style.europeana.eu/images/europeana-logo-default.png",
+                    "const": "https://style.europeana.eu/images/europeana-logo-default.png"
+                },
+                "seeAlso"    : { 
+                    "type": "array", "minItems": 1, 
+                    "description": "References for accessing the metadata for this item in various metadata formats.",
+                    "items": { "$ref": "#/definitions/Dataset" } 
+                },
+                "service"    : { "$ref": "#/definitions/SearchService" },
+                "sequences"  : { 
+                    "type": "array", "minItems": 1, "maxItems": 1,
+                    "description": "A list of sequences for this Manifest. Only one sequence is made available.",
+                    "items": { "$ref": "#/definitions/Sequence" }
+                }
+             },
+            "required": [ "@context", "@id", "@type", "label", "license", "logo", "seeAlso", "sequences" ],
+            "additionalProperties": false
+        },
+        "Sequence": {
+            "type": "object",
+            "description": "The order of the views of the item.",
+            "properties": {
+                "@type"      : { 
+                    "type": "string", 
+                    "const": "sc:Sequence", "example": "sc:Sequence"
+                },
+                "label"      : { 
+                    "type": "string", 
+                    "description": "A displayable label for this sequence.",
+                    "example": "Current Page Order"
+                },
+                "startCanvas": { "$ref": "#/definitions/CanvasURI" },
+                "canvases"   : { 
+                    "type": "array", "minItems": 1, 
+                    "description": "An ordered list of Canvases.",
+                    "items": { "$ref": "#/definitions/Canvas" } 
+                }
+            },
+            "required": [ "@type", "label", "startCanvas", "canvases" ],
+            "additionalProperties": false
+        },
+        "CanvasURI": { 
+            "type": "string", "format": "uri",
+            "description": "The identifier of the Canvas.",
+            "example": "https://iiif.europeana.eu/presentation/9200396/BibliographicResource_3000118436341/canvas/08a3298"
+        },
+        "Canvas": {
+            "type": "object",
+            "description": "A view (or individual page) of an item. It acts as a central point for assembling the different content resources that make up the display of the item.",
+            "properties": {
+                "@id"         : { "$ref": "#/definitions/CanvasURI"   },
+                "@type"       : { 
+                    "type": "string", 
+                    "const": "sc:Canvas", "example": "sc:Canvas"
+                },
+                "label"       : {
+                    "type": "string", 
+                    "description": "A displayable label for this Canvas.",
+                    "example": "Page 1"
+                },
+                "height"      : { 
+                    "type": "integer",
+                    "description": "The height of this Canvas.",
+                    "example": 3635
+                },
+                "width"       : { 
+                    "type": "integer",
+                    "description": "The width of this Canvas.",
+                    "example": 2587
+                },
+                "attribution" : { "$ref": "#/definitions/Attribution" },
+                "license"     : { "$ref": "#/definitions/Rights"      },
+                "thumbnail"   : { "$ref": "#/definitions/Thumbnail"   },
+                "images"      : { 
+                    "type": "array", "minItems": 1, 
+                    "items": { "$ref": "#/definitions/PaintingAnnotation" } 
+                },
+                "otherContent": { 
+                    "type": "array", "minItems": 1, 
+                    "items": { "$ref": "#/definitions/FulltextAnnotationsReference" }
+                }
+            },
+            "required": [ "@id", "@type", "label", "height", "width", "images" ],
+            "additionalProperties": false
+        },
+        "PaintingAnnotation": {
+            "type": "object",
+            "description": "An annotation that projects the image into the Canvas.",
+            "properties": {
+                "@type"     : { 
+                    "type": "string", 
+                    "const": "oa:Annotation", "example": "oa:Annotation"
+                },
+                "motivation": { 
+                    "type": "string", 
+                    "const": "sc:painting", "example": "sc:painting"
+                },
+                "resource"  : { "$ref": "#/definitions/ImageResource" },
+                "on"        : { "$ref": "#/definitions/CanvasURI"     }
+            },
+            "required": [ "@type", "motivation", "resource", "on" ],
+            "additionalProperties": false
+        },
+        "ImageResource": {
+            "type": "object",
+            "description": "The image resource to be displayed in the Canvas.",
+            "properties": {
+                "@id"     : { 
+                    "type": "string", "format": "uri",
+                    "description": "The URL of the image resource.",
+                    "example": "https://iiif.europeana.eu/image/HPNVTZIRAFIWLRLECA3OQOUSOT5COTJSYUZJSQKHIUT7KYDQTBNA/presentation_images/62714680-020d-11e6-a696-fa163e2dd531/node-1/image/SUBHH/Hamburger_Anzeiger/1918/04/24/00000004/full/full/0/default.jpg"
+                },
+                "@type"   : { 
+                    "type": "string", 
+                    "description": "The type of the media resource. Only 'dctypes:Image' type is supported in v2 of the Presentation API.",
+                    "const": "dctypes:Image", "example": "dctypes:Image"
+                },
+                "format"  : {
+                    "type": "string",
+                    "description": "The format of the content resource represented as a media-type following the <a href='https://tools.ietf.org/html/rfc5147'>RFC 6838</a> specification.",
+                    "example": "image/jpeg"
+                },
+                "height"  : { 
+                    "type": "integer",
+                    "description": "The height of the image resource.",
+                    "example": 3635
+                },
+                "width"   : { 
+                    "type": "integer",
+                    "description": "The width of the image resource.",
+                    "example": 2587
+                },
+                "language": { 
+                    "type": "string",
+                    "description": "The language of the text that is visible in the image resource represented as a two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a>.",
+                    "example": "de"
+                },
+                "service" : { "$ref": "#/definitions/ImageService" }
+            },
+            "required": [ "@id", "@type" ],
+            "additionalProperties": false
+        },
+        "ImageService": {
+            "type": "object",
+            "description": "The IIIF Image service endpoint. It allows for the image to be progressively retrieved via tiles with varying resolutions.",
+            "properties": {
+                "@context": { 
+                    "type": "string", 
+                    "description": "The JSON-LD context.",
+                    "example": "http://iiif.io/api/image/2/context.json",
+                    "const": "http://iiif.io/api/image/2/context.json"
+                },
+                "@id"     : { 
+                    "type": "string", "format": "uri",
+                    "description": "The URL of the IIIF Image service endpoint.",
+                    "example": "https://iiif.europeana.eu/image/HPNVTZIRAFIWLRLECA3OQOUSOT5COTJSYUZJSQKHIUT7KYDQTBNA/presentation_images/62714680-020d-11e6-a696-fa163e2dd531/node-1/image/SUBHH/Hamburger_Anzeiger/1918/04/24/00000004"
+                },
+                "profile" : { 
+                    "type": "string",
+                    "description": "The compliance level profile of the IIIF Image service endpoint. It defines the operations that are accepted by the server to be applied on the image being retrieval.",
+                    "example": "http://iiif.io/api/image/2/level2.json",
+                    "enum": [ "http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level0"
+                            , "http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level1"
+                            , "http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level2"
+                            , "http://iiif.io/api/image/2/level0.json"
+                            , "http://iiif.io/api/image/2/level1.json"
+                            , "http://iiif.io/api/image/2/level2.json" ]
+                }
+            },
+            "required": [ "@context", "@id", "profile" ],
+            "additionalProperties": false
+        },
+        "SearchService": {
+            "type": "object",
+            "description": "A content search endpoint that can be used for searching within the full-text content available for this Manifest.",
+            "properties": {
+                "@context": { 
+                    "type": "string", "format": "uri",
+                    "description": "The JSON-LD context.",
+                    "example": "http://iiif.io/api/search/1/context.json",
+                    "const": "http://iiif.io/api/search/1/context.json"
+                },
+                "@id"     : { 
+                    "type": "string", "format": "uri",
+                    "description": "The URL of the Content Search endpoint.",
+                    "example": "https://iiif.europeana.eu/presentation/9200338/BibliographicResource_3000094647100/search"
+                },
+                "profile" : { 
+                    "type": "string", "format": "uri",
+                    "const": "http://iiif.io/api/search/1/search",
+                    "example": "http://iiif.io/api/search/1/search" 
+                }
+            },
+            "required": [ "@context", "@id", "profile" ],
+            "additionalProperties": false
+        },
+        "FulltextAnnotationsReference": {
+            "type": "string", "format": "uri",
+            "description": "A reference to a page containing all full-text annotations available for this content resource.",
+            "example": "https://iiif.europeana.eu/presentation/9200338/BibliographicResource_3000094647100/annopage/6f7a428?lang=de"
+        },
+        "MetadataProperty": {
+            "type": "object",
+            "description": "A metadata property for this item meant to display descriptive information about the item.",
+            "properties": {
+                "label": {
+                    "type": "string",
+                    "example": "type",
+                    "enum": [ "date", "format", "relation", "type", "language", "source" ]
+                },
+                "value": { 
+                    "type": "array", "minItems": 1, 
+                    "example": [ { "@language": "en", "@value": "Newspaper" } ],
+                    "items": { "$ref": "#/definitions/LanguageValue" }
+                }
+            },
+            "required": [ "label", "value" ],
+            "additionalProperties": false
+        },
+        "Attribution": {
+            "type": "string",
+            "description": "A text that must be shown when the content resources for this item are displayed or used. It includes the title, date of issue or publication, copyright statement and acknowledgement to the owning and/or publishing institution.",
+            "example": "(en) Hamburg Scoreboard - 1918-04-24 - https://www.europeana.eu/item/9200338/BibliographicResource_3000094647100. Staats- und Universitätsbibliothek Hamburg Carl von Ossietzky. Public Domain Mark - http://creativecommons.org/publicdomain/mark/1.0/"
+        },
+        "Rights": {
+            "type": "string", "format": "uri",
+            "description": "A rights statement that indicates the copyright, usage and access rights that apply to the content resource.",
+            "example": "http://creativecommons.org/licenses/by-sa/1.0/"
+        },
+        "Thumbnail": {
+            "type": "object",
+            "description": "An image resource in lower resolution that represents the content resource.",
+            "properties": {
+                "@id"   : { 
+                    "type": "string", "format": "uri",
+                    "description": "The URL of the thumbnail.",
+                    "example": "https://api.europeana.eu/thumbnail/v2/url.json?uri=http%3A%2F%2Fwww.mimo-db.eu%2Fmedia%2FUEDIN%2FIMAGE%2F0032195c.jpg&type=IMAGE"
+                },
+                "@type" : { 
+                    "type": "string", 
+                    "const": "dctypes:Image", "example": "dctypes:Image"
+                },
+                "width" : { 
+                    "type": "integer", "minimum": 1,
+                    "description": "The width of the thumbnail.",
+                    "example": 400
+                },
+                "height": { 
+                    "type": "integer", "minimum": 1,
+                    "description": "The height of the thumbnail.",
+                    "example": 623
+                }
+            },
+            "required": [ "@id", "@type" ],
+            "additionalProperties": false
+        },
+        "Dataset": {
+            "type": "object",
+            "description": "The metadata, in a specific format, for the item that this Manifest corresponds to.",
+            "properties": {
+                "@id"        : { 
+                    "type": "string", "format": "uri",
+                    "description": "The URL for accessing the metadata record using the Record API.",
+                    "example": "https://api.europeana.eu/record/9200338/BibliographicResource_3000094647100.json"
+                },
+                "format"     : { 
+                    "type": "string",
+                    "description": "The format in which to access the metadata of the record represented as a media-type following the <a href='https://tools.ietf.org/html/rfc5147'>RFC 6838</a> specification.",
+                    "example": "application/json",
+                    "enum": [ "application/json", "application/rdf+xml", "application/ld+json" ]
+                },
+                "profile"    : { 
+                    "type": "string", 
+                    "description": "The model used to represent the metadata. Only EDM is supported.",
+                    "const": "http://www.europeana.eu/schemas/edm/",
+                    "example": "http://www.europeana.eu/schemas/edm/"
+                }
+            },
+            "required": [ "@id", "format", "profile" ],
+            "additionalProperties": false
+        },
+        "LanguageValue": {
+            "type": "object",
+            "description": "A value represented as a resource that may or may not have a language.",
+            "properties": {
+                "@language": { 
+                    "type": "string", "pattern": "^(|[a-z]{2})$",
+                    "description": "The language of the value represented as a two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a>.",
+                    "example": "en"
+                },
+                "@value"   : { 
+                    "type": "string",
+                    "description": "A value which can either be a textual or a reference, ie. URL.",
+                    "example": "Something"
+                }
+            },
+            "required": [ "@value" ],
+            "additionalProperties": false
+        }
+    }
+}

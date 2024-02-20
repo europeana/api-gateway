@@ -1,0 +1,311 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "User Set API",
+        "description": "This console provides an overview of the methods publicly available for the Europeana (User) Sets API",
+        "version": "1.x",
+        "termsOfService": "https://www.europeana.eu/en/rights/api-terms-of-use",
+        "contact": {
+            "name": "API Mailbox",
+            "url": "https://pro.europeana.eu/page/apis",
+            "email": "api@europeana.eu"
+        },
+        "license": {
+            "name": "EUPL-1.2",
+            "url": "https://joinup.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
+        }
+    },
+    "servers": [
+        { 
+            "url": "https://api.europeana.eu/set",
+            "description": "Public endpoint for the production service."
+        }
+    ],
+    "externalDocs": {
+        "description": "For more information, head to our comprehensive online documentation",
+        "url": "https://pro.europeana.eu/page/set"
+    },
+    "security": [
+        {
+            "X-Api-Key": [],
+            "wskey": [],
+            "token": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Retrieval",
+            "description": "Methods for retrieving user set metadata"
+        },
+        {
+            "name": "Retrieval within a set",
+            "description": "Methods for listing or searching for items within a user set"
+        },
+        {
+            "name": "Discovery",
+            "description": "Methods for discovering user sets"
+        },
+        {
+            "name": "Provision",
+            "description": "Methods available for partners to submit user sets (requires a partnership aggreement)"
+        },
+        {
+          "name": "Management",
+          "description": "Methods restricted to Europeana staff or internal systems"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "X-Api-Key": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
+            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token"     }
+        },
+        "schemas": {
+            "ErrorResponse" : { "$ref": "https://api.europeana.eu/schema/json/error.schema.json"      },
+            "ModelResponse" : { "$ref": "https://api.europeana.eu/schema/json/set/model.schema.json#/definitions/Set"     },
+            "PageResponse"  : { "$ref": "https://api.europeana.eu/schema/json/set/model.schema.json#/definitions/SetPage" },
+            "SearchResponse": { "$ref": "https://api.europeana.eu/schema/json/set/search.schema.json" }
+        },
+        "parameters": {
+            "identifier": {
+                "name": "identifier",
+                "in": "path",
+                "description": "The local identifier for the user set.",
+                "required": true,
+                "example": "91",
+                "schema": {
+                    "type"   : "integer",
+                    "format" : "int64",
+                    "minimum": 1
+                }
+            },
+            "profile": {
+                "name": "profile",
+                "in": "query",
+                "description": "A parameter used to define the extent of the response",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [ "standard", "itemDescriptions" ],
+                    "example": "standard",
+                    "default": "standard"
+                }
+            },
+            "SearchProfile": {
+                "name": "profile",
+                "in": "query",
+                "description": "A parameter used to define the extent of the response",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [ "minimal", "standard", "facets" ],
+                    "default": "minimal",
+                    "example": "standard"
+                }
+            },
+            "ContentQuery": {
+                "name": "query",
+                "in": "query",
+                "description": "The text to be used for searching. Always set to the wildcard value (ie. '*') for content search.",
+                "required": true,
+                "schema": {
+                    "type"  : "string",
+                    "example": "*"
+                }
+            },
+            "ContentQF": {
+                "name": "qf",
+                "in": "query",
+                "description": "A search query filter. For the time being, can only be used with the field 'item' (local identifier of the record contained within the set). This parameter can be used multiple types if more than one query filter is needed.",
+                "required": false,
+                "schema": {
+                    "type"  : "string",
+                    "example": "item:/10501/bib_rnod_277025"
+                }
+            },
+
+            "query"   : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/query"    },
+            "qf"      : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/qf"       },
+            "sort"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/sort"     },
+            "page"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/page"     },
+            "pageSize": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/pageSize" },
+            "facet"   : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/facet"    }
+        },
+        "responses": {
+            "200": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/200" },
+            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
+            "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" },
+            "404": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" }
+        }
+    },
+    "paths": {
+        "/{identifier}": {
+            "get": {
+                "tags": [ "Retrieval" ],
+                "summary": "Retrieve data for a user set.",
+                "description": "Retrieves data available for a specific user set.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/identifier" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/ModelResponse" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/ModelResponse" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" }, 
+                    "401": { "$ref": "#/components/responses/401" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/{identifier}.{format}": {
+            "get": {
+                "tags": [ "Retrieval" ],
+                "summary": "Retrieve data for a user set using format extension (not recommended).",
+                "description": "Convenient method to retrieve data available for a specific user set using the format extension in alternative to the Accept header.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/identifier" },
+                    {
+                        "name": "format",
+                        "in": "path",
+                        "description": "The extension of the format in which the entity should serialised in the response",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [ "json", "jsonld" ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "*/*": {
+                                "schema": { "$ref": "#/components/schemas/ModelResponse" }
+                            }
+                        }
+                    }, 
+                    "400": { "$ref": "#/components/responses/400" }, 
+                    "401": { "$ref": "#/components/responses/401" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/{identifier}?page={page}": {
+            "get": {
+                "tags": [ "Retrieval within a set" ],
+                "summary": "List items contained within a user set.",
+                "description": "Retrieves a limit number of items contained within a specific user set. This method is used to paginate through the complete list of items. Use the 'page' and 'pageSize' parameters to navigate or follow the links in the 'next' or 'prev' properties to navigate to the next or previous page.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/identifier" },
+                    { "$ref": "#/components/parameters/page" },
+                    { "$ref": "#/components/parameters/pageSize" },
+                    { "$ref": "#/components/parameters/profile" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/PageResponse" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/PageResponse" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" }, 
+                    "401": { "$ref": "#/components/responses/401" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/{identifier}/search": {
+            "get": {
+                "tags": [ "Retrieval within a set" ],
+                "summary": "Search for items within a set",
+                "description": "Search for items contained within a user set based on a given selection criteria. This method is paginated similar to the listing method. Use the 'page' and 'pageSize' parameters to navigate or follow the links in the 'next' or 'prev' properties to navigate, respectively, to the next or previous page.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/identifier"   },
+                    { "$ref": "#/components/parameters/ContentQuery" },
+                    { "$ref": "#/components/parameters/ContentQF"    },
+                    { "$ref": "#/components/parameters/page"         },
+                    { "$ref": "#/components/parameters/pageSize"     },
+                    { "$ref": "#/components/parameters/profile"      }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/PageResponse" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/PageResponse" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" }, 
+                    "401": { "$ref": "#/components/responses/401" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },        
+        "/search": {
+            "get": {
+                "tags": [ "Discovery" ],
+                "summary": "Search for user sets",
+                "description": "Search for annotations based on a given selection criteria.<p><b>Fields available for search:</b> set_id, creator (using local identifier or URI), contributor (using local identifier or URI), visibility, type (with value 'Collection' or 'BookmarkFolder', or 'EntityBestItemsSet'), item (with the local identifier of the record contained within the set), subject (with the URI), lang (with a two-letter code), title.</p><p><b>Fields available for sorting:</b> modified, score.</p><p><b>No faceting is available.</p>",
+                "parameters": [
+                    { "$ref": "#/components/parameters/query"         },
+                    { "$ref": "#/components/parameters/qf"            },
+                    { "$ref": "#/components/parameters/SearchProfile" },
+                    { "$ref": "#/components/parameters/sort"          },
+                    { "$ref": "#/components/parameters/page"          },
+                    { "$ref": "#/components/parameters/pageSize"      }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/SearchResponse" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/SearchResponse" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "401": { "$ref": "#/components/responses/401" }
+                }
+            }
+        },
+        "/stats": {
+            "get": {
+                "tags": [ "Management" ],
+                "summary": "Obtain statistics about available user sets (non-official, use at your discretion)",
+                "description": "Presents an overview of the user sets available in the database based on a range of categories. The structure and content of this method will evolve with time and may suffer changes that are not backward compatibility.",
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200" }
+                }
+            }
+        },
+        "/elevation": {
+            "get": {
+                "tags": [ "Management" ],
+                "summary": "Obtain elevation configuration to be used for search",
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200" }
+                }
+            }
+        }
+    }
+}
