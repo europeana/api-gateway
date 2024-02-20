@@ -121,11 +121,8 @@ http {
         }
 
         # Local Swagger console with static OpenApi documents
-        location /console/search {
-            return 307 https://$host/console/index.html?url=https://$host/console/docs/v2/search.json;
-        }
-        location /console/record {
-            return 307 https://$host/console/index.html?url=https://$host/console/docs/v2/record.json;
+        location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$ {
+            return 307 http://$host/console/index.html?url=http://$host/console/docs/v3/$1.json;
         }
 
         # Old and deprecated (kept for the time being for backward compatibility)
