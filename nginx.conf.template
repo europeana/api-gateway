@@ -72,6 +72,16 @@ http {
         server ${THUMBNAIL_API_HOST};
     }
 
+    upstream translation_api {
+        keepalive 10;
+        server ${TRANSLATION_API_HOST};
+    }
+
+    upstream newspaper_api {
+        keepalive 10;
+        server ${NEWSPAPER_API_HOST};
+    }
+
 
     server {
         listen 80;
@@ -96,6 +106,18 @@ http {
         location /nginx-health {
             default_type application/json;
             return 200 '{"status":"healthy"}';
+        }
+
+        # Translation
+        location ~* ^/translation/(.*) {
+            proxy_set_header Host translation-api.test.eanadev.org;
+            proxy_pass http://translation_api/$1;
+        }
+
+        # Newspaper search
+        # TODO fix this
+        location /fulltext/search.json {
+#            proxy_set_header Host translation-api.test.eanadev.org;
         }
 
         # Local Swagger console with static OpenApi documents
