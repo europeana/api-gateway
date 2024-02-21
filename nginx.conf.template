@@ -120,25 +120,9 @@ http {
             proxy_pass http://newspaper_api/api/v2/search.json$is_args$args;
         }
 
-        # Local Swagger console with static OpenApi documents
-#         location /console {
-#             set $upstream https://${API_GATEWAY_HOST};
-#             rewrite ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$  $upstream/console/index.html?url=docs/v3/$1.json last;
-#         }
-
         location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$ {
             return 307 https://$host/console/index.html?url=docs/v3/$1.json;
         }
-
-#         location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$ {
-#                set $args "?url=docs/v3/$1.json";
-#                proxy_pass https://api.eanadev.org/console/index.html$args;
-#
-#         }
-
-#         location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$ {
-#             return 307 http://$host/console/index.html?url=http://$host/console/docs/v3/$1.json;
-#         }
 
         # Old and deprecated (kept for the time being for backward compatibility)
         # ----------------------------------------------------------
@@ -156,7 +140,6 @@ http {
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api;
         }
-        
       
         # Redirect old thumbnail url format
         #    Feb 2019 - about 1000 requests a month are still done directly to api (and all of them fail with 500 or 404)
