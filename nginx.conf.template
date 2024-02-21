@@ -121,9 +121,15 @@ http {
         }
 
         # Local Swagger console with static OpenApi documents
-        location /console {
-            set $upstream https://${API_GATEWAY_HOST};
-            rewrite ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$  $upstream/console/index.html?url=docs/v3/$1.json last;
+#         location /console {
+#             set $upstream https://${API_GATEWAY_HOST};
+#             rewrite ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$  $upstream/console/index.html?url=docs/v3/$1.json last;
+#         }
+
+        location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$ {
+               set $args "?url=docs/v3/$1.json";
+               proxy_pass http://api.eanadev.org/console/index.html$args;
+
         }
 
 #         location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$ {
