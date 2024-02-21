@@ -128,7 +128,7 @@ http {
 
         location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$ {
                set $args "?url=docs/v3/$1.json";
-               proxy_pass http://api.eanadev.org/console/index.html$args;
+               proxy_pass https://api.eanadev.org/console/index.html$args;
 
         }
 
