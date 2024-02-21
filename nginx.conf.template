@@ -110,20 +110,24 @@ http {
 
         # Translation
         location ~* ^/translation/(.*) {
-            proxy_set_header Host translation-api.test.eanadev.org;
+            proxy_set_header Host ${TRANSLATION_API_HOST};
             proxy_pass http://translation_api/$1;
         }
 
         # Newspaper search
-        # TODO fix this
         location /fulltext/search.json {
-#            proxy_set_header Host translation-api.test.eanadev.org;
+            proxy_set_header Host ${NEWSPAPER_API_HOST};
+            proxy_pass http://newspaper_api/api/v2/search.json;
         }
 
         # Local Swagger console with static OpenApi documents
-        location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$ {
-            return 307 http://$host/console/index.html?url=http://$host/console/docs/v3/$1.json;
+        location /console {
+            rewrite ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$  ${API_GATEWAY_HOST}/console/index.html?url=docs/v3/$1.json last;
         }
+
+#         location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$ {
+#             return 307 http://$host/console/index.html?url=http://$host/console/docs/v3/$1.json;
+#         }
 
         # Old and deprecated (kept for the time being for backward compatibility)
         # ----------------------------------------------------------
