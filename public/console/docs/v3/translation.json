@@ -20,7 +20,7 @@
             "url": "https://api.europeana.eu/translation",
             "description": "Public endpoint for the production service."
         },
-        { 
+        {
             "url": "https://translation-api.acceptance.eanadev.org",
             "description": "Acceptance endpoint for the service."
         }

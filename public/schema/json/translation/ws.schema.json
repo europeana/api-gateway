@@ -15,7 +15,7 @@
         "service" : { "$ref": "#/definitions/Service" },
         "fallback": { "$ref": "#/definitions/Service" },
         "lang"    : { "$ref": "#/definitions/Lang"    },
-        "caching" : { 
+        "caching" : {
             "type": "boolean",
             "example": "false"
         },
