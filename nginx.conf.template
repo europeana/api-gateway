@@ -123,7 +123,8 @@ http {
 
         # Local Swagger console with static OpenApi documents
         location /console {
-            rewrite ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$  ${API_GATEWAY_HOST}/console/index.html?url=docs/v3/$1.json last;
+            set $upstream https://${API_GATEWAY_HOST}
+            rewrite ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$  $upstream/console/index.html?url=docs/v3/$1.json last;
         }
 
 #         location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$ {
