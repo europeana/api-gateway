@@ -116,9 +116,8 @@ http {
 
         # Newspaper search
         location /fulltext/search.json {
-            set $upstream https://${NEWSPAPER_API_HOST};
             proxy_set_header Host ${NEWSPAPER_API_HOST};
-            proxy_pass $upstream/api/v2/search.json$is_args$args;
+            proxy_pass http://newspaper_api/api/v2/search.json$is_args$args;
         }
 
         # Local Swagger console with static OpenApi documents
