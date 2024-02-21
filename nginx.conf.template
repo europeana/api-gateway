@@ -115,7 +115,7 @@ http {
         }
 
         # Newspaper search
-        location /fulltext/search.json {
+        location = /fulltext/search.json {
             proxy_set_header Host ${NEWSPAPER_API_HOST};
             proxy_pass http://newspaper_api/api/v2/search.json$is_args$args;
         }
