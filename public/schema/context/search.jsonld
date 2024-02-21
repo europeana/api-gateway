@@ -1,0 +1,23 @@
+{
+    "@context": {
+
+        "@version": 1.1,
+
+        "as"       : "http://www.w3.org/ns/activitystreams#",
+        
+        "id"   : { "@id": "@id"   , "@type": "@id" },
+        "type" : { "@id": "@type" , "@type": "@id" },
+        
+        
+        "ResultList": { "@id": "as:OrderedCollection"     },
+        "ResultPage": { "@id": "as:OrderedCollectionPage" },
+        "total"     : { "@id": "as:totalItems", "@type": "xsd:nonNegativeInteger" },
+        "items"     : { "@id": "as:items" , "@type": "@id", "@container": "@list" },
+        "partOf"    : { "@id": "as:partOf", "@type": "@id" },
+        "first"     : { "@id": "as:first" , "@type": "@id" },
+        "last"      : { "@id": "as:last"  , "@type": "@id" },
+        "next"      : { "@id": "as:next"  , "@type": "@id" },
+        "prev"      : { "@id": "as:prev"  , "@type": "@id" },
+        "facets"    : null
+    }
+}

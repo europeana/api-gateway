@@ -1,0 +1,420 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Entity API",
+        "description": "This console provides an overview of the methods publicly available for the Europeana Entity API",
+        "version": "1.x",
+        "termsOfService": "https://www.europeana.eu/en/rights/api-terms-of-use",
+        "contact": {
+            "name": "API Mailbox",
+            "url": "https://pro.europeana.eu/page/apis",
+            "email": "api@europeana.eu"
+        },
+        "license": {
+            "name": "EUPL-1.2",
+            "url": "https://joinup.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
+        }
+    },
+    "servers": [
+        { 
+            "url": "https://api.europeana.eu/entity",
+            "description": "Public endpoint for the production service."
+        }
+    ],
+    "externalDocs": {
+        "description": "For more information, head to our comprehensive online documentation",
+        "url": "https://pro.europeana.eu/page/entity"
+    },
+    "security": [
+        {
+            "X-Api-Key": [],
+            "wskey": [],
+            "token": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Retrieval",
+            "description": "Methods for retrieving entity data"
+        },
+        {
+            "name": "Discovery",
+            "description": "Methods for discovering entities"
+        },
+        {
+            "name": "Internal",
+            "description": "Non-official methods used by Europeana internal systems (use at your own discretion)"
+        },
+        {
+          "name": "Management",
+          "description": "Methods restricted to Europeana staff or internal systems"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "X-Api-Key": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
+            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token"     }
+        },
+        "schemas": {
+            "ErrorResponse"    : { "$ref": "https://api.europeana.eu/schema/json/error.schema.json"         },
+            "RetrievalResponse": { "$ref": "https://api.europeana.eu/schema/json/entity/model.schema.json"  },
+            "SearchResponse"   : { "$ref": "https://api.europeana.eu/schema/json/entity/search.schema.json" }
+        },
+        "parameters": {
+            "type": {
+                "name": "type",
+                "in": "path",
+                "description": "The type of the entity.",
+                "required": true,
+                "example": "agent",
+                "schema": {
+                    "type": "string",
+                    "enum": [ "agent", "concept", "place", "timespan", "organization" ]
+                }
+            },
+            "identifier": {
+                "name": "identifier",
+                "in": "path",
+                "description": "The local identifier for the entity.",
+                "required": true,
+                "example": "59904",
+                "schema": {
+                    "type"   : "integer",
+                    "format" : "int64",
+                    "minimum": 1
+                }
+            },
+            "profile": {
+                "name": "profile",
+                "in": "query",
+                "description": "A parameter used to define the extent of the response",
+                "required": false,
+                 "schema": {
+                     "type": "string",
+                     "enum": [ "internal" ]
+                 }
+            },
+            "search_profile": {
+                "name": "profile",
+                "in": "query",
+                "description": "A parameter used to define the extent of the response",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [ "facets" ]
+                }
+            },
+            "type_filter": {
+                "name": "type",
+                "in": "query",
+                "description": "Used to restrict matching to a specific entity class, or otherwise match all entity classes if either 'all' or no type is indicated.",
+                "required": false,
+                "example": "agent",
+                "schema": {
+                    "type"  : "string",
+                    "enum": [ "all", "agent", "concept", "place", "timespan", "organization" ]
+                }
+            },
+            "scope_filter": {
+                "name": "scope",
+                "in": "query",
+                "description": "Used to restrict matching to a specific scope of entities. The only possible value for the moment is 'europeana' to limit results to entities that are referenced in the main Europeana database.",
+                "required": false,
+                "example": "europeana",
+                "schema": {
+                    "type"  : "string",
+                    "enum": [ "europeana" ]
+                }
+            },
+            "lang_filter": {
+                "name": "lang",
+                "in": "query",
+                "description": "A two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a> of the language used for searching the text against. It also determines the data that will be returned for the entity description by keeping only the data that is qualifed with the requested language.",
+                "required": false,
+                "example": "en",
+                "schema": {
+                    "type"  : "array",
+                    "items": {
+                        "enum": [ "en", "nl", "fr", "de", "es", "sv", "it", "fi", "da", "el", "cs", "sk", "sl", "pt", "hu", "lt", "pl", "ro", "bg", "hr", "lv", "ga", "mt", "et", "no", "ca", "ru", "eu"]
+                    }  
+                }
+            },
+            "language_filter": {
+                "name": "language",
+                "in": "query",
+                "description": "A two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a> of the language used for matching the text against. It also determines the data that will be returned for the entity description by keeping only the data that is qualifed with the requested language.",
+                "required": false,
+                "example": "en",
+                "schema": {
+                    "type"  : "string",
+                    "enum": [ "en", "nl", "fr", "de", "es", "sv", "it", "fi", "da", "el", "cs", "sk", "sl", "pt", "hu", "lt", "pl", "ro", "bg", "hr", "lv", "ga", "mt", "et", "no", "ca", "ru", "eu"]
+                }
+            },
+            "rows": {
+                "name": "rows",
+                "in": "query",
+                "description": "Number of results to retrieve, maximum is 50, defaults to 10.",
+                "required": false,
+                "schema": {
+                    "type"   : "integer",
+                    "format" : "int64",
+                    "minimum": 0,
+                    "maximum": 50,
+                    "default": 10,
+                    "example": 10
+                }
+            },
+            "query"   : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/query"    },
+            "qf"      : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/qf"       },
+            "sort"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/sort"     },
+            "page"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/page"     },
+            "pageSize": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/pageSize" },
+            "facet"   : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/facet"    }
+        },
+        "responses": {
+            "200": {
+                "description": "The request was executed successfully.",
+                "content": { 
+                    "*/*": {
+                        "schema": { "$ref": "#/components/schemas/RetrievalResponse" }
+                    }
+                }
+            },
+            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
+            "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" },
+            "404": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" }
+        }
+    },
+    "paths": {
+        "/{type}/{identifier}": {
+            "get": {
+                "tags": [ "Retrieval" ],
+                "summary": "Retrieve data for an entity.",
+                "description": "Retrieves data available for a specific entity.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/type" },
+                    { "$ref": "#/components/parameters/identifier" },
+                    { "$ref": "#/components/parameters/profile" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/RetrievalResponse" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/RetrievalResponse" }
+                            },
+                            "application/rdf+xml": {},
+                            "application/xml": {},
+                            "text/xml": {}
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "401": { "$ref": "#/components/responses/401" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/{type}/{identifier}.{format}": {
+            "get": {
+                "tags": [ "Retrieval" ],
+                "summary": "Retrieve data for an entity using format extension (not recommended).",
+                "description": "Convenient method to retrieve data available for a specific entity using the format extension in alternative to the Accept header.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/type" },
+                    { "$ref": "#/components/parameters/identifier" },
+                    {
+                        "name": "format",
+                        "in": "path",
+                        "description": "The extension of the format in which the entity should serialised in the response",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [ "json", "jsonld", "xml", "schema.jsonld" ]
+                        }
+                    },
+                    { "$ref": "#/components/parameters/profile" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "*/*": {
+                                "schema": { "$ref": "#/components/schemas/RetrievalResponse" }
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "401": { "$ref": "#/components/responses/401" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/resolve": {
+            "get": {
+                "tags": [ "Discovery" ],
+                "summary": "Resolve entity by URI.",
+    	        "description": "Performs a lookup for the entity using an alternative URI (ie. an URI matching the ones available within the owl:sameAs or skos:exactMatch properties).",
+                "parameters": [
+                    {
+                        "name": "uri",
+                        "in": "query",
+                        "description": "The alternative URI being used for entity lookup.",
+                        "required": true,
+        	            "example": "http://dbpedia.org/resource/Charles_Dickens",
+        	            "schema": {
+                            "type"  : "string",
+        	                "format": "uri"
+        	            }
+                    }
+                ],
+                "responses": {
+                    "301": {
+                        "description": "An entity was found matching the alternative URI.",
+                        "headers": {
+                            "Location": {
+                                "description": "The URI of the entity that matched the alternative URI",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            }
+        },
+        "/search": {
+            "get": {
+                "tags": [ "Discovery" ],
+                "summary": "Search for entities",
+                "description": "Search for entities in the EntityCollection based on a given selection criteria.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/query" },
+                    { "$ref": "#/components/parameters/qf" },
+                    { "$ref": "#/components/parameters/type_filter" },
+                    { "$ref": "#/components/parameters/scope_filter" },
+                    { "$ref": "#/components/parameters/lang_filter" },
+                    { "$ref": "#/components/parameters/search_profile" },
+                    { "$ref": "#/components/parameters/page" },
+                    { "$ref": "#/components/parameters/pageSize" },
+                    { "$ref": "#/components/parameters/sort" },
+                    { "$ref": "#/components/parameters/facet" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": { "$ref": "#/components/schemas/SearchResponse" }
+                            },
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/SearchResponse" }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    }
+                }
+            }
+        },
+        "/enrich": {
+            "get": {
+                "tags": [ "Internal" ],
+                "summary": "Text based lookup for enrichment",
+                "description": "Performs a text based lookup for entities to be used by enrichment services by Eurpeana Aggregation Systems.",
+                "parameters": [
+                    {
+                        "name": "text",
+                        "in": "query",
+                        "description": "The text to be used for lookup.",
+                        "required": true,
+                        "example": "Dickens",
+                        "schema": {
+                          "type"  : "string"
+                        }
+                    },
+                    { "$ref": "#/components/parameters/language_filter" },
+                    { "$ref": "#/components/parameters/type_filter"     },
+                    { "$ref": "#/components/parameters/rows"            }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of entities that were found matching the supplied criteria."
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    }
+                }
+            }
+        },
+        "/suggest": {
+            "get": {
+                "tags": [ "Internal" ],
+                "summary": "Auto-complete lookup for entities",
+                "description": "Performs an auto-complete lookup for entities in the EntityCollection by matching the text against the entity preferred and alternative labels, as well as, the acronym. The match is done against any (or part of the) word, making it possible e.g. to search using the surname of a Person.  This method can be used to implement an auto-suggest functionality based on user input and is optimised for fast retrieval of relevant entities. The suggested entities will be ordered taking in consideration their occurrence in the Europeana main catalogue together with their own relevance using Wikidata PageRank statistics.",
+                "parameters": [
+                    {
+                        "name": "text",
+                        "in": "query",
+                        "description": "The text to be used for lookup.",
+                        "required": true,
+                        "example": "Dickens",
+                        "schema": {
+                        "type"  : "string"
+                    }
+                    },
+                    { "$ref": "#/components/parameters/language_filter" },
+                    { "$ref": "#/components/parameters/type_filter"     },
+                    { "$ref": "#/components/parameters/scope_filter"    },
+                    { "$ref": "#/components/parameters/rows"            }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of entities that were found matching the supplied criteria."
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    }
+                }
+            }
+        },
+        "/stats": {
+            "get": {
+                "tags": [ "Management" ],
+                "summary": "Obtain statistics about available entities (non-official, use at your discretion)",
+                "description": "Presents an overview of the entities available in the database based on a range of categories. The structure and content of this method will evolve with time and may suffer changes that are not backward compatibility.",
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": { 
+                            "application/json": {}
+                        }
+                     }
+                }
+            }
+        }
+    }
+}

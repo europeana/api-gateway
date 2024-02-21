@@ -1,0 +1,8 @@
+{
+    "$id": "http://www.europeana.eu/schemas/json/record/model#",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "title": "Record API - Model schema",
+    "type": "object",
+    "definitions": {
+    }
+}

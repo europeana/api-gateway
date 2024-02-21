@@ -17,7 +17,10 @@ vars='$ANNOTATION_API_HOST
       $OAI_RECORD_HOST
       $MANIFEST_API_HOST
       $THUMBNAIL_API_HOST
-      $RECOMMENDATION_API_HOST'
+      $RECOMMENDATION_API_HOST
+      $TRANSLATION_API_HOST
+      $NEWSPAPER_API_HOST
+      $API_GATEWAY_HOST'
 
 envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 

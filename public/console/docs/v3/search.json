@@ -1,0 +1,344 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Search API",
+        "description": "This console provides an overview of the API methods publicly available for the Europeana Search API",
+        "version": "2.X",
+        "termsOfService": "https://www.europeana.eu/en/rights/api-terms-of-use",
+        "contact": {
+            "name": "API Mailbox",
+            "url": "https://pro.europeana.eu/page/apis",
+            "email": "api@europeana.eu"
+        },
+        "license": {
+            "name": "EUPL-1.2",
+            "url": "https://joinup.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
+        }
+    },
+    "externalDocs": {
+        "description": "For more information, head to our comprehensive online documentation",
+        "url": "https://pro.europeana.eu/page/linked-open-data"
+    },
+    "servers": [
+        {
+            "url": "https://api.europeana.eu/",
+            "description": "Public endpoint for all production api services."
+        },
+        {
+            "url": "https://search-api.acceptance.eanadev.org/",
+            "description": "Internal endpoint used for acceptance testing."
+        }
+    ],
+    "security": [
+        {
+            "X-Api-Key": [],
+            "wskey": [],
+            "token": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Search",
+            "description": "Version agnostic endpoint (not recommended for production use)"
+        },
+        {
+            "name": "Search v2",
+            "description": "Official stable version of the Search API"
+        },
+        {
+            "name": "Search v3",
+            "description": "Coming soon..."
+        },
+        {
+            "name": "OpenSearch.RSS",
+            "externalDocs":  {
+                "description": "See official documentation for more information about OpenSearch.RSS",
+                "url": "https://github.com/dewitt/opensearch"
+            }
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "X-Api-Key": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
+            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token"     }
+        },
+        "schemas": {
+            "ErrorResponse": { "$ref": "https://api.europeana.eu/schema/json/error.schema.json"                                    },
+            "SearchRequest": { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json"                            },
+            "Boost"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Boost"         },
+            "Callback"     : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Callback"      },
+            "ColourPalette": { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/ColourPalette" },
+            "Cursor"       : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Cursor"        },
+            "Facet"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Facet"         },
+            "HitFl"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/HitFl"         },
+            "HitSelectors" : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/HitSelectors"  },
+            "LandingPage"  : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/LandingPage"   },
+            "Media"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Media"         },
+            "Profile"      : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Profile"       },
+            "Query"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Query"         },
+            "QF"           : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/QF"            },
+            "Reusability"  : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Reusability"   },
+            "Rows"         : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Rows"          },
+            "Sort"         : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Sort"          },
+            "Start"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Start"         },
+            "TextFulltext" : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/TextFulltext"  },
+            "Theme"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Theme"         },
+            "Thumbnail"    : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Thumbnail"     }
+        },
+        "parameters": {
+            "Query": {
+                "name": "query",
+                "in": "query",
+                "description": "The text or search criteria to be used for searching.",
+                "required": true,
+                "schema": { "$ref": "#/components/schemas/Query" }
+            },
+            "Profile": {
+                "name": "profile",
+                "in": "query",
+                "description": "A profile typically determines how extensive the response will be, by either dictating the metadata fields that will be present (ie. minimal, standard and rich) or appending additional data elements such as facets or breadcrumbs. Most profiles can be combined with the exception of the metadata based profiles or combined profiles such as rich.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/Profile" }
+            },
+            "Facet": {
+                "name": "facet",
+                "in": "query",
+                "description": "The name of the field where faceting will be applied. It is possible to facet on more then one field.",
+                "required": false,
+                "style": "form",
+                "schema": { "$ref": "#/components/schemas/Facet" }
+            },
+            "FacetLimit": {
+                "name": "f.{FIELD_NAME}.facet.limit",
+                "in": "query",
+                "description": "Number of values an individual facet should contain. Set a limit of '0' to not return anything for that facet. By default, the limit of values of an individual facet is 50. This can be overriden by setting a custom limit e.g. via &f.DEFAULT.facet.limit=100.",
+                "required": false,
+                "style": "form",
+                "schema": {
+                  "type": "integer", "minimum": 0, "default": 50,
+                  "example": 10
+                }
+            },
+            "FacetOffset": {
+                "name": "f.{FIELD_NAME}.facet.offset",
+                "in": "query",
+                "description": "The offset of the first value in an individual facet. The default offset value is '0', starting from the first item in the list while value '1' offsets the list by one, so the first item to return is the second and so on.",
+                "required": false,
+                "style": "form",
+                "schema": {
+                  "type": "integer", "minimum": 0, "default": 0,
+                  "example": 0
+                }
+            },
+            "HitFl": {
+                "name": "hit.fl",
+                "in": "query",
+                "description": "Fields for which hit highlighting is generated. A wildcard of “*” (asterisk) can be used to match multiple fields, such as “fulltext.*” or even “*” to highlight on all fields where highlighting is possible. If omitted default to “*”. Multiple fields can be indicated using a comma or space.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/HitFl" }
+            },
+            "HitSelectors": {
+                "name": "hit.selectors",
+                "in": "query",
+                "description": "The maximum number of highlighted selectors to generate per item. If omitted defaults to 3. It is possible for any number of selectors from 1 to this value to be generated, up to a limit of 10.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/HitSelectors" }
+            },
+            "Sort": {
+                "name": "sort",
+                "in": "query",
+                "description": "Sorting records in ascending or descending order of search fields. The following fields are supported: score (relenvancy of the search result), timestamp_created, timestamp_update, europeana_id, COMPLETENESS, is_fulltext, has_thumbnails, and has_media. Sorting on more than one field is possible by supplying as comma separated values. It is also possible to randomly order items by using the keyword 'random' instead of a field name. You can also request for a fixed random order by indicating a seed 'random_SEED' which is useful when paginating along the same randomized order.</br>Use: field_name+sort_order.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/Sort" }
+            },
+            "Start": {
+                "name": "start",
+                "in": "query",
+                "description": "The item in the search results to start with when using basic pagination. First item is 1. Defaults to 1.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/Start" }
+            },
+            "Rows": {
+                "name": "rows",
+                "in": "query",
+                "description": "The number of records to return. Maximum is 100. Defaults to 12.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/Rows" }
+            },
+            "Cursor": {
+                "name": "cursor",
+                "in": "query",
+                "description": "A cursor mark from where to start the search result set when using deep pagination. Set to '*' to start cursor-based pagination.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/Cursor" }
+            },
+            "QF": {
+                "name": "qf",
+                "in": "query",
+                "description": "A search query filter, ie. a filter is applied on the result list to remove unwanted results and therefore has no effect on ranking. This parameter can be used multiple types if more than one query filter is needed.",
+                "required": false,
+                "style": "form",
+                "schema": { "$ref": "#/components/schemas/QF" }
+            },
+            "Theme": {
+                "name": "theme",
+                "in": "query",
+                "description": "Restrict the query over one of the Europeana <a href='https://www.europeana.eu/en/collections'>Thematic Collections</a>. The possible values are: archaelogy, art, fashion, industrial, manuscript, map, migration, music, nature, newspaper, photography, sport, ww1.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/Theme" }
+            },
+            "Reusability": {
+                "name": "reusability",
+                "in": "query",
+                "description": "Filter by copyright status. Possible values are: open, restricted or permission.",
+                "required": false,
+                "style": "form",
+                "schema": { "$ref": "#/components/schemas/Reusability" }
+            },
+            "LandingPage": {
+                "name": "landingpage",
+                "in": "query",
+                "description": "Filter by items where the link to the original object on the providers website (edm:isShownAt) is present and verified to be working.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/LandingPage" }
+            },
+            "Media": {
+                "name": "media",
+                "in": "query",
+                "description": "Filter by items where an URL to the full media resource is present in the edm:isShownBy or edm:hasView metadata and is resolvable.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/Media" }
+            },
+            "Thumbnail": {
+                "name": "thumbnail",
+                "in": "query",
+                "description": "Filter by items where a thumbnail image has been generated for any of the WebResource media resources (thumbnail available in the edmPreview field).",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/Thumbnail" }
+            },
+            "TextFulltext": {
+                "name": "text_fulltext",
+                "in": "query",
+                "description": "Filter by web resources containing text, e.g. a PDF with full-text.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/TextFulltext" }
+            },
+            "Boost": {
+                "name": "boost",
+                "in": "query",
+                "description": "boost",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/Boost" }
+            },
+            "Callback": {
+                "name": "callback",
+                "in": "query",
+                "description": "Name of a client side callback function, see <a target='_blank' href='https://pro.europeana.eu/page/intro#JSONP'>JSONP</a>.",
+                "required": false,
+                "schema": { "$ref": "#/components/schemas/Callback" }
+              }
+        },
+        "responses": {
+            "200": {
+                "description": "The request was executed successfully"
+            },
+            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
+            "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" }
+        }
+    },
+    "paths": {
+        "/record/v2/search.json": {
+            "get": {
+                "tags": [ "Search v2" ],
+                "summary": "Search for records on Europeana",
+                "parameters": [
+                    { "$ref": "#/components/parameters/Query"         },
+                    { "$ref": "#/components/parameters/Profile"       },
+                    { "$ref": "#/components/parameters/Facet"         },
+                    { "$ref": "#/components/parameters/FacetLimit"    },
+                    { "$ref": "#/components/parameters/FacetOffset"   },
+                    { "$ref": "#/components/parameters/Sort"          },
+                    { "$ref": "#/components/parameters/Start"         },
+                    { "$ref": "#/components/parameters/Rows"          },
+                    { "$ref": "#/components/parameters/Cursor"        },
+                    { "$ref": "#/components/parameters/QF"            },
+                    { "$ref": "#/components/parameters/Theme"         },
+                    { "$ref": "#/components/parameters/Reusability"   },
+                    { "$ref": "#/components/parameters/LandingPage"   },
+                    { "$ref": "#/components/parameters/Media"         },
+                    { "$ref": "#/components/parameters/Thumbnail"     },
+                    { "$ref": "#/components/parameters/TextFulltext"  },
+                    { "$ref": "#/components/parameters/Callback"      }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200" },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "401": { "$ref": "#/components/responses/401" }
+                }
+            },
+            "post": {
+                "tags": [ "Search v2" ],
+                "summary": "Search for records on Europeana",
+                "requestBody": {
+                    "content": {
+                        "application/json": { 
+                            "schema": { "$ref": "#/components/schemas/SearchRequest" }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully"
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "401": { "$ref": "#/components/responses/401" }
+                }
+            }
+        },
+        "/record/opensearch.rss": {
+            "get": {
+                "tags": [ "OpenSearch.RSS" ],
+                "summary": "Search based on the OpenSearch specification",
+                "parameters": [
+                    {
+                        "name": "searchTerms",
+                        "in": "query",
+                        "description": "The text or search criteria to be used for searching.",
+                        "required": true,
+                        "schema": { "$ref": "#/components/schemas/Query" }
+                    },
+                    {
+                        "name": "startIndex",
+                        "in": "query",
+                        "description": "The item in the search results to start with.",
+                        "required": false,
+                        "schema": { "$ref": "#/components/schemas/Start" }
+                    },
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "description": "Nr. of search results to return. Defaults to 12.",
+                        "required": false,
+                        "schema": { "$ref": "#/components/schemas/Rows" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully",
+                        "content": {
+                            "application/xml": {
+                            },
+                            "application/rss+xml": {
+                            },
+                            "application/xhtml+xml": {
+                            }
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "401": { "$ref": "#/components/responses/401" }
+                }
+            }
+        }
+    }
+}

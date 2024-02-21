@@ -1,0 +1,818 @@
+{
+    "$id": "https://api.europeana.eu/schemas/json/entity/model#",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "title": "Entity API - Model schema",
+    "type": "object",
+    "oneOf": [
+        { "$ref": "#/definitions/Agent"        },
+        { "$ref": "#/definitions/Place"        },
+        { "$ref": "#/definitions/Concept"      },
+        { "$ref": "#/definitions/TimeSpan"     },
+        { "$ref": "#/definitions/Organization" }
+    ],
+    "discriminator": {
+        "propertyName": "type"
+    },
+    "definitions": {
+        "Context": {
+            "type": "string", "format": "uri", 
+            "description": "The JSON-LD context.",
+            "const": "http://www.europeana.eu/schemas/context/entity.jsonld",
+            "example": "http://www.europeana.eu/schemas/context/entity.jsonld"
+        },
+        "Agent": {
+            "type" : "object",
+            "description": "The entity Agent comprises people, either individually or in groups, who have the potential to perform intentional actions for which they can be held responsible.",
+            "properties": {
+                "@context"               : { "$ref": "#/definitions/Context" },
+                "id"                     : { 
+                    "type": "string", "format": "uri",
+                    "regex": "http[:]//data[.]europeana[.]eu/agent/[0-9]+",
+                    "description": "The unique identifier of the Agent",
+                    "example": "http://data.europeana.eu/agent/60404"
+                },
+                "type"                   : { "type": "string", "const": "Agent", "example": "Agent"  },
+                "depiction"              : { "$ref": "#/definitions/Depiction"     },
+                "isShownBy"              : { "$ref": "#/definitions/IsShownBy"     },
+                "prefLabel"              : { "$ref": "#/definitions/PrefLabel"     },
+                "altLabel"               : { "$ref": "#/definitions/AltLabel"      },
+                "hiddenLabel"            : { "$ref": "#/definitions/HiddenLabel"   },
+                "begin"                  : { 
+                    "type": "string",
+                    "description": "The date the agent was born/established.",
+                    "example": "1941-06-12"
+                },
+                "dateOfBirth"            : { 
+                    "type": "string",
+                    "description": "The date the agent (person) was born.",
+                    "example": "1941-06-12"
+                },
+                "dateOfEstablishment"    : { 
+                    "type": "string",
+                    "description": "The date on which the agent (corporate body) was established or founded.",
+                    "example": "1941-06-12"
+                },
+                "end"                    : { 
+                    "type": "string",
+                    "description": "The date the agent died or was terminated/dissolved.",
+                    "example": "2021-02-09"
+                },
+                "dateOfDeath"            : { 
+                    "type": "string",
+                    "description": "The date the agent (person) died.",
+                    "example": "2021-02-09"
+                },
+                "dateOfTermination"      : { 
+                    "type": "string",
+                    "description": "The date on which the agent (corporate body) was terminated or dissolved.",
+                    "example": "2021-02-09"
+                },
+                "placeOfBirth"           : {
+                    "type": "string", "format": "uri",
+                    "description": "The town, city, province, state, and/or country in which a person was born.",
+                    "example": "http://data.europeana.eu/place/137971"
+                },
+                "placeOfDeath"           : {
+                    "type": "string", "format": "uri",
+                    "description": "The town, city, province, state, and/or country in which a person died.",
+                    "example": "http://data.europeana.eu/place/137971"
+                },
+                "gender"                 : { 
+                    "type": "string",
+                    "description": "The gender with which the agent identifies.",
+                    "example": "Female"
+                },
+                "professionOrOccupation" : {
+                    "type": "array",
+                    "description": "The profession or occupation in which the agent works or has worked.",
+                    "example": [ "http://data.europeana.eu/concept/1931" ],
+                    "minItems": 1,
+                    "items": { "type": "string", "format": "uri" }
+                },
+                "biographicalInformation": {
+                    "type": "object",
+                    "description": "Information pertaining to the life or history of the agent.",
+                    "example": { "en": [ "Courtois neveu aîné started a company of the same name manufacturing brass instruments in Paris in 1803" ] },
+                    "patternProperties": {
+                        "^(|[a-z]{2})$": { 
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "minItems": 1
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "note"                   : { "$ref": "#/definitions/Note"          },
+                "isPartOf": {
+                    "type": "array",
+                    "description": "Reference to an agent that the described agent is part of.",
+                    "example": [ "http://identifier/parentCorporation" ],
+                    "items": { "type": "string", "format": "uri" },
+                    "minItems": 1
+                },
+                "hasPart": {
+                    "type": "array",
+                    "description": "Reference to an Agent that is part of the Agent being described (e.g. part of a corporation).",
+                    "example": [ "http://identifier/partOfCorporation" ],
+                    "items": { "type": "string", "format": "uri" },
+                    "minItems": 1
+                },
+                "hasMet": {
+                    "type": "array",
+                    "description": "Reference to another entity which the Agent has “met” in a broad sense. For example a reference to a Place.",
+                    "example": [ "http://data.europeana.eu/place/137971" ],
+                    "items": { "type": "string", "format": "uri" },
+                    "minItems": 1
+                },
+                "isRelatedTo"            : {
+                    "type": "array",
+                    "description": "Reference to other entities, particularly other agents, with whom the agent is related in a generic sense.",
+                    "example": [ "http://data.europeana.eu/agent/81193" ],
+                    "items": { "type": "string", "format": "uri" },
+                    "minItems": 1
+                },
+                "identifier"             : { "$ref": "#/definitions/Identifier"   },
+                "sameAs"                 : { "$ref": "#/definitions/SameAs"       },
+                "inScheme"               : { "$ref": "#/definitions/InScheme"     },
+                "isAggregatedBy"         : {
+                    "oneOf": [
+                        { "$ref": "#/definitions/Aggregation" },
+                        { "type": "string", "format": "uri"   }
+                    ]
+                },
+                "proxies"                : { "$ref": "#/definitions/Proxies" }
+            },
+            "required": [ "id", "type", "prefLabel" ],
+            "additionalProperties": false
+        },
+        "Place": {
+            "type": "object",
+            "description": "A physical location associated to a cultural heritage object.",
+            "properties": {
+                "@context"               : { "$ref": "#/definitions/Context" },
+                "id"                     : { 
+                    "type": "string", "format": "uri",
+                    "regex": "http[:]//data[.]europeana[.]eu/place/[0-9]+",
+                    "description": "The unique identifier of the Place",
+                    "example": "http://data.europeana.eu/place/2627"
+                },
+                "type"                   : { "type": "string", "const": "Place", "example": "Place" },
+                "depiction"              : { "$ref": "#/definitions/Depiction"    },
+                "isShownBy"              : { "$ref": "#/definitions/IsShownBy"    },
+                "prefLabel"              : { "$ref": "#/definitions/PrefLabel"    },
+                "altLabel"               : { "$ref": "#/definitions/AltLabel"     },
+                "hiddenLabel"            : { "$ref": "#/definitions/HiddenLabel"   },
+                "long"                   : { 
+                    "type": "string", "pattern": "^[+-]?[0-9]+([.][0-9]+)?$",
+                    "description": "The longitude coordinate of the Place",
+                    "example": "48.8336111"
+                },
+                "lat"                    : {
+                    "type": "string", "pattern": "^[+-]?[0-9]+([.][0-9]+)?$",
+                    "description": "The latitude coordinate of the Place",
+                    "example": "2.3758333"
+                },
+                "alt"                    : {
+                    "type": "string", "pattern": "^[+-]?[0-9]+([.][0-9]+)?$",
+                    "description": "The altitude of the Place",
+                    "example": "1"
+                },
+                "note"                   : { "$ref": "#/definitions/Note"         },
+                "isPartOf": {
+                    "type": "array",
+                    "description": "Reference to a place that the described place is part of.",
+                    "example": [ "http://data.europeana.eu/place/80" ],
+                    "items": { "type": "string", "format": "uri" },
+                    "minItems": 1
+                },
+                "hasPart": {
+                    "type": "array",
+                    "description": "Reference to a place that is part of the place being described.",
+                    "example": [ "http://data.europeana.eu/place/1210" ],
+                    "items": { "type": "string", "format": "uri" },
+                    "minItems": 1
+                },
+                "isNextInSequence"       : {
+                    "type": "array",
+                    "description": "Used to represent a sequence of Place entities over time e.g. the historical layers of the city of Troy.",
+                    "example": [ "http://data.europeana.eu/place/1210" ],
+                    "items": { "type": "string", "format": "uri" },
+                    "minItems": 1
+                },
+                "sameAs"                 : { "$ref": "#/definitions/SameAs"       },
+                "inScheme"               : { "$ref": "#/definitions/InScheme"     },
+                "isAggregatedBy"         : {
+                    "oneOf": [
+                        { "$ref": "#/definitions/Aggregation" },
+                        { "type": "string", "format": "uri"   }
+                    ]
+                },
+                "proxies"                : { "$ref": "#/definitions/Proxies" }
+            },
+            "required": [ "id", "type", "prefLabel", "long", "lat" ],
+            "additionalProperties": false
+        },
+        "Concept": {
+            "type": "object",
+            "description": "A Concept is defined as a unit of thought or meaning that comes from an organised knowledge base (such as subject terms from a thesaurus or controlled vocabulary) where URIs or local identifiers have been created to represent each concept.",
+            "properties": {
+                "@context"               : { "$ref": "#/definitions/Context" },
+                "id"                     : { 
+                    "type": "string", "format": "uri",
+                    "regex": "http[:]//data[.]europeana[.]eu/concept/[0-9]+",
+                    "description": "The unique identifier of the Concept",
+                    "example": "http://data.europeana.eu/concept/60404"
+                },
+                "type"                   : { "type": "string", "const": "Concept", "example": "Concept" },
+                "depiction"              : { "$ref": "#/definitions/Depiction"    },
+                "isShownBy"              : { "$ref": "#/definitions/IsShownBy"    },
+                "prefLabel"              : { "$ref": "#/definitions/PrefLabel"    },
+                "altLabel"               : { "$ref": "#/definitions/AltLabel"     },
+                "hiddenLabel"            : { "$ref": "#/definitions/HiddenLabel"  },
+                "note"                   : { "$ref": "#/definitions/Note"         },
+                "notation"               : { "$ref": "#/definitions/Notation"     },
+                "broader"                : { 
+                    "description": "A broader concept in the same thesaurus or controlled vocabulary.",
+                    "example": [ "http://data.europeana.eu/concept/1" ],
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "format": "uri" }
+                
+                },
+                "narrower"               : { 
+                    "description": "A narrower concept in the same thesaurus or controlled vocabulary.",
+                    "example": [ "http://data.europeana.eu/concept/1" ],
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "format": "uri" }
+                },
+                "related"               : { 
+                    "description": "A related concept in the same thesaurus or controlled vocabulary.",
+                    "example": [ "http://data.europeana.eu/concept/1" ],
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "format": "uri" }
+                },
+                "broadMatch"             : {
+                    "description": "A broader matching concept from another thesaurus or controlled vocabulary.",
+                    "example": [ "http://www.wikidata.org/entity/Q193563" ],
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "format": "uri" }
+                },
+                "narrowMatch"            : { 
+                    "description": "A narrower matching concept from another thesaurus or controlled vocabulary.",
+                    "example": [ "http://www.wikidata.org/entity/Q193563" ],
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "format": "uri" }
+                },
+                "relatedMatch"           : {
+                    "description": "A related matching concept from another thesaurus or controlled vocabulary.",
+                    "example": [ "http://www.wikidata.org/entity/Q193563" ],
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "format": "uri" }
+                },
+                "exactMatch"             : {
+                    "description": "An exact matching concept from another thesaurus or controlled vocabulary.",
+                    "example": [ "http://www.wikidata.org/entity/Q193563" ],
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "format": "uri" }
+                },
+                "closeMatch"             : {
+                    "description": "A close matching concept from another thesaurus or controlled vocabulary.",
+                    "example": [ "http://www.wikidata.org/entity/Q193563" ],
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "format": "uri" }
+                },
+                "inScheme"               : { "$ref": "#/definitions/InScheme"     },
+                "isAggregatedBy"         : {
+                    "oneOf": [
+                        { "$ref": "#/definitions/Aggregation" },
+                        { "type": "string", "format": "uri"   }
+                    ]
+                },
+                "proxies"                : { "$ref": "#/definitions/Proxies" }
+            },
+            "required": [ "id", "type", "prefLabel" ],
+            "additionalProperties": false
+        },
+        "TimeSpan": {
+            "type": "object",
+            "description": "A period of time having a beginning, an end and a duration.",
+            "properties": {
+                "@context"               : { "$ref": "#/definitions/Context" },
+                "id"                     : { 
+                    "type": "string", "format": "uri",
+                    "regex": "http[:]//data[.]europeana[.]eu/timespan/[0-9]+",
+                    "description": "The unique identifier of the TimeSpan",
+                    "example": "http://data.europeana.eu/timespan/20"
+                },
+                "type"                   : { "type": "string", "const": "TimeSpan", "example": "TimeSpan" },
+                "depiction"              : { "$ref": "#/definitions/Depiction"    },
+                "isShownBy"              : { "$ref": "#/definitions/IsShownBy"    },
+                "prefLabel"              : { "$ref": "#/definitions/PrefLabel"    },
+                "altLabel"               : { "$ref": "#/definitions/AltLabel"     },
+                "hiddenLabel"            : { "$ref": "#/definitions/HiddenLabel"  },
+                "begin"                  : {
+                    "type": "string",
+                    "description": "The date the timespan started represented in the form of an ISO 8601 date starting with the year and with hyphens (YYYY-MM-DD).",
+                    "example": "1901-01-01"
+                },
+                "end"                    : {
+                    "type": "string",
+                    "description": "The date the timespan finshed represented in the form of an ISO 8601 date starting with the year and with hyphens (YYYY-MM-DD).",
+                    "example": "2000-12-31"
+                },
+                "note"                   : { "$ref": "#/definitions/Note" },
+                "isPartOf": {
+                    "type": "array",
+                    "description": "Reference to a timespan of which the described timespan is a part.",
+                    "example": [ "http://data.europeana.eu/timespan/1" ],
+                    "items": { "type": "string", "format": "uri" },
+                    "minItems": 1
+                },
+                "hasPart": {
+                    "type": "array",
+                    "description": "Reference to a timespan which is part of the described Timespan.",
+                    "example": [ "http://data.europeana.eu/timespan/1" ],
+                    "items": { "type": "string", "format": "uri" },
+                    "minItems": 1
+                },
+                "isNextInSequence"       : {
+                    "type": "array",
+                    "description": "Can be used to represent a sequence of periods of time.",
+                    "example": [ "http://data.europeana.eu/timespan/19" ],
+                    "items": { "type": "string", "format": "uri" },
+                    "minItems": 1
+                },                
+                "sameAs"                 : { "$ref": "#/definitions/SameAs"       },
+                "inScheme"               : { "$ref": "#/definitions/InScheme"     },
+                "isAggregatedBy"         : {
+                    "oneOf": [
+                        { "$ref": "#/definitions/Aggregation" },
+                        { "type": "string", "format": "uri"   }
+                    ]
+                },
+                "proxies"                : { "$ref": "#/definitions/Proxies" }
+            },
+            "required": [ "id", "type" ],
+            "additionalProperties": false
+        },
+        "Organization": {
+            "type": "object",
+            "properties": {
+                "@context"               : { "$ref": "#/definitions/Context" },
+                "id"                     : { 
+                    "type": "string", "format": "uri",
+                    "regex": "http[:]//data[.]europeana[.]eu/organization/[0-9]+",
+                    "description": "The unique identifier of the Organization",
+                    "example": "http://data.europeana.eu/organization/1482250000002112001"
+                },
+                "type"                   : { "type": "string", "const": "Organization", "example": "Organization" },
+                "depiction"              : { "$ref": "#/definitions/Depiction"      },
+                "isShownBy"              : { "$ref": "#/definitions/IsShownBy"      },
+                "prefLabel"              : { "$ref": "#/definitions/PrefLabel"      },
+                "acronym"                : { "$ref": "#/definitions/Acronym"        },
+                "altLabel"               : { "$ref": "#/definitions/AltLabel"       },
+                "hiddenLabel"            : { "$ref": "#/definitions/HiddenLabel"    },
+                "description"            : { "$ref": "#/definitions/Description"    },
+                "logo"                   : { "$ref": "#/definitions/Logo"           },
+                "europeanaRole"          : { "$ref": "#/definitions/EuropeanaRole"  },
+                "country"                : { "$ref": "#/definitions/Country"        },
+                "language"               : { "$ref": "#/definitions/Language"       },
+                "homepage"               : { "$ref": "#/definitions/Homepage"       },
+                "phone"                  : { "$ref": "#/definitions/Phone"          },
+                "mbox"                   : { "$ref": "#/definitions/MBox"           },
+                "hasAddress"             : { "$ref": "#/definitions/Address"        },
+                "aggregatesFrom"         : { "$ref": "#/definitions/AggregatesFrom" },
+                "aggregatedVia"          : { "$ref": "#/definitions/AggregatedVia"  },
+                "identifier"             : { "$ref": "#/definitions/Identifier"     },
+                "sameAs"                 : { "$ref": "#/definitions/SameAs"         },
+                "isAggregatedBy"         : {
+                    "oneOf": [
+                        { "$ref": "#/definitions/Aggregation" },
+                        { "type": "string", "format": "uri"   }
+                    ]
+                },
+                "proxyFor"               : { "type": "string", "format": "uri"   },
+                "proxyIn"                : { "$ref": "#/definitions/ProxyAggregation" },
+                "proxies"                : { "$ref": "#/definitions/Proxies"     }
+            },
+            "required": [ "id", "type" ],
+            "additionalProperties": false
+        },
+        "Address": {
+            "type": "object",
+            "properties": {
+                "id"            : { 
+                    "type": "string", "format": "uri",
+                    "description": "The identifier of the address.",
+                    "example": "http://data.europeana.eu/organization/1482250000002112001#address"
+                },
+                "type"          : { 
+                    "type": "string", "const": "Address", "example": "Address"
+                },
+                "streetAddress" : { 
+                    "type": "string",
+                    "description": "The street address associated to the address of the organisation.",
+                    "example": "Quai François Mauriac"
+                },
+                "postalCode"   : {
+                    "type": "string",
+                    "description": "The postal code associated to the address of the organisation.",
+                    "example": "75706"
+                },
+                "postOfficeBox": {
+                    "type": "string",
+                    "description": "The post office box associated to the address of the organisation.",
+                    "example": "Paris Cedex 13"
+                },
+                "locality"     : { 
+                    "type": "string",
+                    "description": "The city or locality associated to the address of the organisation.",
+                    "example": "Paris"
+                },
+                "countryName"  : {
+                    "type": "string",
+                    "description": "The country associated to the address of the organisation.",
+                    "example": "France"
+                },
+                "hasGeo"       : {
+                    "type": "string",
+                    "description": "The geo URI containing the latitude and longitude coordinates of the organisation.",
+                    "example": "geo:48.8336111,2.3758333"
+                }
+            },
+            "required": [ "id", "type", "countryName" ],
+            "additionalProperties": false
+        },
+        "PrefLabel": { 
+            "type": "object",
+            "description": "The preferred form of the name of the entity.",
+            "example": {
+                "en": "Label in English"
+            },
+            "patternProperties": {
+                "^(|[a-z]{2})$": { "type": "string" }
+            },
+            "additionalProperties": false
+        },
+        "AltLabel": {
+            "type": "object",
+            "description": "Alternative forms of the name of the entity.",
+            "example": {
+                "en": [ "One alt Label in English", "Another alt Label in English" ]
+            },
+            "patternProperties": {
+                "^(|[a-z]{2})$": { 
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1
+                }
+            },
+            "additionalProperties": false
+        },
+        "HiddenLabel": {
+            "type": "array",
+            "description": "A lexical label not meant to be displayed.",
+            "example": [ "Label 1", "Label 2" ],
+            "minItems": 1,
+            "items": { "type": "string" }
+        },
+        "Note": {
+            "type": "object",
+            "description": "Information related to the entity.",
+            "example": {
+                "en": [ "This note", "Another note" ]
+            },
+            "patternProperties": {
+                "^(|[a-z]{2})$": { 
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1
+                }
+            },
+            "additionalProperties": false
+        },
+        "Notation"               : { 
+            "type": "array",
+            "description": "The notation in which the concept is represented.",
+            "example": [ { "@value": "123", "@datatype": "http://www.w3.org/2001/XMLSchema#int" } ],
+            "minItems": 1,
+            "items": { 
+                "type": "object",
+                "properties": {
+                    "@datatytpe" : { "type": "string", "format": "uri" },
+                    "@value"     : { "type": "string"                  }
+                },
+                "additionalProperties": false
+            }
+        },
+
+        "Acronym": {
+            "type": "object",
+            "description": "The acronym of the Organisation.",
+            "example": {
+                "en": [ "BNF" ]
+            },
+            "patternProperties": {
+                "^(|[a-z]{2})$": { 
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1
+                }
+            },
+            "additionalProperties": false
+        },
+        "Description": { 
+            "type": "object",
+            "description": "A description for this Organisation.",
+            "example": {
+                "en": "Label in English"
+            },
+            "patternProperties": {
+                "^(|[a-z]{2})$": { "type": "string" }
+            },
+            "additionalProperties": false
+        },
+        "EuropeanaRole": {
+            "type": "array",
+            "description": "The roles in Europeana for this Organisation.",
+            "example"    : [
+              { "id": "http://data.europeana.eu/vocabulary/role/ProvidingInstitution" }
+            ],
+            "minItems": 1,
+            "items": { 
+                "oneOf": [
+                    { "$ref": "#/definitions/Concept"     },
+                    { "$ref": "#/definitions/ReferenceId" }
+                ]
+            }
+        },
+        "Country": {
+            "type": "object",
+            "description": "The roles in Europeana for this Organisation.",
+            "example"    : [
+              { "id": "http://data.europeana.eu/vocabulary/role/ProvidingInstitution" }
+            ],
+            "oneOf": [
+                { "$ref": "#/definitions/Place"       },
+                { "$ref": "#/definitions/ReferenceId" }
+            ]
+        },
+        "Language": {
+            "type": "array",
+            "description": "The official language(s) of the Organisation.",
+            "example"    : [ "fr" ],
+            "minItems": 1,
+            "items": { "type": "string" }
+        },
+        "Homepage": {
+            "type": "string", "format": "uri",
+            "description": "The homepage of the Organisation.",
+            "example"    : "http://www.bnf.fr/"
+        }, 
+        "Phone": {
+            "type": "string",
+            "description": "The phone number of the Organisation."
+        },
+        "MBox": {
+            "type": "string",
+            "description": "The contact email address of the Organisation."
+        },
+        "AggregatesFrom": {
+            "type": "array",
+            "description": "The Organisations that this Organisation aggregated from.",
+            "example"    : [
+              { "id": "http://data.europeana.eu/organization/1" }
+            ],
+            "minItems": 1,
+            "items": {
+                "oneOf": [
+                    { "$ref": "#/definitions/Organization" },
+                    { "$ref": "#/definitions/ReferenceId"  }
+                ]
+            }
+        },
+        "AggregatedVia": {
+            "type": "array",
+            "description": "The Organisations that aggregate content from this Organisation.",
+            "example"    : [
+              { "id": "http://data.europeana.eu/organization/1" }
+            ],
+            "minItems": 1,
+            "items": {
+                "oneOf": [
+                    { "$ref": "#/definitions/Organization" },
+                    { "$ref": "#/definitions/ReferenceId"  }
+                ]
+            }
+        },
+        
+
+
+        "Depiction": {
+            "type": "object",
+            "description": "A image resource where the entity is shown.",
+            "properties": {
+                "id"       : { "$ref": "#/definitions/WebResourceURL"    },
+                "type"     : { "$ref": "#/definitions/WebResourceType"   },
+                "source"   : { "$ref": "#/definitions/WebResourceSource" },
+                "thumbnail": { "$ref": "#/definitions/Thumbnail"         }
+            },
+            "required": [ "id", "type", "source", "thumbnail" ],
+            "additionalProperties": false
+        },
+        "IsShownBy": {
+            "type": "object",
+            "description": "A image resource related to the entity.",
+            "properties": {
+                "id"       : { "$ref": "#/definitions/WebResourceURL"    },
+                "type"     : { "$ref": "#/definitions/WebResourceType"   },
+                "source"   : { "$ref": "#/definitions/WebResourceSource" },
+                "thumbnail": { "$ref": "#/definitions/Thumbnail"         }
+            },
+            "required": [ "id", "type", "source", "thumbnail" ],
+            "additionalProperties": false
+        },
+        "Logo": {
+            "type": "object",
+            "description": "A image resource of the logo for this Organisation.",
+            "properties": {
+                "id"       : { "$ref": "#/definitions/WebResourceURL"  },
+                "type"     : { "$ref": "#/definitions/WebResourceType" },
+                "source"   : { "$ref": "#/definitions/WikiSource"      }
+            },
+            "required": [ "id", "type", "source" ],
+            "additionalProperties": false
+        },
+
+        "Identifier": {
+            "type": "array",
+            "description": "An identifier for the entity.",
+            "example": [ "12345" ],
+            "minItems": 1,
+            "items": { "type": "string" }
+        },
+        "SameAs": {
+            "type": "array",
+            "description": "URI of an equivalent entity in other vocabulary.",
+            "example": [ "http://www.wikidata.org/entity/Q193563" ],
+            "minItems": 1,
+            "items": { "type": "string", "format": "uri" }
+        },
+        "InScheme": {
+            "type": "array",
+            "description": "The concept scheme(s) that this entity belongs to.",
+            "example": [ "http://data.europeana.eu/scheme/1" ],
+            "minItems": 1,
+            "items": { "type": "string", "format": "uri" }
+        },
+
+        "Aggregation": {
+            "type": "object",
+            "description": "Represents the result of the aggregation of metadata of this entity from a specific data source.",
+            "properties": {
+                "id"         : { "$ref": "#/definitions/AggregationURI"  },
+                "type"       : { "$ref": "#/definitions/AggregationType" },
+                "created"    : {
+                    "type"  : "string",
+                    "format": "date-time",
+                    "description": "The time at which the entity was first created in Europeana. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
+                    "example": "2020-11-12T15:56:44Z"
+                },
+                "modified"   : {
+                    "type"  : "string",
+                    "format": "date-time",
+                    "description": "The time at which the metadata for the entity was modified as a result of an update from the source vocabulary or manually. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
+                    "example": "2021-11-12T15:56:44Z"
+                },
+                "pageRank"   : {
+                    "type": "number", "minimum": 0,
+                    "description": "A non-negative integer specifying the page rank obtained from Wikidata for this resource.",
+                    "example": 61
+                },
+                "recordCount": { 
+                    "type": "number", "minimum": 0,
+                    "description": "A non-negative integer specifying the number of items in Europeana that refer to this entity.",
+                    "example": 597136
+                },
+                "score"      : {
+                    "type": "number", "minimum": 0,
+                    "description": "A non-negative integer specifying the score number to be used when ranking this entity in search, suggest and enrich methods.",
+                    "example": 2465352
+                },
+                "aggregates" : {
+                    "type": "array",
+                    "description": "The identifiers of all aggregations from which the metadata for this entity was obtained from and consolidated.",
+                    "example": [ "http://data.europeana.eu/agent/60404#aggr_europeana" ],
+                    "minItems": 1,
+                    "items": {
+                        "oneOf": [
+                            { "type": "string", "format": "uri" }
+                        ]
+                    }
+                }
+            },
+            "required": [ "id", "type", "created", "modified" ],
+            "additionalProperties": false
+        },
+        "Proxies": { 
+            "type": "array",
+            "description": "The proxies represent a snapshot of the metadata that was aggregated from source and which will be consolidated into the main entity.",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "oneOf": [
+                    { "$ref": "#/definitions/Agent"        },
+                    { "$ref": "#/definitions/Place"        },
+                    { "$ref": "#/definitions/Concept"      },
+                    { "$ref": "#/definitions/TimeSpan"     },
+                    { "$ref": "#/definitions/Organization" }
+                ],
+                "not": { 
+                    "type": "object"
+                  , "required": [ "@context", "proxies", "isAggregatedBy" ] 
+                }
+            } 
+        },
+        "ProxyAggregation": {
+            "type": "object",
+            "properties": {
+                "id"         : { "$ref": "#/definitions/AggregationURI"  },
+                "type"       : { "$ref": "#/definitions/AggregationType" },
+                "created"    : {
+                    "type"  : "string",
+                    "format": "date-time",
+                    "description": "The time at which the metadata was obtained from the source. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
+                    "example": "2020-11-12T15:56:44Z"
+                },
+                "modified"   : {
+                    "type"  : "string",
+                    "format": "date-time",
+                    "description": "The time at which the metadata was modified, after creation. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
+                    "example": "2021-11-12T15:56:44Z"
+                },
+                "rights"     : {
+                    "type": "string", "format": "uri",
+                    "description": "The uri of the rights statement that indicates the copyright, usage and access rights of the metadata of the entity.",
+                    "example": "http://creativecommons.org/publicdomain/zero/1.0/"                
+                },
+                "source"   : {
+                    "type": "string", "format": "uri",
+                    "description": "The URI of the source vocabulary where the metadata for the entity was obtained from.",
+                    "example": "https://www.wikidata.org"
+
+                }
+            },
+            "required": [ "id", "type", "created", "modified" ],
+            "additionalProperties": false
+        },
+
+        "AggregationURI": {
+            "type": "string", "format": "uri",
+            "description": "The identifier of the aggregation.",
+            "example": "http://data.europeana.eu/agent/60404#aggregation"
+        },
+        "AggregationType": {
+            "type": "string", "const": "Aggregation",
+            "example": "Aggregation"
+        },
+        "WebResourceURL": {
+            "type": "string", "format": "uri",
+            "description": "The URL of the media resource",
+            "example": "https://lh3.googleusercontent.com/7qzT0pbclLB7y3fdS1GxzMnV7m3gD3gWnhlquhFaJSn6gNOvMmTUAX3wVlTzhMXIs8kM9IH8AsjHNVTs8em3XQI6uMY=s0"
+        },
+        "WebResourceType": {
+            "type": "string", "const": "WebResource",
+            "example": "WebResource"
+        },
+        "WebResourceSource": {
+            "type": "string", "format": "uri",
+            "description": "The source where the media resource was obtained from, typically the identifier of a record",
+            "example": "http://data.europeana.eu/item/90402/SK_A_4691"
+        },
+        "WikiSource": {
+            "type": "string", "format": "uri",
+            "description": "The source where the media resource was obtained from, typically an image from Wikimedia Commmons",
+            "example": "http://commons.wikimedia.org/wiki/File:Logo_BnF.svg"
+        },
+        "Thumbnail": {
+            "type": "string", "format": "uri",
+            "description": "The URL of a lower resolution thumbnail",
+            "example": "https://api.europeana.eu/thumbnail/v2/url.json?uri=https%3A%2F%2Fwww.rijksmuseum.nl%2Fassetimage2.jsp%3Fid%3DSK-A-4691&type=IMAGE"
+        },
+
+        "ReferenceId": {
+            "type": "object",
+            "properties": {
+                "@id" : { "type": "string", "format": "uri" }
+            },
+            "additionalProperties": false
+        }
+    }
+}

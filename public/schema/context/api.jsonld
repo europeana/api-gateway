@@ -1,0 +1,25 @@
+{
+    "@context": {
+
+        "@version": 1.1,
+
+        "api": "https://api.europeana.eu/",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "rdfs"   : "http://www.w3.org/2000/01/rdf-schema#",
+
+        "id"   : { "@id": "@id"   , "@type": "@id" },
+        "type" : { "@id": "@type" , "@type": "@id" },
+
+        "ErrorResponse": { "@id": "api:ErrorResponse" },
+
+        "success"  : { "@id": "api:success"  , "@type": "xsd:boolean"            },
+        "status"   : { "@id": "api:status"   , "@type": "xsd:nonNegativeInteger" },
+        "code"     : { "@id": "api:code"                                         },
+        "error"    : { "@id": "api:error"                                        },
+        "message"  : { "@id": "api:message"                                      },
+        "seeAlso"  : { "@id": "rfds:seeAlso" , "@type": "@id"                    },
+        "timestamp": { "@id": "api:timestamp", "@type": "xsd:dateTime"           },
+        "path"     : { "@id": "api:path"                                         },
+        "trace"    : { "@id": "api:trace"                                        }
+    }
+}

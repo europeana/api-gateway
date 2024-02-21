@@ -1,0 +1,203 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Linked Data",
+        "description": "This console provides all the linked open data resources available on Europeana",
+        "version": "1.x",
+        "termsOfService": "https://www.europeana.eu/en/rights/api-terms-of-use",
+        "contact": {
+            "name": "API Mailbox",
+            "url": "https://pro.europeana.eu/page/apis",
+            "email": "api@europeana.eu"
+        },
+        "license": {
+            "name": "EUPL-1.2",
+            "url": "https://joinup.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
+        }
+    },
+    "externalDocs": {
+        "description": "For more information, head to our comprehensive online documentation",
+        "url": "https://pro.europeana.eu/page/linked-open-data"
+    },
+    "servers": [
+        {
+            "url": "https://api.europeana.eu/",
+            "description": "Public endpoint for all production api services."
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "X-Api-Key": {
+                "type": "apiKey",
+                "name": "X-Api-Key",
+                "description": "The key required to access this API.<br/>This key is sent out to you upon registration. If you do not yet have an Europeana API key, you need to register for one at this <a target='_blank' href='https://pro.europeana.eu/get-api'>page</a> before using the Europeana APIs.",
+                "in": "header"
+            },
+            "wskey": {
+                "type": "apiKey",
+                "name": "wskey",
+                "description": "Alternative method to indicate an API key.<br/>It is recommended that you use the header instead of the parameter given that this method is deprecated and will not be supported by newer versions of the API.",
+                "in": "query"
+            },
+            "token": {
+                "type": "oauth2",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "in": "header",
+                "flows": {
+                    "password": {
+                        "tokenUrl": "https://auth.europeana.eu/auth/realms/europeana/protocol/openid-connect/token",
+                        "refreshUrl": "https://auth.europeana.eu/auth/realms/europeana/protocol/openid-connect/token",
+                        "scopes": {
+                        }
+                    },
+                    "clientCredentials": {
+                        "tokenUrl": "https://auth.europeana.eu/auth/realms/europeana/protocol/openid-connect/token",
+                        "refreshUrl": "https://auth.europeana.eu/auth/realms/europeana/protocol/openid-connect/token",
+                        "scopes": {
+                        }
+                    },
+                    "authorizationCode": {
+                        "tokenUrl": "https://auth.europeana.eu/auth/realms/europeana/protocol/openid-connect/token",
+                        "refreshUrl": "https://auth.europeana.eu/auth/realms/europeana/protocol/openid-connect/token",
+                        "authorizationUrl": "https://example.com/api/oauth/dialog",
+                        "scopes": {
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
+            "ErrorResponse": { "$ref": "https://api.europeana.eu/schema/json/error.schema.json" }
+        },
+        "parameters": {
+            "datasetId": {
+                "name": "datasetId",
+                "in": "path",
+                "description": "The identifier of the dataset containing the record.",
+                "required": true,
+                "example": "2021672",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "recordId": {
+                "name": "recordId",
+                "in": "path",
+                "description": "The local identifier of a record. It uniquely identifies the record within a dataset.",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "example": "resource_document_mauritshuis_670"
+                }
+            },
+            "query": {
+                "name": "query",
+                "in": "query",
+                "description": "The text or search criteria to be used for searching.",
+                "required": true,
+                "schema": {
+                    "type"  : "string",
+                    "example": "Dickens"
+                }
+            },
+            "qf": {
+                "name": "qf",
+                "in": "query",
+                "description": "A search query filter, ie. a filter is applied on the result list to remove unwanted results and therefore has no effect on ranking. This parameter can be used multiple types if more than one query filter is needed.",
+                "required": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type"  : "string",
+                        "example": "Dickens"
+                    }
+                }
+            },
+            "sort": {
+                "name": "sort",
+                "in": "query",
+                "description": "A comma separated list of fields used for sorting the results. The field can be suffixed with the order in which the results are sorted, either 'asc' or 'desc' by the following: <field_name>+<sort_order>. The special keyword 'score' can be used to order by the ranking as determined by the search engine (which is the default).",
+                "required": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type"  : "string",
+                        "example": "score desc"
+                    }
+                }
+            },
+            "page": {
+                "name": "page",
+                "in": "query",
+                "description": "The number of the page (defaults to 1).",
+                "required": false,
+                "schema": {
+                    "type"   : "integer",
+                    "format" : "int64",
+                    "minimum": 0,
+                    "example": 1
+                }
+            },
+            "pageSize": {
+                "name": "pageSize",
+                "in": "query",
+                "description": "The number of items to retrieve, maximum is 100, defaults to 10.",
+                "required": false,
+                "example": "10",
+                "schema": {
+                    "type"   : "integer",
+                    "format" : "int64",
+                    "minimum": 1,
+                    "maximum": 100
+                }
+            },
+            "facet": {
+                "name": "facet",
+                "in": "query",
+                "description": "A comma separated list of fields to be returned as facets for the given query.",
+                "required": false,
+                "schema": {
+                    "type"  : "string"
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "The request executed successfully."
+            },
+            "400": {
+                "description": "An invalid parameter was sent in the request.",
+                "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                    }
+                }
+            },
+            "401": {
+                "description": "The API key or JWT token is missing or invalid.",
+                "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                    }
+                }
+            },
+            "403": {
+                "description": "You are not authrorised to access the respective resource.",
+                "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                    }
+                }
+            },
+            "404": {
+                "description": "The requested resource was not found.",
+                "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                    }
+                }
+            }
+        }
+    }
+}

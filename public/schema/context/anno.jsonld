@@ -1,0 +1,30 @@
+{
+    "@context": {
+
+        "@version": 1.1,
+
+        "edm": "http://www.europeana.eu/schemas/edm/",
+        "dc" : "http://purl.org/dc/elements/1.1/",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+
+        "id"   : { "@id": "@id"   , "@type": "@id" },
+        "type" : { "@id": "@type" , "@type": "@id" },
+        
+        "transcribing"       : { "@id": "edm:transcribing"        },
+        "translating"        : { "@id": "edm:translating"         },
+        "captioning"         : { "@id": "edm:captioning"          },
+        "subtitling"         : { "@id": "edm:subtitling"          },
+        "linkForContributing": { "@id": "edm:linkForContributing" },
+
+        "RDFStatementSelector": { "@id": "edm:RDFStatementSelector", "@type": "@id" },
+        "hasSubject"          : { "@id": "edm:hasSubject"          , "@type": "@id" },
+        "hasPredicate"        : { "@id": "edm:hasPredicate"        , "@type": "@id" },
+        "hasObject"           : { "@id": "edm:hasObject"                            },
+
+        "FullTextResource"   : { "@id": "edm:FullTextResource" },
+        "value"              : { "@id": "rdf:value"            },
+        "language"           : { "@id": "dc:language"          },
+        "format"             : { "@id": "dc:format"            },
+        "edmRights"          : { "@id": "edm:rights"           }
+    }
+}
