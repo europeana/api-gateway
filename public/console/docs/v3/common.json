@@ -119,9 +119,12 @@
                 "in": "query",
                 "description": "A comma separated list of fields used for sorting the results. The field can be suffixed with the order in which the results are sorted, either 'asc' or 'desc' by the following: <field_name>+<sort_order>. The special keyword 'score' can be used to order by the ranking as determined by the search engine (which is the default).",
                 "required": false,
-                "example": "score asc",
                 "schema": {
-                    "type"  : "string"
+                    "type": "array",
+                    "items": {
+                        "type"  : "string",
+                        "example": "score desc"
+                    }
                 }
             },
             "page": {
