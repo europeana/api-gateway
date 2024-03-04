@@ -114,6 +114,17 @@ http {
             proxy_pass http://translation_api/$1;
         }
 
+        # possible fix 
+#         location /translation {
+#             proxy_set_header Authorization $http_authorization;
+#             proxy_pass_header Authorization;
+#             proxy_set_header Host $proxy_host;
+#             proxy_ssl_server_name on;
+#
+# #             proxy_pass https://$http_x_forwarded_to;
+#             proxy_pass https://translation_api;
+#         }
+
         # Newspaper search
         location = /fulltext/search.json {
             proxy_set_header Host ${NEWSPAPER_API_HOST};
