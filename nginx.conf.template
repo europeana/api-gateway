@@ -86,12 +86,12 @@ http {
     server {
         listen 80 default_server;
 #         server_name ${API_GATEWAY_HOST};
-        return 308 https://$host$request_uri;
-    }
+#         return 308 https://$host$request_uri;
+#     }
 
 
-    server {
-        listen 443 default_server;
+#     server {
+#         listen 443 default_server;
 #         server_name ${API_GATEWAY_HOST};
         root /usr/share/nginx/html;
         index index.html;
