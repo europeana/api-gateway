@@ -84,12 +84,20 @@ http {
 
 
     server {
-        listen 80;
+        listen 80 default_server;
+#         server_name ${API_GATEWAY_HOST};
+        return 308 https://$host$request_uri;
+    }
+
+
+    server {
+        listen 443 default_server;
+#         server_name ${API_GATEWAY_HOST};
         root /usr/share/nginx/html;
         index index.html;
 
         # HTTPS enforcement should be done within Kubernetes ingress
-
+        # so I have some doubts if the above 308 redirection is fully OK?
         # "upstream" servers do not use resolver settings by default (paid option), so we proxy directly to the urls
         #resolver ${RESOLVER_SETTINGS};
 
