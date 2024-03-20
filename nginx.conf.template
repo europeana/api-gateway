@@ -24,87 +24,62 @@ http {
     # Note that for upstream servers all IP addresses/services need to be available on start-up!
     upstream annotation_api {
         keepalive 10;
-        server ${
-            ANNOTATION_API_HOST
-        };
+        server ${ANNOTATION_API_HOST};
     }
 
     upstream entity_api {
         keepalive 10;
-        server ${
-            ENTITY_API_HOST
-        };
+        server ${ENTITY_API_HOST};
     }
 
     upstream entity_management {
         keepalive 10;
-        server ${
-            ENTITY_MANAGEMENT_HOST
-        };
+        server ${ENTITY_MANAGEMENT_HOST};
     }
 
     upstream fulltext_api {
         keepalive 10;
-        server ${
-            FULLTEXT_API_HOST
-        };
+        server ${FULLTEXT_API_HOST};
     }
 
     upstream manifest_api {
         keepalive 10;
-        server ${
-            MANIFEST_API_HOST
-        };
+        server ${MANIFEST_API_HOST};
     }
 
     upstream oai_record {
         keepalive 10;
-        server ${
-            OAI_RECORD_HOST
-        };
+        server ${OAI_RECORD_HOST};
     }
 
     upstream recommendation_api {
         keepalive 10;
-        server ${
-            RECOMMENDATION_API_HOST
-        };
+        server ${RECOMMENDATION_API_HOST};
     }
 
     upstream search_api {
         keepalive 10;
-        server ${
-            SEARCH_API_HOST
-        };
+        server ${SEARCH_API_HOST};
     }
 
     upstream set_api {
         keepalive 10;
-        server ${
-            SET_API_HOST
-        };
+        server ${SET_API_HOST};
     }
 
     upstream thumbnail_api {
         keepalive 10;
-        server ${
-            THUMBNAIL_API_HOST
-        };
+        server ${THUMBNAIL_API_HOST};
     }
 
     upstream translation_api {
         keepalive 10;
-        server ${
-            TRANSLATION_API_HOST
-        }
-        :443;
+        server ${TRANSLATION_API_HOST}:443;
     }
 
     upstream newspaper_api {
         keepalive 10;
-        server ${
-            NEWSPAPER_API_HOST
-        };
+        server ${NEWSPAPER_API_HOST};
     }
 
 
@@ -162,9 +137,7 @@ http {
 
             # Redirect root
             location = / {
-                return 302 ${
-                    ROOT_REDIRECT_URL
-                };
+                return 302 ${ROOT_REDIRECT_URL};
             }
 
             # Used by Kubernetes health checks
@@ -179,25 +152,19 @@ http {
 
             # no rewrite needed for proxying HOST requests
             location ~* ^/translation/(translate|detect) {
-                proxy_set_header Host ${
-                    TRANSLATION_API_HOST
-                };
+                proxy_set_header Host ${TRANSLATION_API_HOST};
                 proxy_pass https://translation_api/$1;
             }
 
             location ~* /translation/(.*) {
                 rewrite ^/translation/ /$1 break;
-                proxy_set_header Host ${
-                    TRANSLATION_API_HOST
-                };
+                proxy_set_header Host ${TRANSLATION_API_HOST};
                 proxy_pass https://translation_api/$1;
             }
 
             # Newspaper search
             location = /fulltext/search.json {
-                proxy_set_header Host ${
-                    NEWSPAPER_API_HOST
-                };
+                proxy_set_header Host ${NEWSPAPER_API_HOST};
                 proxy_pass http://newspaper_api/api/v2/search.json$is_args$args;
             }
 
@@ -219,9 +186,7 @@ http {
             # Not sure why we have this rule and if it's still useful.
             location ~ ^/api/(.*) {
                 rewrite ^/api/(.*)$ /api/$1 break;
-                proxy_set_header Host ${
-                    SEARCH_API_HOST
-                };
+                proxy_set_header Host ${SEARCH_API_HOST};
                 proxy_pass http://search_api;
             }
 
@@ -256,35 +221,27 @@ http {
 
             # Recommendation API (alternative path, has to be defined before Search & Record)
             location ~ ^/record/(v2/)?(.*)/recommend {
-                proxy_set_header Host ${
-                    RECOMMENDATION_API_HOST
-                };
+                proxy_set_header Host ${RECOMMENDATION_API_HOST};
                 proxy_pass http://recommendation_api/recommend/record/$2$is_args$args;
             }
 
             # Search API
             location ~ ^/record/(v2/)?(open)?search(.*) {
                 rewrite ^/record/(v2/)?(open)?search(.*)$ /api/v2/$2search$3 break;
-                proxy_set_header Host ${
-                    SEARCH_API_HOST
-                };
+                proxy_set_header Host ${SEARCH_API_HOST};
                 proxy_pass http://search_api;
             }
 
             # Record API
             location ~ ^/record/(v2/)?(.*) {
                 rewrite  ^/record/(v2/)?(.*)$ /api/v2/record/$2 break;
-                proxy_set_header Host ${
-                    SEARCH_API_HOST
-                };
+                proxy_set_header Host ${SEARCH_API_HOST};
                 proxy_pass http://search_api;
             }
 
             # Always enable CORS for Search & Record API Swagger endpoint (as bug fix)
             location = /record/api-docs {
-                proxy_set_header Host ${
-                    SEARCH_API_HOST
-                };
+                proxy_set_header Host ${SEARCH_API_HOST};
                 proxy_hide_header Access-Control-Allow-Origin;
                 add_header Access-Control-Allow-Origin "*";
                 proxy_pass http://search_api/api/api-docs;
@@ -294,9 +251,7 @@ http {
             location = /api/v2/thumbnail-by-url.json {
                 # Thumbnails are JPEGs; no need to gzip them
                 gzip off;
-                proxy_set_header Host ${
-                    THUMBNAIL_API_HOST
-                };
+                proxy_set_header Host ${THUMBNAIL_API_HOST};
                 proxy_pass http://thumbnail_api;
             }
 
@@ -304,9 +259,7 @@ http {
             location = /thumbnail/v2/url.json {
                 # Thumbnails are JPEGs; no need to gzip them
                 gzip off;
-                proxy_set_header Host ${
-                    THUMBNAIL_API_HOST
-                };
+                proxy_set_header Host ${THUMBNAIL_API_HOST};
                 proxy_pass http://thumbnail_api/api/v2/thumbnail-by-url.json$is_args$args;
             }
 
@@ -319,25 +272,19 @@ http {
             location ~ /thumbnail/(v3/)?(.*) {
                 # Thumbnails are JPEGs; no need to gzip them
                 gzip off;
-                proxy_set_header Host ${
-                    THUMBNAIL_API_HOST
-                };
+                proxy_set_header Host ${THUMBNAIL_API_HOST};
                 proxy_pass http://thumbnail_api/thumbnail/v3/$2$is_args$args;
             }
 
             # OAI-PMH requests
             location = /oai/record {
-                proxy_set_header Host ${
-                    OAI_RECORD_HOST
-                };
+                proxy_set_header Host ${OAI_RECORD_HOST};
                 proxy_pass http://oai_record/oai/$is_args$args;
             }
 
             # OAI-PMH index page
             location = /oai/record/ {
-                proxy_set_header Host ${
-                    OAI_RECORD_HOST
-                };
+                proxy_set_header Host ${OAI_RECORD_HOST};
                 proxy_pass http://oai_record/index.html;
             }
 
@@ -348,73 +295,55 @@ http {
 
             # OAI-PMH query forms
             location ~ ^/oai/record/(.*)\.html {
-                proxy_set_header Host ${
-                    OAI_RECORD_HOST
-                };
+                proxy_set_header Host ${OAI_RECORD_HOST};
                 proxy_pass http://oai_record/$1.html;
             }
 
             # Annotation API
             location ~ ^/annotation/(.*) {
-                proxy_set_header Host ${
-                    ANNOTATION_API_HOST
-                };
+                proxy_set_header Host $ANNOTATION_API_HOST};
                 proxy_pass http://annotation_api/annotation/$1$is_args$args;
             }
 
             # Entity - search, resolve and suggest are routed to Entity API
             location ~ ^/entity/(search|suggest|resolve|enrich|stats)(.*) {
-                proxy_set_header Host ${
-                    ENTITY_API_HOST
-                };
+                proxy_set_header Host ${ENTITY_API_HOST};
                 proxy_pass http://entity_api/entity/$1$2$is_args$args;
             }
 
             # Entity - all other requests go to Entity Management
             location ~ ^/entity/(.*) {
-                proxy_set_header Host ${
-                    ENTITY_MANAGEMENT_HOST
-                };
+                proxy_set_header Host ${ENTITY_MANAGEMENT_HOST};
                 proxy_pass http://entity_management/entity/$1$is_args$args;
             }
 
             # Manifest API
             location ~ ^/presentation/(.*)/manifest$ {
-                proxy_set_header Host ${
-                    MANIFEST_API_HOST
-                };
+                proxy_set_header Host ${MANIFEST_API_HOST};
                 proxy_pass http://manifest_api/presentation/$1/manifest$is_args$args;
             }
 
             # Fulltext API
             location ~ ^/(fulltext|presentation)/(.*) {
-                proxy_set_header Host ${
-                    FULLTEXT_API_HOST
-                };
+                proxy_set_header Host ${FULLTEXT_API_HOST};
                 proxy_pass http://fulltext_api/presentation/$2$is_args$args;
             }
 
             # Recommendation API
             location ~ ^/recommend/(.*) {
-                proxy_set_header Host ${
-                    RECOMMENDATION_API_HOST
-                };
+                proxy_set_header Host ${RECOMMENDATION_API_HOST};
                 proxy_pass http://recommendation_api/recommend/$1$is_args$args;
             }
 
             # Recommendation API (alternative path)
             location ~ ^/set/(.*)/recommend {
-                proxy_set_header Host ${
-                    RECOMMENDATION_API_HOST
-                };
+                proxy_set_header Host ${RECOMMENDATION_API_HOST};
                 proxy_pass http://recommendation_api/recommend/set/$1$is_args$args;
             }
 
             # Sets API
             location ~ ^/set/(.*) {
-                proxy_set_header Host ${
-                    SET_API_HOST
-                };
+                proxy_set_header Host ${SET_API_HOST};
                 proxy_pass http://set_api/set/$1$is_args$args;
             }
         }
