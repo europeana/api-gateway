@@ -47,21 +47,21 @@
     ],
     "components": {
         "securitySchemes": {
-            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token" }
+            "token"    : { "$ref": "common.json#/components/securitySchemes/token" }
         },
         "schemas": {
-            "LangDetectRequest"  : { "$ref": "https://api.europeana.eu/schema/json/translation/ws.schema.json#/definitions/LangDetectRequest"   },
-            "LangDetectResponse" : { "$ref": "https://api.europeana.eu/schema/json/translation/ws.schema.json#/definitions/LangDetectResponse"  },
-            "TranslationRequest" : { "$ref": "https://api.europeana.eu/schema/json/translation/ws.schema.json#/definitions/TranslationRequest"  },
-            "TranslationResponse": { "$ref": "https://api.europeana.eu/schema/json/translation/ws.schema.json#/definitions/TranslationResponse" }
+            "LangDetectRequest"  : { "$ref": "../../../schema/json/translation/ws.schema.json#/definitions/LangDetectRequest"   },
+            "LangDetectResponse" : { "$ref": "../../../schema/json/translation/ws.schema.json#/definitions/LangDetectResponse"  },
+            "TranslationRequest" : { "$ref": "../../../schema/json/translation/ws.schema.json#/definitions/TranslationRequest"  },
+            "TranslationResponse": { "$ref": "../../../schema/json/translation/ws.schema.json#/definitions/TranslationResponse" }
         },
         "responses": {
             "200": {
                 "description": "The thumbnail was returned successfully."
             },
-            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
-            "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" },
-            "403": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/403" }
+            "400": { "$ref": "common.json#/components/responses/400" },
+            "401": { "$ref": "common.json#/components/responses/401" },
+            "403": { "$ref": "common.json#/components/responses/403" }
         }
     },
     "paths": {

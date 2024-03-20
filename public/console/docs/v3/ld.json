@@ -36,9 +36,14 @@
         }
     ],
     "components": {
+        "securitySchemes": {
+            "X-Api-Key": { "$ref": "common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "common.json#/components/securitySchemes/wskey" },
+            "token"    : { "$ref": "common.json#/components/securitySchemes/token" }
+        },
         "parameters": {
-            "datasetId" : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/datasetId"      },
-            "recordId"  : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/recordId"       },
+            "datasetId" : { "$ref": "common.json#/components/parameters/datasetId"      },
+            "recordId"  : { "$ref": "common.json#/components/parameters/recordId"       },
             "entityType": { "$ref": "https://api.europeana.eu/console/docs/v3/entity.json#/components/parameters/type"           },
             "entityId"  : { "$ref": "https://api.europeana.eu/console/docs/v3/entity.json#/components/parameters/identifier"     },
             "annoId"    : { "$ref": "https://api.europeana.eu/console/docs/v3/annotation.json#/components/parameters/identifier" }
