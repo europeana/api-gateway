@@ -227,17 +227,12 @@ http {
 
 
             # EA-3761
-            location ~ ^/(auth)/(protocol/openid-connect|account) {
-                set $openid $1/realms/europeana/$2;
+            location ~ ^/(auth)/?(protocol/openid-connect|account)?(.*)? {
+                set $openid $1/realms/europeana/$2$3;
                 proxy_set_header Host ${KEYCLOAK_HOST};
+                add_header 'X-Wickie' "$openid" always;
                 proxy_pass https://keycloak/$openid;
             }
-
-            location ~ ^/(auth)/?$ {
-                proxy_set_header Host ${KEYCLOAK_HOST};
-                proxy_pass https://keycloak/$1/;
-            }
-
 
             location ~* /translation/(.*) {
                 rewrite ^/translation/ /$1 break;
