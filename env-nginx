@@ -20,7 +20,7 @@ vars='$ANNOTATION_API_HOST
       $RECOMMENDATION_API_HOST
       $TRANSLATION_API_HOST
       $NEWSPAPER_API_HOST
-      $API_GATEWAY_HOST'
+      $KEYCLOAK_HOST'
 
 envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 

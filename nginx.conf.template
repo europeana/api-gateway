@@ -82,6 +82,11 @@ http {
         server ${NEWSPAPER_API_HOST};
     }
 
+    upstream keycloak {
+        keepalive 10;
+        server ${KEYCLOAK_HOST};
+    }
+
 
     server {
         listen 80 default_server;
@@ -217,7 +222,29 @@ http {
                 return 301 https://$host/oai/record/$1.html;
             }
 
+
             # ----------------------------------------------------------
+
+
+            # EA-3761
+            location ~ ^/(auth)/(protocol/openid-connect|account) {
+                set $openid $1/realms/europeana/$2;
+                proxy_set_header Host ${KEYCLOAK_HOST};
+                proxy_pass https://keycloak/$openid;
+            }
+
+            location ~ ^/(auth)/?$ {
+                proxy_set_header Host ${KEYCLOAK_HOST};
+                proxy_pass https://keycloak/$1/;
+            }
+
+
+            location ~* /translation/(.*) {
+                rewrite ^/translation/ /$1 break;
+                proxy_set_header Host ${TRANSLATION_API_HOST};
+                proxy_pass https://translation_api/$1;
+            }
+
 
             # Recommendation API (alternative path, has to be defined before Search & Record)
             location ~ ^/record/(v2/)?(.*)/recommend {
