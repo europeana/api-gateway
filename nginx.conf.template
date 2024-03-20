@@ -84,7 +84,7 @@ http {
 
     upstream keycloak {
         keepalive 10;
-        server ${KEYCLOAK_HOST};
+        server ${KEYCLOAK_HOST}:443;
     }
 
 
