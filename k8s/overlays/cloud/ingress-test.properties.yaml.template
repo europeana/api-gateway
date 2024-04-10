@@ -8,8 +8,7 @@ metadata:
   name: api-gateway-ingress
   annotations:
     cert-manager.io/issuer: letsencrypt-production
-#    nginx.ingress.kubernetes.io/permanent-redirect: ${K8S_HOSTNAME}
-    nginx.ingress.kubernetes.io/permanent-redirect-code: '308'
+#    nginx.ingress.kubernetes.io/permanent-redirect-code: '308'
 spec:
   ingressClassName: public-iks-k8s-nginx
   tls:

@@ -161,6 +161,7 @@ http {
                 proxy_pass https://translation_api/$1;
             }
 
+
             # Tightened this one up to stop the weird redirection to the broken Swagger url in the index.html of the translation API
             location /translation/actuator/info {
                 rewrite ^/translation/ /actuator/info break;
@@ -241,13 +242,6 @@ http {
                 add_header 'X-Wickie' "$authPath" always;
                 proxy_pass https://keycloak/$authPath;
             }
-
-            location ~* /translation/(.*) {
-                rewrite ^/translation/ /$1 break;
-                proxy_set_header Host ${TRANSLATION_API_HOST};
-                proxy_pass https://translation_api/$1;
-            }
-
 
             # Recommendation API (alternative path, has to be defined before Search & Record)
             location ~ ^/record/(v2/)?(.*)/recommend {
