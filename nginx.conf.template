@@ -74,6 +74,7 @@ http {
 
     upstream translation_api {
         keepalive 10;
+        # Translation API enforces https
         server ${TRANSLATION_API_HOST}:443;
     }
 
@@ -107,22 +108,10 @@ http {
             return 200 '{"status":"healthy"}';
         }
 
-        location ~* ^/test/(.*) {
-            return 200 '$1';
-        }
-
         # no rewrite needed for proxying HOST requests
         location ~* ^/translation/(translate|detect) {
             proxy_set_header Host ${TRANSLATION_API_HOST};
             proxy_pass https://translation_api/$1;
-        }
-
-
-        # Tightened this one up to stop the weird redirection to the broken Swagger url in the index.html of the translation API
-        location /translation/actuator/info {
-            rewrite ^/translation/ /actuator/info break;
-            proxy_set_header Host ${TRANSLATION_API_HOST};
-            proxy_pass https://translation_api;
         }
 
         # Newspaper search
