@@ -108,8 +108,8 @@ http {
             return 200 '{"status":"healthy"}';
         }
 
-        # no rewrite needed for proxying HOST requests
-        location ~* ^/translation/(translate|detect) {
+        # Translation API
+        location ~* ^/translation/(.*) {
             proxy_set_header Host ${TRANSLATION_API_HOST};
             proxy_pass https://translation_api/$1;
         }
