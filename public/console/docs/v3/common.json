@@ -68,7 +68,7 @@
             }
         },
         "schemas": {
-            "ErrorResponse": { "$ref": "https://api.europeana.eu/schema/json/error.schema.json" }
+            "ErrorResponse": { "$ref": "../../../schema/json/error.schema.json" }
         },
         "parameters": {
             "datasetId": {

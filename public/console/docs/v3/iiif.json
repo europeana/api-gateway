@@ -60,25 +60,25 @@
     ],
     "components": {
         "securitySchemes": {
-            "X-Api-Key": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
-            "wskey"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
-            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token"     }
+            "X-Api-Key": { "$ref": "common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "common.json#/components/securitySchemes/wskey" },
+            "token"    : { "$ref": "common.json#/components/securitySchemes/token" }
         },
         "schemas": {
-            "ManifestV2"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/manifest.schema.json" },
-            "ManifestV3"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/manifest.schema.json" },
-            "AnnoPageV2"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/fulltext.schema.json#/definitions/AnnotationPage"    },
-            "ResultPageV2"    : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/fulltext.schema.json#/definitions/ResultPage"        },
-            "AnnoV2"          : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/fulltext.schema.json#/definitions/Annotation"        },
-            "AnnoPagesV3"     : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/AnnotationSummary" },
-            "AnnoPageV3"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/AnnotationPage"    },
-            "ResultPageV3"    : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/ResultPage"        },
-            "AnnoV3"          : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/Annotation"        },
-            "FullTextResource": { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/FullTextResource"  },
-            "ErrorResponse"   : { "$ref": "https://api.europeana.eu/schema/json/error.schema.json" },
+            "ManifestV2"      : { "$ref": "../../../schema/json/iiif/v2/manifest.schema.json" },
+            "ManifestV3"      : { "$ref": "../../../schema/json/iiif/v3/manifest.schema.json" },
+            "AnnoPageV2"      : { "$ref": "../../../schema/json/iiif/v2/fulltext.schema.json#/definitions/AnnotationPage"    },
+            "ResultPageV2"    : { "$ref": "../../../schema/json/iiif/v2/fulltext.schema.json#/definitions/ResultPage"        },
+            "AnnoV2"          : { "$ref": "../../../schema/json/iiif/v2/fulltext.schema.json#/definitions/Annotation"        },
+            "AnnoPagesV3"     : { "$ref": "../../../schema/json/iiif/v3/fulltext.schema.json#/definitions/AnnotationSummary" },
+            "AnnoPageV3"      : { "$ref": "../../../schema/json/iiif/v3/fulltext.schema.json#/definitions/AnnotationPage"    },
+            "ResultPageV3"    : { "$ref": "../../../schema/json/iiif/v3/fulltext.schema.json#/definitions/ResultPage"        },
+            "AnnoV3"          : { "$ref": "../../../schema/json/iiif/v3/fulltext.schema.json#/definitions/Annotation"        },
+            "FullTextResource": { "$ref": "../../../schema/json/iiif/v3/fulltext.schema.json#/definitions/FullTextResource"  },
+            "ErrorResponse"   : { "$ref": "../../../schema/json/error.schema.json" },
             
-            "LanguageList"            : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/LanguageList"        },
-            "TextGranularityList"     : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/TextGranularityList" }
+            "LanguageList"            : { "$ref": "../../../schema/json/iiif/v3/fulltext.schema.json#/definitions/LanguageList"        },
+            "TextGranularityList"     : { "$ref": "../../../schema/json/iiif/v3/fulltext.schema.json#/definitions/TextGranularityList" }
         },
         "parameters": {
             "datasetId": {
@@ -183,9 +183,9 @@
             }
         },
         "responses": {
-            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
-            "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" },
-            "404": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/404" }
+            "400": { "$ref": "common.json#/components/responses/400" },
+            "401": { "$ref": "common.json#/components/responses/401" },
+            "404": { "$ref": "common.json#/components/responses/404" }
         }
     },
     "paths": {
