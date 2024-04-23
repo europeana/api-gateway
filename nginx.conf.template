@@ -86,8 +86,9 @@ http {
     # POC load balancing (experimental to show how it works)
     upstream loadbalanced_servers {
         keepalive 10;
-        server 127.0.0.1:1234 max_fails=1 fail_timeout=10s;
-        server 127.0.0.1:5678 max_fails=1 fail_timeout=10s;
+        server 127.0.0.1:1234 max_fails=1 fail_timeout=30s;
+        server 127.0.0.1:4567 max_fails=1 fail_timeout=30s;
+        server 127.0.0.1:6789 max_fails=1 fail_timeout=30s;
     }
 
     # Temporary added to demonstrate load balancing
@@ -100,13 +101,22 @@ http {
         }
     }
     server {
-        listen 5678;
+        listen 4567;
 
         location = /load-balance-test {
             default_type application/json;
             return 200 '{"test2":"endpoint"}';
         }
     }
+    server {
+        listen 6789;
+
+        location = /load-balance-test {
+            default_type application/json;
+            return 502 '{"Server is broken"}';
+        }
+    }
+
 
     server {
         listen 80 default_server;
