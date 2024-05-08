@@ -7,9 +7,14 @@ NAMESERVER=$(cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}' | tr '\
 export RESOLVER_SETTINGS="${NAMESERVER} ${RESOLVER_SETTINGS}"
 
 vars='$ANNOTATION_API_HOST
+      $EMBEDDING_API_HOST
+      $EMBEDDING_SERVER1_SETTINGS
+      $EMBEDDING_SERVER2_SETTINGS
       $ENTITY_API_HOST
       $ENTITY_MANAGEMENT_HOST
       $FULLTEXT_API_HOST
+      $NEWSPAPER_API_HOST
+      $RECOMMENDATION_API_HOST
       $RESOLVER_SETTINGS
       $ROOT_REDIRECT_URL
       $SEARCH_API_HOST
@@ -17,9 +22,7 @@ vars='$ANNOTATION_API_HOST
       $OAI_RECORD_HOST
       $MANIFEST_API_HOST
       $THUMBNAIL_API_HOST
-      $RECOMMENDATION_API_HOST
-      $TRANSLATION_API_HOST
-      $NEWSPAPER_API_HOST'
+      $TRANSLATION_API_HOST'
 
 envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
