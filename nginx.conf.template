@@ -19,7 +19,9 @@ http {
 
     tcp_nodelay on;
     tcp_nopush on;
-    keepalive_timeout 30;
+    keepalive_timeout 60;
+
+
 
     # Note that for upstream servers all IP addresses/services need to be available on start-up!
     upstream annotation_api {
