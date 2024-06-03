@@ -284,7 +284,7 @@ http {
         # Translation API
         location ~* ^/translation/(.*) {
             proxy_set_header Host ${TRANSLATION_API_HOST};
-            proxy_pass https://translation_api/$1;
+            proxy_pass https://translation_api/$1$is_args$args;
         }
 
         # Embedding API (load balanced!)
@@ -292,7 +292,7 @@ http {
             proxy_set_header Host ${EMBEDDING_API_HOST};
 
             # No load balancing algorithm defined, so by default round-robin is used
-            proxy_pass http://embedding_apis/embedding_api/$1;
+            proxy_pass http://embedding_apis/embedding_api/$1$is_args$args;
 
             # Send to next server in list in case of errors
             proxy_next_upstream error timeout http_502 http_503 http_504;
