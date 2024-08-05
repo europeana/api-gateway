@@ -325,7 +325,7 @@ http {
 
             # Annotation API
             location ~ ^/annotation/(.*) {
-                proxy_set_header Host $ANNOTATION_API_HOST};
+                proxy_set_header Host ${ANNOTATION_API_HOST};
                 proxy_pass http://annotation_api/annotation/$1$is_args$args;
             }
 
