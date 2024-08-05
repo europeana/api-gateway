@@ -11,4 +11,4 @@ patches:
 labels:
   - includeSelectors: true
     pairs:
-  app: api-gateway-dev
+      app: api-gateway-dev
