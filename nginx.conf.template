@@ -4,8 +4,8 @@ daemon off;
 error_log stderr warn;
 
 events {
-    use epoll;
-    worker_connections 1024;
+    ${NO_EPOLL}use epoll;
+    worker_connections ${WORKERCONNECTIONS};
     multi_accept on;
 }
 
@@ -99,8 +99,8 @@ http {
 
 
     server {
-        listen 80 default_server;
-        root /usr/share/nginx/html;
+        listen ${PORT} default_server;
+        root ${ROOT};
         index index.html;
 
         # HTTPS enforcement should be done within Kubernetes ingress
@@ -379,7 +379,7 @@ http {
         # Redirect old record url format (to be removed?)
         #   Nov 2019 - again 0 hits in last 4 months
         #   March 2020 - 0 hits at API, but I did notice that we have quite a bit of /resolve/record requests coming in via
-                         Portal, so for now I'm not removing entirely because I'm not sure if this means we want to put it back
+        #                Portal, so for now I'm not removing entirely because I'm not sure if this means we want to put it back
 
         # location ~ ^/resolve/record/(.*) {
         #     return 301 https://$host/api/v2/record/$1$is_args$args;
