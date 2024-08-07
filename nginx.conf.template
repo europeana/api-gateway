@@ -180,11 +180,16 @@ http {
             proxy_pass http://recommendation_api/recommend/record/$2$is_args$args;
         }
 
-        # Search API
-        location ~ ^/record/(v2/)?(open)?search(.*) {
-            rewrite ^/record/(v2/)?(open)?search(.*)$ /api/v2/$2search$3 break;
+        # Search API v3
+        location ~ ^/record/v3/search(.*)$ {
             proxy_set_header Host ${SEARCH_API_HOST};
-            proxy_pass http://search_api;
+            proxy_pass http://search_api/record/v3/search.json$is_args$args;
+        }
+
+        # Search API
+        location ~ ^/record/(v2/)?(open)?search(.*)$ {
+            proxy_set_header Host ${SEARCH_API_HOST};
+            proxy_pass http://search_api/record/search.json$is_args$args;
         }
 
         # Record API
