@@ -19,7 +19,7 @@ http {
 
     tcp_nodelay on;
     tcp_nopush on;
-    keepalive_timeout 30;
+    keepalive_timeout 60;
 
     # Note that for upstream servers all IP addresses/services need to be available on start-up!
     upstream annotation_api {
@@ -338,11 +338,12 @@ http {
 
         ## ----- Translation API ----- ##
 
-        # no rewrite needed for proxying HOST requests
+        # no rewrite needed for proxying HOST requests - updated for EA-3859
         location ~* ^/translation/(translate|detect) {
             proxy_set_header Host ${TRANSLATION_API_HOST};
-            proxy_pass https://translation_api/$1;
+            proxy_pass https://translation_api/$1$is_args$args;
         }
+
 
         # Tightened this one up to stop the weird redirection to the broken Swagger url in the index.html of the translation API
         location /translation/actuator/info {
@@ -351,18 +352,15 @@ http {
             proxy_pass https://translation_api;
         }
 
-        # See if Patrick still wants this with the two gaffs right above 'ere
-        #         location ~* ^/translation/(.*) {
-        #             proxy_set_header Host ${TRANSLATION_API_HOST};
-        #             proxy_pass https://translation_api/$1;
-        #         }
 
-        ## ----- Embedding API load balanced!) ----- ##
+        ## ----- Embeddings API ----- ##
+
+        # Embedding API (load balanced!) updated for EA-3859
         location ~* ^/embedding/(.*) {
             proxy_set_header Host ${EMBEDDING_API_HOST};
 
             # No load balancing algorithm defined, so by default round-robin is used
-            proxy_pass http://embedding_apis/embedding_api/$1;
+            proxy_pass http://embedding_apis/embedding_api/$1$is_args$args;
 
             # Send to next server in list in case of errors
             proxy_next_upstream error timeout http_502 http_503 http_504;
@@ -374,11 +372,7 @@ http {
             return 307 https://$host/console/index.html?url=docs/v3/$1.json;
         }
 
-        # Mind yersel' that th' places ye see below this chapter are meant fer deprecation, right?
-        # They’re goin’ tae be sent aff tae a wee, rocky island up north in Scotland, where y’ll find croakin’ ravens an’ rough-tough fishermen.
-        # So, it’s best no’ tae un-comment them, or ye might end up with the wrong idea 'bout important cultural stuff.
 
-        ## ----- Begin to be sent to a wee, rocky island ----- ##
         # Old and deprecated (kept for the time being for backward compatibility)
         # ----------------------------------------------------------
         # Redirect old record url format (to be removed?)
@@ -413,6 +407,5 @@ http {
         # location = /api/image {
         #     return 301 https://$host/api/v2/thumbnail-by-url.json$is_args$args;
         # }
-        ## ----- End to be sent to a wee, rocky island ----- ##
     }
 }
