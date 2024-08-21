@@ -4,8 +4,9 @@ daemon off;
 error_log stderr warn;
 
 events {
-    ${NO_EPOLL}use epoll;
-    worker_connections ${WORKERCONNECTIONS};
+    # For deployment in Kubernetes we should always "use epoll" (most efficient). Optionally you can disable it for local testing.
+    ${USE_EPOLL}
+    worker_connections ${WORKER_CONNECTIONS};
     multi_accept on;
 }
 
@@ -19,12 +20,21 @@ http {
 
     tcp_nodelay on;
     tcp_nopush on;
+    # Note that connections will be cut-off after 50 seconds by something in kubernetes
     keepalive_timeout 60;
 
     # Note that for upstream servers all IP addresses/services need to be available on start-up!
     upstream annotation_api {
         keepalive 10;
         server ${ANNOTATION_API_HOST};
+    }
+
+    upstream embedding_apis {
+        keepalive 10;
+        # We'll not only specify server name using env variables but also settings
+        # This way we can mark a server as down (for maintenance) in a deployment job
+        server ${EMBEDDING_SERVER1_SETTINGS};
+        #server ${EMBEDDING_SERVER2_SETTINGS};
     }
 
     upstream entity_api {
@@ -40,6 +50,11 @@ http {
     upstream fulltext_api {
         keepalive 10;
         server ${FULLTEXT_API_HOST};
+    }
+
+    upstream keycloak {
+        keepalive 10;
+        server ${KEYCLOAK_HOST}:443;
     }
 
     upstream manifest_api {
@@ -84,23 +99,13 @@ http {
     }
 
 
-    upstream embedding_apis {
-        keepalive 10;
-        # We'll not only specify server name using env variables but also settings
-        # This way we can mark a server as down (for maintenance) in a deployment job
-        server ${EMBEDDING_SERVER1_SETTINGS};
-        #server ${EMBEDDING_SERVER2_SETTINGS};
-    }
 
-    upstream keycloak {
-        keepalive 10;
-        server ${KEYCLOAK_HOST}:443;
-    }
+
 
 
     server {
         listen ${PORT} default_server;
-        root ${ROOT};
+        root ${PUBLIC_FOLDER};
         index index.html;
 
         # HTTPS enforcement should be done within Kubernetes ingress
@@ -112,9 +117,7 @@ http {
         include nginx.conf.d/*.conf;
 
         # ----------------------------------------------------------
-        #
-        # Wide-open CORS config for nginx
-        #
+        # CORS config for nginx
         # ----------------------------------------------------------
         location / {
             if ($request_method = 'OPTIONS') {
@@ -161,15 +164,11 @@ http {
             return 200 '{"status":"healthy"}';
         }
 
-        location ~* ^/test/(.*) {
-            return 200 '$1';
-        }
-
         ## ----- Search & Record API ----- ##
 
         # Old /api/v2/record and search.json requests
         location ~ ^/api/(.*) {
-             rewrite ^/api/(.*)$ /api/$1 break;
+            rewrite ^/api/(.*)$ /api/$1 break;
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api;
         }
@@ -271,7 +270,7 @@ http {
             proxy_pass http://annotation_api/annotation/$1$is_args$args;
         }
 
-        ## ----- Recommendatin API for Entities ----- ##
+        ## ----- Recommendation API for Entities ----- ##
 
         # Recommendation API for entities (alternative path, has to be defined before /entity/* route)
         location ~ ^/entity/(.*)/recommend {
@@ -339,23 +338,22 @@ http {
         ## ----- Translation API ----- ##
 
         # no rewrite needed for proxying HOST requests - updated for EA-3859
-        location ~* ^/translation/(translate|detect) {
+        location ~* ^/translation/(.*) {
             proxy_set_header Host ${TRANSLATION_API_HOST};
             proxy_pass https://translation_api/$1$is_args$args;
         }
 
-
         # Tightened this one up to stop the weird redirection to the broken Swagger url in the index.html of the translation API
-        location /translation/actuator/info {
-            rewrite ^/translation/ /actuator/info break;
-            proxy_set_header Host ${TRANSLATION_API_HOST};
-            proxy_pass https://translation_api;
-        }
+        #location /translation/actuator/info {
+        #    rewrite ^/translation/ /actuator/info break;
+        #    proxy_set_header Host ${TRANSLATION_API_HOST};
+        #    proxy_pass https://translation_api;
+        #}
 
 
         ## ----- Embeddings API ----- ##
 
-        # Embedding API (load balanced!) updated for EA-3859
+        # Embedding API (load balanced!)
         location ~* ^/embedding/(.*) {
             proxy_set_header Host ${EMBEDDING_API_HOST};
 
