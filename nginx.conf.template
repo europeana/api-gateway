@@ -4,8 +4,9 @@ daemon off;
 error_log stderr warn;
 
 events {
-    use epoll;
-    worker_connections 1024;
+    # For deployment in Kubernetes we should always "use epoll" (most efficient). Optionally you can disable it for local testing.
+    ${USE_EPOLL}
+    worker_connections ${WORKER_CONNECTIONS};
     multi_accept on;
 }
 
@@ -19,12 +20,21 @@ http {
 
     tcp_nodelay on;
     tcp_nopush on;
-    keepalive_timeout 30;
+    # Note that connections will be cut-off after 50 seconds by something in kubernetes
+    keepalive_timeout 60;
 
     # Note that for upstream servers all IP addresses/services need to be available on start-up!
     upstream annotation_api {
         keepalive 10;
         server ${ANNOTATION_API_HOST};
+    }
+
+    upstream embedding_apis {
+        keepalive 10;
+        # We'll not only specify server name using env variables but also settings
+        # This way we can mark a server as down (for maintenance) in a deployment job
+        server ${EMBEDDING_SERVER1_SETTINGS};
+        #server ${EMBEDDING_SERVER2_SETTINGS};
     }
 
     upstream entity_api {
@@ -40,6 +50,11 @@ http {
     upstream fulltext_api {
         keepalive 10;
         server ${FULLTEXT_API_HOST};
+    }
+
+    upstream keycloak {
+        keepalive 10;
+        server ${KEYCLOAK_HOST}:443;
     }
 
     upstream manifest_api {
@@ -83,18 +98,14 @@ http {
         server ${TRANSLATION_API_HOST}:443;
     }
 
-    upstream embedding_apis {
-        keepalive 10;
-        # We'll not only specify server name using env variables but also settings
-        # This way we can mark a server as down (for maintenance) in a deployment job
-        server ${EMBEDDING_SERVER1_SETTINGS};
-        server ${EMBEDDING_SERVER2_SETTINGS};
-    }
+
+
+
 
 
     server {
-        listen 80 default_server;
-        root /usr/share/nginx/html;
+        listen ${PORT} default_server;
+        root ${PUBLIC_FOLDER};
         index index.html;
 
         # HTTPS enforcement should be done within Kubernetes ingress
@@ -104,6 +115,43 @@ http {
         add_header Link "<http://creativecommons.org/publicdomain/zero/1.0/>;rel=license";
 
         include nginx.conf.d/*.conf;
+
+        # ----------------------------------------------------------
+        # CORS config for nginx
+        # ----------------------------------------------------------
+        location / {
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                #
+                # Custom headers and headers various browsers *should* be OK with but aren't
+                #
+
+                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+                #
+                # Tell client that this pre-flight info is valid for 20 days
+                #
+
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Type' 'text/plain; charset=utf-8';
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+            if ($request_method = 'POST') {
+                add_header 'Access-Control-Allow-Origin' '*' always;
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
+                add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
+            }
+            if ($request_method = 'GET') {
+                add_header 'Access-Control-Allow-Origin' '*' always;
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
+                add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
+            }
+        }
+
+        # ----------------------------------------------------------
 
         # Redirect root
         location = / {
@@ -116,7 +164,7 @@ http {
             return 200 '{"status":"healthy"}';
         }
 
-        ## ----- Search & Record API -----
+        ## ----- Search & Record API ----- ##
 
         # Old /api/v2/record and search.json requests
         location ~ ^/api/(.*) {
@@ -125,25 +173,22 @@ http {
             proxy_pass http://search_api;
         }
 
-        # Redirect old thumbnail url format
-        #    Feb 2019 - about 1000 requests a month are still done directly to api (and all of them fail with 500 or 404)
-        #    Nov 2019 - still about 1000 requests per month, most return 500 or 404, a few return 301
-        #    Apr 2024 - about 25 requests per month, we can start deprecating this now
-        #location = /api/image {
-        #    return 301 https://$host/api/v2/thumbnail-by-url.json$is_args$args;
-        #}
-
         # Recommendation API for records (alternative path, has to be defined before Search & Record)
         location ~ ^/record/(v2/)?(.*)/recommend {
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/record/$2$is_args$args;
         }
 
-        # Search API
-        location ~ ^/record/(v2/)?(open)?search(.*) {
-            rewrite ^/record/(v2/)?(open)?search(.*)$ /api/v2/$2search$3 break;
+        # Search API v3
+        location ~ ^/record/v3/search(.*)$ {
             proxy_set_header Host ${SEARCH_API_HOST};
-            proxy_pass http://search_api;
+            proxy_pass http://search_api/record/v3/search.json$is_args$args;
+        }
+
+        # Search API
+        location ~ ^/record/(v2/)?(open)?search(.*)$ {
+            proxy_set_header Host ${SEARCH_API_HOST};
+            proxy_pass http://search_api/record/search.json$is_args$args;
         }
 
         # Record API
@@ -161,7 +206,7 @@ http {
             proxy_pass http://search_api/api/api-docs;
         }
 
-        ## ----- Thumbnail API -----
+        ## ----- Thumbnail API ----- ##
 
         # Thumbnail API v2 (old style)
         location = /api/v2/thumbnail-by-url.json {
@@ -192,7 +237,7 @@ http {
             proxy_pass http://thumbnail_api/thumbnail/v3/$2$is_args$args;
         }
 
-        ## ----- OAI-PMH -----
+        ## ----- OAI-PMH ----- ##
 
         # OAI-PMH requests
         location = /oai/record {
@@ -217,19 +262,23 @@ http {
             proxy_pass http://oai_record/$1.html;
         }
 
-        ## ----- The rest -----
 
-        # Annotation API
+        ## ----- Annotation API ----- ##
+
         location ~ ^/annotation/(.*) {
             proxy_set_header Host ${ANNOTATION_API_HOST};
             proxy_pass http://annotation_api/annotation/$1$is_args$args;
         }
+
+        ## ----- Recommendation API for Entities ----- ##
 
         # Recommendation API for entities (alternative path, has to be defined before /entity/* route)
         location ~ ^/entity/(.*)/recommend {
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/entity/$1$is_args$args;
         }
+
+        ## ----- Entity API ----- ##
 
         # Entity - search, resolve and suggest are routed to Entity API
         location ~ ^/entity/(search|suggest|resolve|enrich|stats)(.*) {
@@ -243,11 +292,14 @@ http {
             proxy_pass http://entity_management/entity/$1$is_args$args;
         }
 
-        # Manifest API
+        ## ----- IIIF Manifest API ----- ##
+
         location ~ ^/presentation/(.*)/manifest$ {
             proxy_set_header Host ${MANIFEST_API_HOST};
             proxy_pass http://manifest_api/presentation/$1/manifest$is_args$args;
         }
+
+        ## ----- Newspaper Search ----- ##
 
         # Newspaper search (has to be defined before fulltext/* route)
         location = /fulltext/search.json {
@@ -255,13 +307,16 @@ http {
             proxy_pass http://newspaper_api/api/v2/search.json$is_args$args;
         }
 
-        # Fulltext API
+        ## ----- IIIF Fulltext API ----- ##
+
         location ~ ^/(fulltext|presentation)/(.*) {
             proxy_set_header Host ${FULLTEXT_API_HOST};
             proxy_pass http://fulltext_api/presentation/$2$is_args$args;
         }
 
-        # Recommendation API
+
+        ## ----- Recommendation API ----- ##
+
         location ~ ^/recommend/(.*) {
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/$1$is_args$args;
@@ -279,35 +334,76 @@ http {
             proxy_pass http://set_api/set/$1$is_args$args;
         }
 
-        # Translation API
+
+        ## ----- Translation API ----- ##
+
+        # no rewrite needed for proxying HOST requests - updated for EA-3859
         location ~* ^/translation/(.*) {
             proxy_set_header Host ${TRANSLATION_API_HOST};
-            proxy_pass https://translation_api/$1;
+            proxy_pass https://translation_api/$1$is_args$args;
         }
+
+        # Tightened this one up to stop the weird redirection to the broken Swagger url in the index.html of the translation API
+        #location /translation/actuator/info {
+        #    rewrite ^/translation/ /actuator/info break;
+        #    proxy_set_header Host ${TRANSLATION_API_HOST};
+        #    proxy_pass https://translation_api;
+        #}
+
+
+        ## ----- Embeddings API ----- ##
 
         # Embedding API (load balanced!)
         location ~* ^/embedding/(.*) {
             proxy_set_header Host ${EMBEDDING_API_HOST};
 
             # No load balancing algorithm defined, so by default round-robin is used
-            proxy_pass http://embedding_apis/embedding_api/$1;
+            proxy_pass http://embedding_apis/embedding_api/$1$is_args$args;
 
             # Send to next server in list in case of errors
             proxy_next_upstream error timeout http_502 http_503 http_504;
         }
 
-        ## ----- Consoles and attribution -----
+        ## ----- Consoles and attribution ----- ##
 
         location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set)$ {
             return 307 https://$host/console/index.html?url=docs/v3/$1.json;
         }
 
-        # Set CORS Headers for attribution snippet's CSS & font requests
-        location ~ ^/attribution/(.*) {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
-            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
-        }
+
+        # Old and deprecated (kept for the time being for backward compatibility)
+        # ----------------------------------------------------------
+        # Redirect old record url format (to be removed?)
+        #   Nov 2019 - again 0 hits in last 4 months
+        #   March 2020 - 0 hits at API, but I did notice that we have quite a bit of /resolve/record requests coming in via
+        #                Portal, so for now I'm not removing entirely because I'm not sure if this means we want to put it back
+
+        # location ~ ^/resolve/record/(.*) {
+        #     return 301 https://$host/api/v2/record/$1$is_args$args;
+        # }
+
+        # EA-3761 Keycloak tests
+        # location ~ ^/(auth)/?(protocol/openid-connect|account)?(.*)? {
+        #    set $authPath $1/realms/europeana/$2$3;
+        #    proxy_set_header Host ${KEYCLOAK_HOST};
+        #    add_header 'X-Wickie' "$authPath" always;
+        #    proxy_pass https://keycloak/$authPath;
+        # }
+        #
+        # location ~ ^/(auth)(/realms/europeana)(/protocol/openid-connect|/account)?(.*)? {
+        #     set $authPath $1/realms/europeana/$3$4;
+        #     proxy_set_header Host ${KEYCLOAK_HOST};
+        #     add_header 'X-Wickie' "$authPath" always;
+        #     proxy_pass https://keycloak/$authPath;
+        # }
+
+        # Redirect old thumbnail url format
+        #    Feb 2019 - about 1000 requests a month are still done directly to api (and all of them fail with 500 or 404)
+        #    Nov 2019 - still about 1000 requests per month, most return 500 or 404, a few return 301
+        #    Apr 2024 - about 25 requests per month, we can start deprecating this now
+
+        # location = /api/image {
+        #     return 301 https://$host/api/v2/thumbnail-by-url.json$is_args$args;
+        # }
     }
 }
