@@ -54,7 +54,7 @@ http {
 
     upstream keycloak {
         keepalive 10;
-        server ${KEYCLOAK_HOST}:443;
+        server ${KEYCLOAK_HOST};
     }
 
     upstream manifest_api {
@@ -95,11 +95,8 @@ http {
     upstream translation_api {
         keepalive 10;
         # Translation API enforces https
-        server ${TRANSLATION_API_HOST}:443;
+        server ${TRANSLATION_API_HOST};
     }
-
-
-
 
 
 
@@ -340,15 +337,8 @@ http {
         # no rewrite needed for proxying HOST requests - updated for EA-3859
         location ~* ^/translation/(.*) {
             proxy_set_header Host ${TRANSLATION_API_HOST};
-            proxy_pass https://translation_api/$1$is_args$args;
+            proxy_pass http://translation_api/$1$is_args$args;
         }
-
-        # Tightened this one up to stop the weird redirection to the broken Swagger url in the index.html of the translation API
-        #location /translation/actuator/info {
-        #    rewrite ^/translation/ /actuator/info break;
-        #    proxy_set_header Host ${TRANSLATION_API_HOST};
-        #    proxy_pass https://translation_api;
-        #}
 
 
         ## ----- Embeddings API ----- ##
@@ -387,14 +377,14 @@ http {
         #    set $authPath $1/realms/europeana/$2$3;
         #    proxy_set_header Host ${KEYCLOAK_HOST};
         #    add_header 'X-Wickie' "$authPath" always;
-        #    proxy_pass https://keycloak/$authPath;
+        #    proxy_pass http://keycloak/$authPath;
         # }
         #
         # location ~ ^/(auth)(/realms/europeana)(/protocol/openid-connect|/account)?(.*)? {
         #     set $authPath $1/realms/europeana/$3$4;
         #     proxy_set_header Host ${KEYCLOAK_HOST};
         #     add_header 'X-Wickie' "$authPath" always;
-        #     proxy_pass https://keycloak/$authPath;
+        #     proxy_pass http://keycloak/$authPath;
         # }
 
         # Redirect old thumbnail url format
