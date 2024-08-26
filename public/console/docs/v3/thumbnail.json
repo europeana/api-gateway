@@ -56,8 +56,8 @@
             "200_head": {
                 "description": "The image exits and can be retrieved."
             },
-            "400": { "$ref": "common.json#/components/responses/400" },
-            "404": { "$ref": "common.json#/components/responses/404" }
+            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
+            "404": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/404" }
         }
     },
     "paths": {
