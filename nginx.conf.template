@@ -115,6 +115,7 @@ http {
 
         # ----------------------------------------------------------
         # CORS config for nginx
+        # Works as "last resort" and applies to everything that is not matched by rules below
         # ----------------------------------------------------------
         location / {
             if ($request_method = 'OPTIONS') {
