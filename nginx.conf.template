@@ -115,37 +115,36 @@ http {
 
         # ----------------------------------------------------------
         # CORS config for nginx
-        # Works as "last resort" and applies to everything that is not matched by rules below
+        # "location /" works as "last resort" and applies to everything that is not matched by other rules
         # ----------------------------------------------------------
         location / {
             if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' '*';
-                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-                #
+                add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+
                 # Custom headers and headers various browsers *should* be OK with but aren't
-                #
+                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,ETag,Cache-Control,Content-Type,Range';
 
-                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
-                #
                 # Tell client that this pre-flight info is valid for 20 days
-                #
-
                 add_header 'Access-Control-Max-Age' 1728000;
                 add_header 'Content-Type' 'text/plain; charset=utf-8';
                 add_header 'Content-Length' 0;
                 return 204;
             }
-            if ($request_method = 'POST') {
-                add_header 'Access-Control-Allow-Origin' '*' always;
-                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
-                add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
-            }
+            #if ($request_method = 'POST') {
+            #    add_header 'Access-Control-Allow-Origin' '*' always;
+            #    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS' always;
+            #    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,ETag,Cache-Control,Content-Type,Range' always;
+            #    add_header 'Access-Control-Expose-Headers' 'ETag,Content-Range' always;
+            #}
             if ($request_method = 'GET') {
                 add_header 'Access-Control-Allow-Origin' '*' always;
-                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
-                add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
+                add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS' always;
+                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,ETag,Cache-Control,Content-Type,Range' always;
+                # See also https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_response_header
+                add_header 'Access-Control-Expose-Headers' 'ETag,Content-Range' always;
+
+                add_header 'Cache-Control' 'public, max-age=604800, must-revalidate';
             }
         }
 
