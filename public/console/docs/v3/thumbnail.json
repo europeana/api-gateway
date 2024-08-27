@@ -36,17 +36,11 @@
         }
     ],
     "components": {
-        "parameters": {
-            "size": {
-                "name": "size",
-                "in": "query",
-                "description": "The width size of the thumbnail. There are only 2 width sizes of the thumbnails: 200px and 400px.",
-                "required": true,
-                "schema": {
-                    "type": "string",
-                    "enum": [ "200", "400" ],
-                    "example": "200"
-                }
+        "schemas": {
+            "Size": {
+                "type": "string",
+                "enum": [ "200", "400" ],
+                "example": "200"
             }
         },
         "responses": {
@@ -56,8 +50,8 @@
             "200_head": {
                 "description": "The image exits and can be retrieved."
             },
-            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
-            "404": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/404" }
+            "400": { "$ref": "/console/docs/v3/common.json#/components/responses/400" },
+            "404": { "$ref": "/console/docs/v3/common.json#/components/responses/404" }
         }
     },
     "paths": {
@@ -83,7 +77,13 @@
                 }
             },
             "parameters": [
-                { "$ref": "#/components/parameters/size" },
+                {
+                    "name": "size",
+                    "in": "path",
+                    "description": "The width size of the thumbnail. There are only two width sizes for thumbnails, namely: “200” and “400” px.",
+                    "required": true,
+                    "schema": { "$ref": "#/components/schemas/Size" }
+                },
                 {
                     "name": "mediaId",
                     "in": "path",
@@ -98,7 +98,7 @@
                 {
                     "name": "format",
                     "in": "path",
-                    "description": "The format of the returned image.",
+                    "description": "The format of the image. Only “jpg“ is supported.",
                     "required": true,
                     "schema": {
                         "type": "string",
@@ -140,11 +140,17 @@
                         "example": "http://www.mimo-db.eu/media/UEDIN/IMAGE/0032195c.jpg"
                     }
                 },
-                { "$ref": "#/components/parameters/size" },
+                {
+                    "name": "size",
+                    "in": "query",
+                    "description": "The width size of the thumbnail. There are only two width sizes for thumbnails, namely: “w200” and “w400”.",
+                    "required": true,
+                    "schema": { "$ref": "#/components/schemas/Size" }
+                },
                 {
                     "name": "type",
                     "in": "query",
-                    "description": ".",
+                    "description": "Type of the record which informs, in case the thumbnail does not exists, which default thumbnail should be returned. Acceptable options are: “IMAGE”, “SOUND”, “VIDEO”, “TEXT” or “3D”.",
                     "required": true,
                     "schema": {
                         "type": "string",

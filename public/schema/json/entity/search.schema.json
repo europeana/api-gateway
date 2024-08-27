@@ -22,11 +22,12 @@
         },
         "partOf": {
             "type": "object",
+            "description": "The list of all results matching the search query.",
             "properties": {
                 "id":    {
                     "type": "string", "format": "uri",
                     "regex": "https[:]//api[.]europeana[.]eu/entity/search?.*",
-                    "description": "The identifier of the search results.",
+                    "description": "The identifier of the search result list.",
                     "example": "https://api.europeana.eu/entity/search?query=test"
                 },
                 "type": {
@@ -93,6 +94,11 @@
             "description": "The unique identifier of the entity",
             "example": "http://data.europeana.eu/agent/91"
         },
+        "EntityReferenceList": {
+            "type": "array", "minItems": 0,
+            "description": "A list of entity references.",
+            "items": { "$ref": "#/definitions/EntityURI" }
+        },
         "Facet": {
             "type": "object",
             "properties": {
@@ -123,7 +129,7 @@
                 },
                 "value": {
                     "type": "number", "minimum": 1,
-                    "description": "The total number of annotations that contain this value in the field.",
+                    "description": "The total number of entities that contain this value in the field.",
                     "example": 1
                 }
             },

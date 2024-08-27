@@ -11,7 +11,7 @@
         "Set": {
             "type": "object",
             "properties": {
-                "context"    : { "$ref": "#/definitions/Context"     },
+                "@context"   : { "$ref": "#/definitions/Context"     },
                 "id"         : { "$ref": "#/definitions/SetURI"      },
                 "type"       : { "$ref": "#/definitions/SetType"     },
                 "visibility" : { "$ref": "#/definitions/Visibility"  },
@@ -30,17 +30,18 @@
                 "first"      : { "$ref": "#/definitions/First"       },
                 "last"       : { "$ref": "#/definitions/Last"        }
             },
-            "required": [ "@context", "id", "type", "visibility", "created", "creator", "modified", "total" ],
+            "required": [ "@context", "id", "type", "visibility", "created", "creator", "modified" ],
             "additionalProperties": false
         },
         "SetPage": {
             "type": "object",
+            "description": "A page containing a subset of the items contained in a user set.",
             "properties": {
                 "context"    : { "$ref": "#/definitions/Context"     },
                 "id"         : { "$ref": "#/definitions/SetPageURL"  },
                 "type"       : { 
                     "const": "CollectionPage",
-                    "description": "The type of the page. All pages of a set are classified as 'CollectionPage'.",
+                    "description": "The type of the page of items. Always with the value 'CollectionPage'.",
                     "example": "CollectionPage"
                 },
                 "partOf"     : { "$ref": "#/definitions/Collection" },
@@ -60,6 +61,7 @@
         },
         "Collection": {
             "type": "object",
+            "description": "The user set to which this page belongs. Only the subset of information for navigating the itens is presented.",
             "properties": {
                 "id"         : { "$ref": "#/definitions/SetURI"     },
                 "type"       : { "$ref": "#/definitions/SetType"    },
@@ -90,7 +92,7 @@
         },
         "SetType": {
             "enum": [ "Collection", "BookmarkFolder", "EntityBestItemsSet" ],
-            "description": "The type of the set. By default all sets are classified as 'Collection'. The 'BookmarkFolder' and 'EntityBestItemsSet' are types that are used by power specific functionality in the Europeana Website.",
+            "description": "The type of the set. By default all sets are classified as 'Collection'. The 'BookmarkFolder' and 'EntityBestItemsSet' are types that are used to power specific functionality in the Europeana Website.",
             "example": "Collection"
         },
         "Visibility": {

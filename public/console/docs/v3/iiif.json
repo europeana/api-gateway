@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "IIIF APIs",
-        "description": "This console provides an overview of all the methods that make up the <a href='https://iiif.io/'>IIIF</a> range of APIs. At the moment, Europeana supports four specifications, namely: Presentation API, Image API and Content Search.",
+        "description": "This console provides an overview of all the methods that make up the <a href='https://iiif.io/'>IIIF</a> range of APIs. At the moment, Europeana supports three specifications, namely: Presentation API, Image API and Content Search.",
         "version": "1.x",
         "termsOfService": "https://www.europeana.eu/en/rights/api-terms-of-use",
         "contact": {
@@ -60,25 +60,25 @@
     ],
     "components": {
         "securitySchemes": {
-            "X-Api-Key": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
-            "wskey"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
-            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token"     }
+            "X-Api-Key": { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
+            "token"    : { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/token"     }
         },
         "schemas": {
-            "ManifestV2"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/manifest.schema.json" },
-            "ManifestV3"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/manifest.schema.json" },
-            "AnnoPageV2"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/fulltext.schema.json#/definitions/AnnotationPage"    },
-            "ResultPageV2"    : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/fulltext.schema.json#/definitions/ResultPage"        },
-            "AnnoV2"          : { "$ref": "https://api.europeana.eu/schema/json/iiif/v2/fulltext.schema.json#/definitions/Annotation"        },
-            "AnnoPagesV3"     : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/AnnotationSummary" },
-            "AnnoPageV3"      : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/AnnotationPage"    },
-            "ResultPageV3"    : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/ResultPage"        },
-            "AnnoV3"          : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/Annotation"        },
-            "FullTextResource": { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/FullTextResource"  },
-            "ErrorResponse"   : { "$ref": "https://api.europeana.eu/schema/json/error.schema.json" },
+            "ManifestV2"      : { "$ref": "/schema/json/iiif/v2/manifest.schema.json" },
+            "ManifestV3"      : { "$ref": "/schema/json/iiif/v3/manifest.schema.json" },
+            "AnnoPageV2"      : { "$ref": "/schema/json/iiif/v2/fulltext.schema.json#/definitions/AnnotationPage"    },
+            "ResultPageV2"    : { "$ref": "/schema/json/iiif/v2/fulltext.schema.json#/definitions/ResultPage"        },
+            "AnnoV2"          : { "$ref": "/schema/json/iiif/v2/fulltext.schema.json#/definitions/Annotation"        },
+            "AnnoPagesV3"     : { "$ref": "/schema/json/iiif/v3/fulltext.schema.json#/definitions/AnnotationSummary" },
+            "AnnoPageV3"      : { "$ref": "/schema/json/iiif/v3/fulltext.schema.json#/definitions/AnnotationPage"    },
+            "ResultPageV3"    : { "$ref": "/schema/json/iiif/v3/fulltext.schema.json#/definitions/ResultPage"        },
+            "AnnoV3"          : { "$ref": "/schema/json/iiif/v3/fulltext.schema.json#/definitions/Annotation"        },
+            "FullTextResource": { "$ref": "/schema/json/iiif/v3/fulltext.schema.json#/definitions/FullTextResource"  },
+            "ErrorResponse"   : { "$ref": "/schema/json/error.schema.json" },
             
-            "LanguageList"            : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/LanguageList"        },
-            "TextGranularityList"     : { "$ref": "https://api.europeana.eu/schema/json/iiif/v3/fulltext.schema.json#/definitions/TextGranularityList" }
+            "LanguageList"            : { "$ref": "/schema/json/iiif/v3/fulltext.schema.json#/definitions/LanguageList"        },
+            "TextGranularityList"     : { "$ref": "/schema/json/iiif/v3/fulltext.schema.json#/definitions/TextGranularityList" }
         },
         "parameters": {
             "datasetId": {
@@ -166,7 +166,7 @@
             "lang": {
                 "name": "lang",
                 "in": "query",
-                "description": "A parameter used to request full-text in a specific language, if exist. The value must be a two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a> and match the languages that are supported by Europeana.",
+                "description": "A parameter used to request full-text in a specific language, if available. The value must be a two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a> and match the languages that are supported by Europeana.",
                 "required": false,
                 "example": "de",
                 "schema": { "$ref": "#/components/schemas/LanguageList" }
@@ -183,9 +183,9 @@
             }
         },
         "responses": {
-            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
-            "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" },
-            "404": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/404" }
+            "400": { "$ref": "/console/docs/v3/common.json#/components/responses/400" },
+            "401": { "$ref": "/console/docs/v3/common.json#/components/responses/401" },
+            "404": { "$ref": "/console/docs/v3/common.json#/components/responses/404" }
         }
     },
     "paths": {
@@ -444,42 +444,42 @@
                 }
             }
         },
-        "/api/v2/search.json": {
+        "/fulltext/search.json": {
             "get": {
                 "tags": [ "Search" ],
                 "summary": "Search across all items where fulltext is available",
-                "description": "This endpoint is used to search in fulltext across all items. It adopts the same API signature as the Search API.",
+                "description": "This endpoint is used to search in fulltext across all items. It adopts the same API structure and functionality as the Search API.",
                 "servers": [
                     {
-                        "url": "https://newspapers.eanadev.org",
-                        "description": "Temporary public endpoint for fulltext search."
+                        "url": "https://api.europeana.eu",
+                        "description": "Public endpoint for all production api services."
                     }
                 ],
                 "parameters": [
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Query"         },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Profile"       },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Facet"         },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/FacetLimit"    },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/FacetOffset"   },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/HitFl"         },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/HitSelectors"  },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Sort"          },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Start"         },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Rows"          },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Cursor"        },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/QF"            },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Theme"         },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Reusability"   },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/LandingPage"   },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Media"         },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Thumbnail"     },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/TextFulltext"  },
-                    { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/parameters/Callback"      }
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Query"         },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Profile"       },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Facet"         },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/FacetLimit"    },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/FacetOffset"   },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/HitFl"         },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/HitSelectors"  },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Sort"          },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Start"         },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Rows"          },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Cursor"        },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/QF"            },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Theme"         },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Reusability"   },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/LandingPage"   },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Media"         },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Thumbnail"     },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/TextFulltext"  },
+                    { "$ref": "/console/docs/v3/search.json#/components/parameters/Callback"      }
                 ],
                 "responses": {
-                    "200": { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/responses/200" },
-                    "400": { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/responses/400" },
-                    "401": { "$ref": "https://api.europeana.eu/console/docs/v3/search.json#/components/responses/401" }
+                    "200": { "$ref": "/console/docs/v3/search.json#/components/responses/200" },
+                    "400": { "$ref": "/console/docs/v3/search.json#/components/responses/400" },
+                    "401": { "$ref": "/console/docs/v3/search.json#/components/responses/401" }
                 }
             }
         },

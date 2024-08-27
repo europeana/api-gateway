@@ -60,7 +60,7 @@
                     "authorizationCode": {
                         "tokenUrl": "https://auth.europeana.eu/auth/realms/europeana/protocol/openid-connect/token",
                         "refreshUrl": "https://auth.europeana.eu/auth/realms/europeana/protocol/openid-connect/token",
-                        "authorizationUrl": "https://example.com/api/oauth/dialog",
+                        "authorizationUrl": "https://auth.europeana.eu/auth/realms/europeana/protocol/openid-connect/auth",
                         "scopes": {
                         }
                     }
@@ -68,7 +68,7 @@
             }
         },
         "schemas": {
-            "ErrorResponse": { "$ref": "https://api.europeana.eu/schema/json/error.schema.json" }
+            "ErrorResponse": { "$ref": "/schema/json/error.schema.json" }
         },
         "parameters": {
             "datasetId": {
@@ -133,9 +133,8 @@
                 "description": "The number of the page (defaults to 1).",
                 "required": false,
                 "schema": {
-                    "type"   : "integer",
-                    "format" : "int64",
-                    "minimum": 0,
+                    "type"   : "integer", "format" : "int64",
+                    "minimum": 0, "default": 1,
                     "example": 1
                 }
             },
@@ -146,10 +145,8 @@
                 "required": false,
                 "example": "10",
                 "schema": {
-                    "type"   : "integer",
-                    "format" : "int64",
-                    "minimum": 1,
-                    "maximum": 100
+                    "type"   : "integer", "format" : "int64",
+                    "minimum": 1, "maximum": 100, "default": 10
                 }
             },
             "facet": {

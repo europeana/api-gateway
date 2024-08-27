@@ -3,88 +3,169 @@
     "$schema": "https://json-schema.org/draft/2019-09/schema",
     "title": "Sets API - Search schema",
     "type": "object",
-    "properties": {
-        "@context"   : {
+    "oneOf": [
+        { "$ref": "#/definitions/ItemResultPage" },
+        { "$ref": "#/definitions/SetResultPage"  }
+    ],
+    "definitions": {
+        "ItemResultPage": {
+            "type": "object",
+            "properties": {
+                "context"    : { "$ref": "#/definitions/Context"     },
+                "id" : {
+                    "type": "string", "format": "uri",
+                    "regex": "https[:]//api[.]europeana[.]eu/set/[0-9]+/search?.*",
+                    "description": "The identifier of the search results page.",
+                    "example": "https://api.europeana.eu/set/91/search?query=item%3A%2F10501%2Fbib_rnod_277025&page=1&pageSize=10"
+                },
+                "type"    : { "$ref": "#/definitions/ResultPageType" },
+                "partOf": {
+                    "type": "object",
+                    "description": "The complete list of items that match the search query. Only the subset of information for navigating the items in the search results list is presented.",
+                    "properties": {
+                        "id":    {
+                            "type": "string", "format": "uri",
+                            "regex": "https[:]//api[.]europeana[.]eu/set/[0-9]+/search?.*",
+                            "description": "The identifier of the search results.",
+                            "example": "https://api.europeana.eu/set/91/search?query=item%3A%2F10501%2Fbib_rnod_277025"
+                        },
+                        "type" : { "$ref": "#/definitions/ResultListType" },
+                        "total": { 
+                            "type": "number", "minimum": 0,
+                            "description": "The total number of items matching the search query.",
+                            "example": 1
+                        },
+                        "first": {
+                            "type": "string", "format": "uri",
+                            "description": "Indicates the first preceding page of items in the result list.",
+                            "example": "https://api.europeana.eu/set/91/search?query=item%3A%2F10501%2Fbib_rnod_277025&page=0&pageSize=10"
+                        },
+                        "last":  {
+                            "type": "string", "format": "uri",
+                            "description": "Indicates the furthest proceeding page of items in the result list.",
+                            "example": "https://api.europeana.eu/set/91/search?query=item%3A%2F10501%2Fbib_rnod_277025&page=0&pageSize=10"
+                        }
+                    },
+                    "required": [ "id", "total" ]
+                },
+                "total": {
+                    "type": "number", "minimum": 0, "maximum": 50,
+                    "description": "The total number of items in the search results page.",
+                    "example": 1
+                },
+                "items": {
+                    "type": "array", "minItems": 0, "maxItems": 50,
+                    "description": "The items that are part of this search results page.",
+                    "items": { "$ref": "#/definitions/RecordURI" }
+                },
+                "prev": {
+                    "type": "string", "format": "uri",
+                    "description": "A reference to the next page in the sequence of pages that make up the search results.",
+                    "example": "https://api.europeana.eu/set/91/search?query=item%3A%2F10501%2Fbib_rnod_277025&page=0&pageSize=10"
+                },
+                "next": {
+                    "type": "string", "format": "uri",
+                    "description": "A reference to the previous page in the sequence of pages that make up the search results.",
+                    "example": "https://api.europeana.eu/set/91/search?query=item%3A%2F10501%2Fbib_rnod_277025&page=0&pageSize=10"
+                }
+            },
+            "required": [ "@context", "type", "total" ],
+            "additionalProperties": false
+        },
+        "SetResultPage": {
+            "type": "object",
+            "properties": {
+                "context"    : { "$ref": "#/definitions/Context"     },
+                "id" : {
+                    "type": "string", "format": "uri",
+                    "regex": "https[:]//api[.]europeana[.]eu/set/search?.*",
+                    "description": "The identifier of the search results page.",
+                    "example": "https://api.europeana.eu/set/search?query=test&page=0&pageSize=10"
+                },
+                "type"    : { "$ref": "#/definitions/ResultPageType" },
+                "partOf": {
+                    "type": "object",
+                    "description": "The complete list of user sets that match the search query. Only the subset of information for navigating the items in the search results list is presented.",
+                    "properties": {
+                        "id":    {
+                            "type": "string", "format": "uri",
+                            "regex": "https[:]//api[.]europeana[.]eu/set/search?.*",
+                            "description": "The identifier of the search results.",
+                            "example": "https://api.europeana.eu/set/search?query=test"
+                        },
+                        "type" : { "$ref": "#/definitions/ResultListType" },
+                        "total": { 
+                            "type": "number", "minimum": 0,
+                            "description": "The total number of sets matching the search query.",
+                            "example": 1
+                        },
+                        "first": {
+                            "type": "string", "format": "uri",
+                            "description": "Indicates the first preceding page of user sets in the result list.",
+                            "example": "https://api.europeana.eu/set/search?query=test&page=0&pageSize=10"
+                        },
+                        "last":  {
+                            "type": "string", "format": "uri",
+                            "description": "Indicates the furthest proceeding page of user sets in the result list.",
+                            "example": "https://api.europeana.eu/set/search?query=test&page=0&pageSize=10"
+                        }
+                    },
+                    "required": [ "id", "total" ]
+                },
+                "facets": {
+                    "type": "array", "minItems": 1,
+                    "description": "A list of faceting fields.",
+                    "items": { "$ref": "#/definitions/Facet" }
+                },
+                "total": {
+                    "type": "number", "minimum": 0, "maximum": 50,
+                    "description": "The total number of sets in the search results page.",
+                    "example": 1
+                },
+                "items": {
+                    "type": "array", "minItems": 0, "maxItems": 50,
+                    "description": "The sets that are part of this search results page.",
+                    "items": {
+                        "oneOf": [
+                            { "$ref": "#/definitions/SetURI" },
+                            { "$ref": "#/definitions/Set"    }
+                        ]
+                    }
+                },
+                "prev": {
+                    "type": "string", "format": "uri",
+                    "description": "A reference to the next page in the sequence of pages that make up the search results.",
+                    "example": "https://api.europeana.eu/set/search?query=test&page=0&pageSize=10"
+                },
+                "next": {
+                    "type": "string", "format": "uri",
+                    "description": "A reference to the previous page in the sequence of pages that make up the search results.",
+                    "example": "https://api.europeana.eu/set/search?query=test&page=0&pageSize=10"
+                }
+            },
+            "required": [ "@context", "type", "total" ],
+            "additionalProperties": false
+        },
+        "Context": {
             "type": "string", "format": "uri", 
             "description": "The JSON-LD context.",
             "const": "http://www.europeana.eu/schemas/context/collection.jsonld",
             "example": "http://www.europeana.eu/schemas/context/collection.jsonld"
         },
-        "id" : {
-            "type": "string", "format": "uri",
-            "regex": "https[:]//api[.]europeana[.]eu/set/search?.*",
-            "description": "The identifier of the search results page.",
-            "example": "https://api.europeana.eu/set/search?query=test&page=0&pageSize=10"
-        },
-        "type": {
+        "ResultPageType": {
             "type": "string",
             "const": "ResultPage", "example": "ResultPage"
         },
-        "partOf": {
-            "type": "object",
-            "properties": {
-                "id":    {
-                    "type": "string", "format": "uri",
-                    "regex": "https[:]//api[.]europeana[.]eu/set/search?.*",
-                    "description": "The identifier of the search results.",
-                    "example": "https://api.europeana.eu/set/search?query=test"
-                },
-                "type": {
-                    "type": "string",
-                    "const": "ResultList", "example": "ResultList"
-                },
-                "total": { 
-                    "type": "number", "minimum": 0,
-                    "description": "The total number of sets matching the search query.",
-                    "example": 1
-                },
-                "first": {
-                    "type": "string", "format": "uri",
-                    "description": "Indicates the first preceding page of sets in the result list.",
-                    "example": "https://api.europeana.eu/set/search?query=test&page=0&pageSize=10"
-                },
-                "last":  {
-                    "type": "string", "format": "uri",
-                    "description": "Indicates the furthest proceeding page of sets in the result list.",
-                    "example": "https://api.europeana.eu/set/search?query=test&page=0&pageSize=10"
-                }
-            },
-            "required": [ "id", "total" ]
+        "ResultListType": {
+            "type": "string",
+            "const": "ResultList", "example": "ResultList"
         },
-        "facets": {
-            "type": "array", "minItems": 1,
-            "description": "A list of faceting fields.",
-            "items": { "$ref": "#/definitions/Facet" }
+        "SetURI": {
+            "type"  : "string", "format": "uri",
+            "regex": "http[:]//data[.]europeana[.]eu/set/[0-9]+",
+            "description": "The unique identifier of the set",
+            "example": "http://data.europeana.eu/set/91"
         },
-        "total": {
-            "type": "number", "minimum": 0, "maximum": 50,
-            "description": "The total number of sets in the result page.",
-            "example": 1
-        },
-        "items": {
-            "type": "array", "minItems": 0, "maxItems": 50,
-            "description": "The sets that are part of this result page.",
-            "items": {
-                "oneOf": [
-                    { "$ref": "#/definitions/SetURI" },
-                    { "$ref": "#/definitions/Set"    }
-                ]
-            }
-        },
-        "next": {
-            "type": "string", "format": "uri",
-            "description": "A reference to the previous page in the sequence of pages that make up the search results.",
-            "example": "https://api.europeana.eu/set/search?query=test&page=0&pageSize=10"
-        },
-        "prev": {
-            "type": "string", "format": "uri",
-            "description": "A reference to the next page in the sequence of pages that make up the search results.",
-            "example": "https://api.europeana.eu/set/search?query=test&page=0&pageSize=10"
-        }
-    },
-    "required": [ "@context", "type", "total" ],
-    "additionalProperties": false,
-    "definitions": {
         "Set": {
             "type": "object",
             "description": "A set object.",
@@ -92,11 +173,11 @@
                 "id" : { "$ref": "#/definitions/SetURI" }
             }
         },
-        "SetURI": {
-            "type"  : "string", "format": "uri",
-            "regex": "http[:]//data[.]europeana[.]eu/set/[0-9]+",
-            "description": "The unique identifier of the set",
-            "example": "http://data.europeana.eu/set/91"
+        "RecordURI": {
+            "type": "string",
+            "regex": "http[:]//data[.]europeana[.]eu/item/.*",
+            "description": "The unique identifier of a record in Europeana",
+            "example": "http://data.europeana.eu/item/10501/bib_rnod_277025"
         },
         "Facet": {
             "type": "object",
@@ -126,13 +207,13 @@
                     "description": "The value that was found in the field.",
                     "example": "xpto"
                 },
-                "value": {
+                "count": {
                     "type": "number", "minimum": 1,
                     "description": "The total number of annotations that contain this value in the field.",
                     "example": 1
                 }
             },
-            "required": [ "label", "value" ]
+            "required": [ "label", "count" ]
         }
     }
 }

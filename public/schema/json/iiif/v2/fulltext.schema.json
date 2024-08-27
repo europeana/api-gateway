@@ -10,11 +10,17 @@
     ],
     "definitions": {
         "Context": {
-            "type": "array", "minItems": 2, 
+            "type": "array", "minItems": 3, 
             "description": "The JSON-LD context.",
-            "example": [ "http://iiif.io/api/presentation/2/context.json", "https://www.europeana.eu/schemas/context/edm.jsonld" ],
+            "example": [ 
+                "http://iiif.io/api/presentation/2/context.json"
+              , "http://iiif.io/api/extension/text-granularity/context.json"
+              , "https://www.europeana.eu/schemas/context/edm.jsonld"
+            ],
             "items": { "type": "string", 
-                       "enum": [ "http://iiif.io/api/presentation/2/context.json", "https://www.europeana.eu/schemas/context/edm.jsonld" ]
+                       "enum": [ "http://iiif.io/api/presentation/2/context.json"
+                               , "http://iiif.io/api/extension/text-granularity/context.json"
+                               , "https://www.europeana.eu/schemas/context/edm.jsonld" ]
             }
         },
         "ContextEDM": {
@@ -70,15 +76,13 @@
                     "type": "string", 
                     "const": "sc:AnnotationList", "example": "sc:AnnotationList"
                 },
-                "language"       : { "$ref": "#/definitions/Language"            },
-                "textGranularity": { "$ref": "#/definitions/TextGranularityList" },
                 "resources"      : { "$ref": "#/definitions/Annotations"         },
                 "hits"           : { 
                     "type": "array", "minItems": 0, 
                     "items": { "$ref": "#/definitions/Hit" }
                 }
              },
-            "required": [ "@id", "@type", "language", "resources" ],
+            "required": [ "@id", "@type", "resources" ],
             "additionalProperties": false
         },
         "Annotation": {
@@ -109,11 +113,11 @@
         },
         "FullTextResource": {
             "type": "object",
-            "description": "A textual representation of the media resource.",
+            "description": "A textual representation of the content resource.",
             "properties": {
                 "@context"  : { "$ref": "#/definitions/ContextEDM"          },
                 "@id"       : { "$ref": "#/definitions/FullTextResourceURI" },
-                "type"      : { 
+                "@type"      : { 
                     "type": "string", 
                     "const": "FullTextResource", "example": "FullTextResource"
                 },
@@ -121,7 +125,7 @@
                 "language"  : { "$ref": "#/definitions/Language"            },
                 "value"     : { "$ref": "#/definitions/BodyValue"           }
              },
-            "required": [ "@id", "type", "edmRights", "language", "value" ],
+            "required": [ "@id", "@type", "edmRights", "language", "value" ],
             "additionalProperties": false
         },
         "FullTextResourceReference": {
@@ -175,7 +179,7 @@
         },
         "Targets": {
             "type": "array", "minItems": 1, 
-            "description": "The target(s) of the annotation. Always refers to the media resource (or a portion of it) that this textual representation correspond to.",
+            "description": "The target(s) of the annotation. Always refers to the content resource (or a section of it) that this textual representation correspond to. For annotations that are at a granularity level lower than page, it will point to the specific coordinates on the image where the text is found, using the Media Fragments specification.",
             "items": { 
                 "type": "string",  "format": "uri",
                 "example": "https://iiif.europeana.eu/image/GPNNPGBENPQFFOB7PHRRSCK4GJFXZCJ7YFLGCZCJ5QMNJOWVVRJA/presentation_images/c5927d61-022b-11e6-a696-fa163e2dd531/node-3/image/BNL/La_clef_du_cabinet_des_princes_de_l'Europe/1704/09/01/00159/full/full/0/default.jpg"

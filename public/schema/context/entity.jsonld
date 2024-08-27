@@ -16,6 +16,7 @@
         "wgs84_pos": "http://www.w3.org/2003/01/geo/wgs84_pos#",
         "as"       : "http://www.w3.org/ns/activitystreams#",
         "vcard"    : "http://www.w3.org/2006/vcard/ns#",
+        "ore"    : "http://www.openarchives.org/ore/terms/",
         
         "id"   : { "@id": "@id"   , "@type": "@id" },
         "type" : { "@id": "@type" , "@type": "@id" },
@@ -102,11 +103,10 @@
         
         
         "Aggregation"            : { "@id": "ore:Aggregation"    },
-        "isAggregatedBy"         : { "@id": "ore:isAggregatedBy" },
-        "aggregates"             : { "@id": "ore:aggregates"     },
-        "proxyFor"               : { "@id": "ore:proxyFor"       },
-        "proxyIn"                : { "@id": "ore:proxyIn"        },
-        "proxies"                : null,
+        "isAggregatedBy"         : { "@id": "ore:isAggregatedBy", "@type": "@id" },
+        "aggregates"             : { "@id": "ore:aggregates", "@type": "@id" },
+        "proxyIn"                : { "@id": "ore:proxyIn", "@type": "@id"  },
+        "proxies"                : { "@reverse": "ore:proxyFor" },
         "pageRank"               : null,
         "recordCount"            : null,
         "score"                  : null,

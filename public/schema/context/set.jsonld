@@ -14,7 +14,8 @@
 
         "Collection"        : { "@id": "as:Collection" },
         "BookmarkFolder"    : { "@id": "http://rdfs.org/sioc/types#BookmarksFolder" },
-        "EntityBestItemsSet": { "@id": "edm:EntityBestItemsSet" },
+        "EntityBestItemsSet": { "@id": "edm:EntityBestItemsSet"   },
+        "DynamicCollection" : { "@id": "edm:DynamicCollection"    },
         "CollectionPage"    : { "@id": "as:OrderedCollectionPage" },
         
         "visibility"        : { "@id": "edm:visibility" },

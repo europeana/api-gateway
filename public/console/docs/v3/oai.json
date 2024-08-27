@@ -50,7 +50,7 @@
                 "name": "metadataPrefix",
                 "in": "query",
                 "description": "A required argument that specifies the metadataPrefix of the format that should be included in the metadata part of the returned record. The metadata formats supported by the repository and for a particular record can be retrieved using the ListMetadataFormats request.",
-                "required": true,
+                "required": false,
                 "schema": {
                     "type": "string", 
                     "enum": [ "edm" ], 

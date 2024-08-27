@@ -67,6 +67,11 @@
                     "description": "The date on which the agent (corporate body) was terminated or dissolved.",
                     "example": "2021-02-09"
                 },
+                "date"                   : { 
+                    "type": "string",
+                    "description": "A significant date associated with the Agent.",
+                    "example": "2021-02-09"
+                },
                 "placeOfBirth"           : {
                     "type": "string", "format": "uri",
                     "description": "The town, city, province, state, and/or country in which a person was born.",
@@ -162,15 +167,15 @@
                 "prefLabel"              : { "$ref": "#/definitions/PrefLabel"    },
                 "altLabel"               : { "$ref": "#/definitions/AltLabel"     },
                 "hiddenLabel"            : { "$ref": "#/definitions/HiddenLabel"   },
-                "long"                   : { 
-                    "type": "string", "pattern": "^[+-]?[0-9]+([.][0-9]+)?$",
-                    "description": "The longitude coordinate of the Place",
-                    "example": "48.8336111"
-                },
                 "lat"                    : {
                     "type": "string", "pattern": "^[+-]?[0-9]+([.][0-9]+)?$",
                     "description": "The latitude coordinate of the Place",
                     "example": "2.3758333"
+                },
+                "long"                   : { 
+                    "type": "string", "pattern": "^[+-]?[0-9]+([.][0-9]+)?$",
+                    "description": "The longitude coordinate of the Place",
+                    "example": "48.8336111"
                 },
                 "alt"                    : {
                     "type": "string", "pattern": "^[+-]?[0-9]+([.][0-9]+)?$",
@@ -274,15 +279,15 @@
                     "minItems": 1,
                     "items": { "type": "string", "format": "uri" }
                 },
-                "exactMatch"             : {
-                    "description": "An exact matching concept from another thesaurus or controlled vocabulary.",
+                "closeMatch"             : {
+                    "description": "A close matching concept from another thesaurus or controlled vocabulary.",
                     "example": [ "http://www.wikidata.org/entity/Q193563" ],
                     "type": "array",
                     "minItems": 1,
                     "items": { "type": "string", "format": "uri" }
                 },
-                "closeMatch"             : {
-                    "description": "A close matching concept from another thesaurus or controlled vocabulary.",
+                "exactMatch"             : {
+                    "description": "An exact matching concept from another thesaurus or controlled vocabulary.",
                     "example": [ "http://www.wikidata.org/entity/Q193563" ],
                     "type": "array",
                     "minItems": 1,
@@ -364,6 +369,7 @@
         },
         "Organization": {
             "type": "object",
+            "description": "The organisation providing data directly or via an aggregator",
             "properties": {
                 "@context"               : { "$ref": "#/definitions/Context" },
                 "id"                     : { 
@@ -405,8 +411,15 @@
             "required": [ "id", "type" ],
             "additionalProperties": false
         },
+        "EntityURI": {
+            "type"  : "string", "format": "uri",
+            "regex": "http[:]//data[.]europeana[.]eu/(place|agent|concept|timespan|organization)/[0-9]+",
+            "description": "The unique identifier of the entity",
+            "example": "http://data.europeana.eu/agent/91"
+        },
         "Address": {
             "type": "object",
+            "description": "The address of the Organisation.",
             "properties": {
                 "id"            : { 
                     "type": "string", "format": "uri",
@@ -541,7 +554,7 @@
         },
         "EuropeanaRole": {
             "type": "array",
-            "description": "The roles in Europeana for this Organisation.",
+            "description": "The role in Europeana for this Organisation.",
             "example"    : [
               { "id": "http://data.europeana.eu/vocabulary/role/ProvidingInstitution" }
             ],
@@ -555,7 +568,7 @@
         },
         "Country": {
             "type": "object",
-            "description": "The roles in Europeana for this Organisation.",
+            "description": "The country of this Organisation.",
             "example"    : [
               { "id": "http://data.europeana.eu/vocabulary/role/ProvidingInstitution" }
             ],
@@ -660,7 +673,7 @@
         },
         "SameAs": {
             "type": "array",
-            "description": "URI of an equivalent entity in other vocabulary.",
+            "description": "URI of an equivalent entity in other vocabulary or data source.",
             "example": [ "http://www.wikidata.org/entity/Q193563" ],
             "minItems": 1,
             "items": { "type": "string", "format": "uri" }
@@ -675,7 +688,7 @@
 
         "Aggregation": {
             "type": "object",
-            "description": "Represents the result of the aggregation of metadata of this entity from a specific data source.",
+            "description": "Represents the results of consolidating into a single representation the metadata obtained from different data sources.",
             "properties": {
                 "id"         : { "$ref": "#/definitions/AggregationURI"  },
                 "type"       : { "$ref": "#/definitions/AggregationType" },
@@ -697,7 +710,7 @@
                     "example": 61
                 },
                 "recordCount": { 
-                    "type": "number", "minimum": 0,
+                    "type": "integer", "minimum": 0,
                     "description": "A non-negative integer specifying the number of items in Europeana that refer to this entity.",
                     "example": 597136
                 },
@@ -742,6 +755,7 @@
         },
         "ProxyAggregation": {
             "type": "object",
+            "description": "Represents the result of the aggregation of metadata of this entity from a specific data source.",
             "properties": {
                 "id"         : { "$ref": "#/definitions/AggregationURI"  },
                 "type"       : { "$ref": "#/definitions/AggregationType" },
@@ -754,7 +768,7 @@
                 "modified"   : {
                     "type"  : "string",
                     "format": "date-time",
-                    "description": "The time at which the metadata was modified, after creation. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
+                    "description": "The time at which the metadata was modified from the source, after creation. The value must be a Literal expressed as xsd:dateTime with the UTC timezone expressed as 'Z'.",
                     "example": "2021-11-12T15:56:44Z"
                 },
                 "rights"     : {

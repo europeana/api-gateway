@@ -64,10 +64,12 @@
                 },
                 "seeAlso"          : { 
                     "type": "array", "minItems": 1, 
+                    "description": "A list of datasets avaible for this item.",
                     "items": { "$ref": "#/definitions/Dataset" }
                 },
                 "service"          : { 
                     "type": "array", "minItems": 1, 
+                    "description": "A list of services that are available for this Manifest. Only the search service is available.",
                     "items": { "$ref": "#/definitions/SearchService" }
                 },
                 "start"            : {
@@ -85,6 +87,7 @@
                 },
                 "items"            : { 
                     "type": "array", "minItems": 1, 
+                    "description": "A ordered list of canvases that make up this Manifest.",
                     "items": { "$ref": "#/definitions/Canvas" }
                 }
              },
@@ -93,7 +96,7 @@
         },
         "CanvasURI": { 
             "type": "string", "format": "uri",
-            "description": "The identifier of the Canvas.",
+            "description": "The unique identifier of the Canvas.",
             "example": "https://iiif.europeana.eu/presentation/9200396/BibliographicResource_3000118436341/canvas/08a3298"
         },
         "Canvas": {
@@ -108,17 +111,17 @@
                 "label"            : { "$ref": "#/definitions/LanguageValues"       },
                 "height"      : { 
                     "type": "integer",
-                    "description": "The height of this Canvas.",
+                    "description": "The height of this Canvas which corresponds to the height of the content resource.",
                     "example": 3635
                 },
                 "width"       : { 
                     "type": "integer",
-                    "description": "The width of this Canvas.",
+                    "description": "The width of the canvas which corresponds to the width of the content resource.",
                     "example": 2587
                 },
                 "duration"   : { 
                     "type": "number",
-                    "description": "The duration of the Canvas.",
+                    "description": "The duration of the canvas which corresponds to the duration of the content resource (only applies to Audio or Video).",
                     "example": 20
                 },
                 "requiredStatement": { "$ref": "#/definitions/AttributionStatement" },
@@ -129,6 +132,7 @@
                 },
                 "items"            : { 
                     "type": "array", "minItems": 1, 
+                    "description": "A list of content pages representing the content that makes up the Canvas. Only one content page is available given that only one content resource is displayed per canvas.",
                     "items": { "$ref": "#/definitions/ContentPage"  }
                 },
                 "annotations"      : { 
@@ -149,6 +153,7 @@
                 },
                 "items": {
                     "type": "array", "minItems": 1, "maxItems": 1, 
+                    "description": "A list of painting annotations that represent the content that is display in the canvas. Only one painting annotation is present per canvas.",
                     "items": { "$ref": "#/definitions/PaintingAnnotation" }
                 }
             },
@@ -165,6 +170,7 @@
                 },
                 "motivation": { 
                     "type": "string", 
+                    "description": "A motivation for the annotation, in this case declaring that the image will be “painted“ on to the canvas.",
                     "const": "painting", "example": "painting"
                 },
                 "timeMode"  : { 
@@ -176,30 +182,6 @@
                 "target"    : { "$ref": "#/definitions/CanvasURI"       }
             },
             "required": [ "type", "motivation", "body", "target" ],
-            "additionalProperties": false
-        },
-        "FullTextPage": {
-            "type": "object",
-            "description": "A page containing all full-text annotations available for this content resource.",
-            "properties": {
-                "id"             : { 
-                    "type": "string", "format": "uri",
-                    "description": "A reference to a page containing all full-text annotations available for this content resource.",
-                    "example": "https://iiif.europeana.eu/presentation/9200338/BibliographicResource_3000094647100/annopage/6f7a428?lang=de"
-                },
-                "type"           : { 
-                    "type": "string", 
-                    "const": "AnnotationPage", "example": "AnnotationPage"
-                },
-                "language"       : { 
-                    "type": "string",
-                    "description": "The language of the full-text represented as a two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a> and match the languages that are supported by Europeana.",
-                    "example": "en",
-                    "enum": [ "en", "nl", "fr", "de", "es", "sv", "it", "fi", "da", "el", "cs", "sk", "sl", "pt", "hu", "lt", "pl", "ro", "bg", "hr", "lv", "ga", "mt", "et", "no", "ca", "ru", "eu"]
-                },
-                "textGranularity": { "$ref": "#/definitions/TextGranularityList" }
-            },
-            "required": [ "id", "type" ],
             "additionalProperties": false
         },
         "ContentResource": {
@@ -247,13 +229,37 @@
             "required": [ "id", "type" ],
             "additionalProperties": false
         },
+        "FullTextPage": {
+            "type": "object",
+            "description": "A page containing all full-text annotations available for this content resource.",
+            "properties": {
+                "id"             : { 
+                    "type": "string", "format": "uri",
+                    "description": "A reference to a page containing all full-text annotations available for this content resource.",
+                    "example": "https://iiif.europeana.eu/presentation/9200338/BibliographicResource_3000094647100/annopage/6f7a428?lang=de"
+                },
+                "type"           : { 
+                    "type": "string", 
+                    "const": "AnnotationPage", "example": "AnnotationPage"
+                },
+                "language"       : { 
+                    "type": "string",
+                    "description": "The language of the full-text represented as a two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a> and match the languages that are supported by Europeana.",
+                    "example": "en",
+                    "enum": [ "en", "nl", "fr", "de", "es", "sv", "it", "fi", "da", "el", "cs", "sk", "sl", "pt", "hu", "lt", "pl", "ro", "bg", "hr", "lv", "ga", "mt", "et", "no", "ca", "ru", "eu"]
+                },
+                "textGranularity": { "$ref": "#/definitions/TextGranularityList" }
+            },
+            "required": [ "id", "type" ],
+            "additionalProperties": false
+        },
         "ImageService": {
             "type": "object",
             "description": "The IIIF Image service endpoint. It allows for the image to be progressively retrieved via tiles with varying resolutions.",
             "properties": {
                 "id"     : { 
                     "type": "string", "format": "uri",
-                    "description": "The URL of the IIIF Image service endpoint.",
+                    "description": "The URL of the IIIF service hosting/serving the image.",
                     "example": "https://iiif.europeana.eu/image/HPNVTZIRAFIWLRLECA3OQOUSOT5COTJSYUZJSQKHIUT7KYDQTBNA/presentation_images/62714680-020d-11e6-a696-fa163e2dd531/node-1/image/SUBHH/Hamburger_Anzeiger/1918/04/24/00000004"
                 },
                 "type"   : { 
@@ -281,7 +287,7 @@
             "properties": {
                 "@context": { 
                     "type": "string", "format": "uri",
-                    "description": "The JSON-LD context.",
+                    "description": "The JSON-LD context for the Content Search service for this item.",
                     "const": "http://iiif.io/api/search/1/context.json",
                     "example": "http://iiif.io/api/search/1/context.json"
                 },
@@ -292,6 +298,7 @@
                 },
                 "profile" : { 
                     "type": "string", "format": "uri",
+                    "description": "The version of the content search service.",
                     "const": "http://iiif.io/api/search/1/search",
                     "example": "http://iiif.io/api/search/1/search" 
                 }
@@ -316,6 +323,7 @@
             "properties": {
                 "id"      : { 
                     "type": "string", "format": "uri", 
+                    "description": "The URL of the about us page in the Europeana Website.",
                     "const": "https://www.europeana.eu/en/about-us", 
                     "example": "https://www.europeana.eu/en/about-us"
                 },
@@ -349,72 +357,13 @@
             "required": [ "label", "value" ],
             "additionalProperties": false
         },
-        "Homepage": {
-            "type": "object",
-            "description": "The URL of the Europeana website.",
-            "properties": {
-                "id"    : { 
-                    "type": "string", "format": "uri",
-                    "const": "https://www.europeana.eu/", 
-                    "example": "https://www.europeana.eu/"
-                    
-                },
-                "type"  : { 
-                    "type": "string", 
-                    "const": "Text", "example": "Text"
-                },
-                "label" : { "$ref": "#/definitions/LanguageValues" },
-                "format": { 
-                    "type": "string", 
-                    "const": "text/html", "example": "text/html"
-                }
-            },
-            "required": [ "id", "type", "label", "format" ],
-            "additionalProperties": false
-        },
-        "ItemHomepage": {
-            "type": "object",
-            "description": "The URL of this item in Europeana.",
-            "properties": {
-                "id"    : { 
-                    "type": "string", "format": "uri",
-                    "example": "https://www.europeana.eu/item/9200338/BibliographicResource_3000094647100"
-                },
-                "type"  : { 
-                    "type": "string", 
-                    "const": "Text", "example": "Text"
-                },
-                "label" : { "$ref": "#/definitions/LanguageValues" },
-                "format": { 
-                    "type": "string", 
-                    "const": "text/html", "example": "text/html"
-                }
-            },
-            "required": [ "id", "type", "label", "format" ],
-            "additionalProperties": false
-        },
-        "Logo": {
-            "type": "object",
-            "description": "The URL of the Europeana logo to be used for display.",
-            "properties": {
-                "id"  : { 
-                    "type": "string", "format": "uri",
-                    "example": "https://style.europeana.eu/images/europeana-logo-default.png"
-                },
-                "type": { 
-                    "type": "string", 
-                    "const": "Image", "example": "Image"
-                }
-            },
-            "required": [ "id", "type" ],
-            "additionalProperties": false
-        },
         "Rights": {
             "type": "object",
             "description": "A rights statement that indicates the copyright, usage and access rights that apply to the content resource.",
             "properties": {
                 "id"    : { 
                     "type": "string", "format": "uri",
+                    "description": "The URL of one of the rights statements defined for use in Europeana.",
                     "example": "http://creativecommons.org/licenses/by-sa/1.0/"
                 },
                 "type"  : { 
@@ -423,6 +372,7 @@
                 },
                 "format": {
                     "type": "string", 
+                    "description": "The mimetype of the resouce being linked to.",
                     "const": "text/html", "example": "text/html"
                 }
             },
@@ -495,6 +445,66 @@
           "description": "The granularity level of the text within the full-text resource.",
           "example": "page",
           "enum": [ "page", "block", "line", "word", "media", "caption" ]
+        },
+        "Homepage": {
+            "type": "object",
+            "description": "The URL of the Europeana website.",
+            "properties": {
+                "id"    : { 
+                    "type": "string", "format": "uri",
+                    "const": "https://www.europeana.eu/", 
+                    "example": "https://www.europeana.eu/"
+                    
+                },
+                "type"  : { 
+                    "type": "string", 
+                    "const": "Text", "example": "Text"
+                },
+                "label" : { "$ref": "#/definitions/LanguageValues" },
+                "format": { 
+                    "type": "string", 
+                    "const": "text/html", "example": "text/html"
+                }
+            },
+            "required": [ "id", "type", "label", "format" ],
+            "additionalProperties": false
+        },
+        "ItemHomepage": {
+            "type": "object",
+            "description": "The URL of this item in the Europeana Website.",
+            "properties": {
+                "id"    : { 
+                    "type": "string", "format": "uri",
+                    "example": "https://www.europeana.eu/item/9200338/BibliographicResource_3000094647100"
+                },
+                "type"  : { 
+                    "type": "string", 
+                    "const": "Text", "example": "Text"
+                },
+                "label" : { "$ref": "#/definitions/LanguageValues" },
+                "format": { 
+                    "type": "string", 
+                    "const": "text/html", "example": "text/html"
+                }
+            },
+            "required": [ "id", "type", "label", "format" ],
+            "additionalProperties": false
+        },
+        "Logo": {
+            "type": "object",
+            "description": "The URL of the Europeana logo to be used for display.",
+            "properties": {
+                "id"  : { 
+                    "type": "string", "format": "uri",
+                    "example": "https://style.europeana.eu/images/europeana-logo-default.png"
+                },
+                "type": { 
+                    "type": "string", 
+                    "const": "Image", "example": "Image"
+                }
+            },
+            "required": [ "id", "type" ],
+            "additionalProperties": false
         },
         "LanguageValues": {
             "type": "object",

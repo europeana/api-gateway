@@ -292,7 +292,7 @@
             "name": "SearchRequest",
             "required": true,
             "schema": {
-              "$ref": "https://api.europeana.eu/schema/json/search.schema.json#/definitions/SearchRequest"
+              "$ref": "/schema/json/search.schema.json#/definitions/SearchRequest"
             }
           }
         ],

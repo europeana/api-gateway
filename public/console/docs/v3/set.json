@@ -35,15 +35,11 @@
     "tags": [
         {
             "name": "Retrieval",
-            "description": "Methods for retrieving user set metadata"
-        },
-        {
-            "name": "Retrieval within a set",
-            "description": "Methods for listing or searching for items within a user set"
+            "description": "Methods for retrieving user set metadata and items"
         },
         {
             "name": "Discovery",
-            "description": "Methods for discovering user sets"
+            "description": "Methods for searching for items that are part of a user set or to search across all user sets that are available in Europeana."
         },
         {
             "name": "Provision",
@@ -56,26 +52,26 @@
     ],
     "components": {
         "securitySchemes": {
-            "X-Api-Key": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
-            "wskey"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
-            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token"     }
+            "X-Api-Key": { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
+            "token"    : { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/token"     }
         },
         "schemas": {
-            "ErrorResponse" : { "$ref": "https://api.europeana.eu/schema/json/error.schema.json"      },
-            "ModelResponse" : { "$ref": "https://api.europeana.eu/schema/json/set/model.schema.json#/definitions/Set"     },
-            "PageResponse"  : { "$ref": "https://api.europeana.eu/schema/json/set/model.schema.json#/definitions/SetPage" },
-            "SearchResponse": { "$ref": "https://api.europeana.eu/schema/json/set/search.schema.json" }
+            "ErrorResponse"     : { "$ref": "/schema/json/error.schema.json"                                  },
+            "ModelResponse"     : { "$ref": "/schema/json/set/model.schema.json#/definitions/Set"             },
+            "PageResponse"      : { "$ref": "/schema/json/set/model.schema.json#/definitions/SetPage"         },
+            "ItemSearchResponse": { "$ref": "/schema/json/set/search.schema.json#/definitions/ItemResultPage" },
+            "SetSearchResponse" : { "$ref": "/schema/json/set/search.schema.json#/definitions/SetResultPage"  }
         },
         "parameters": {
-            "identifier": {
-                "name": "identifier",
+            "setId": {
+                "name": "setId",
                 "in": "path",
                 "description": "The local identifier for the user set.",
                 "required": true,
                 "example": "91",
                 "schema": {
-                    "type"   : "integer",
-                    "format" : "int64",
+                    "type"   : "integer", "format" : "int64",
                     "minimum": 1
                 }
             },
@@ -124,28 +120,28 @@
                 }
             },
 
-            "query"   : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/query"    },
-            "qf"      : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/qf"       },
-            "sort"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/sort"     },
-            "page"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/page"     },
-            "pageSize": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/pageSize" },
-            "facet"   : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/facet"    }
+            "query"   : { "$ref": "/console/docs/v3/common.json#/components/parameters/query"    },
+            "qf"      : { "$ref": "/console/docs/v3/common.json#/components/parameters/qf"       },
+            "sort"    : { "$ref": "/console/docs/v3/common.json#/components/parameters/sort"     },
+            "page"    : { "$ref": "/console/docs/v3/common.json#/components/parameters/page"     },
+            "pageSize": { "$ref": "/console/docs/v3/common.json#/components/parameters/pageSize" },
+            "facet"   : { "$ref": "/console/docs/v3/common.json#/components/parameters/facet"    }
         },
         "responses": {
-            "200": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/200" },
-            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
-            "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" },
-            "404": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" }
+            "200": { "$ref": "/console/docs/v3/common.json#/components/responses/200" },
+            "400": { "$ref": "/console/docs/v3/common.json#/components/responses/400" },
+            "401": { "$ref": "/console/docs/v3/common.json#/components/responses/401" },
+            "404": { "$ref": "/console/docs/v3/common.json#/components/responses/404" }
         }
     },
     "paths": {
-        "/{identifier}": {
+        "/{setId}": {
             "get": {
                 "tags": [ "Retrieval" ],
                 "summary": "Retrieve data for a user set.",
                 "description": "Retrieves data available for a specific user set.",
                 "parameters": [
-                    { "$ref": "#/components/parameters/identifier" }
+                    { "$ref": "#/components/parameters/setId" }
                 ],
                 "responses": {
                     "200": {
@@ -165,13 +161,13 @@
                 }
             }
         },
-        "/{identifier}.{format}": {
+        "/{setId}.{format}": {
             "get": {
                 "tags": [ "Retrieval" ],
                 "summary": "Retrieve data for a user set using format extension (not recommended).",
                 "description": "Convenient method to retrieve data available for a specific user set using the format extension in alternative to the Accept header.",
                 "parameters": [
-                    { "$ref": "#/components/parameters/identifier" },
+                    { "$ref": "#/components/parameters/setId" },
                     {
                         "name": "format",
                         "in": "path",
@@ -198,13 +194,13 @@
                 }
             }
         },
-        "/{identifier}?page={page}": {
+        "/{setId}?page={page}": {
             "get": {
-                "tags": [ "Retrieval within a set" ],
+                "tags": [ "Retrieval" ],
                 "summary": "List items contained within a user set.",
                 "description": "Retrieves a limit number of items contained within a specific user set. This method is used to paginate through the complete list of items. Use the 'page' and 'pageSize' parameters to navigate or follow the links in the 'next' or 'prev' properties to navigate to the next or previous page.",
                 "parameters": [
-                    { "$ref": "#/components/parameters/identifier" },
+                    { "$ref": "#/components/parameters/setId" },
                     { "$ref": "#/components/parameters/page" },
                     { "$ref": "#/components/parameters/pageSize" },
                     { "$ref": "#/components/parameters/profile" }
@@ -227,28 +223,27 @@
                 }
             }
         },
-        "/{identifier}/search": {
+        "/{setId}/search": {
             "get": {
-                "tags": [ "Retrieval within a set" ],
-                "summary": "Search for items within a set",
+                "tags": [ "Discovery" ],
+                "summary": "Search for items within a user set",
                 "description": "Search for items contained within a user set based on a given selection criteria. This method is paginated similar to the listing method. Use the 'page' and 'pageSize' parameters to navigate or follow the links in the 'next' or 'prev' properties to navigate, respectively, to the next or previous page.",
                 "parameters": [
-                    { "$ref": "#/components/parameters/identifier"   },
+                    { "$ref": "#/components/parameters/setId"   },
                     { "$ref": "#/components/parameters/ContentQuery" },
                     { "$ref": "#/components/parameters/ContentQF"    },
                     { "$ref": "#/components/parameters/page"         },
-                    { "$ref": "#/components/parameters/pageSize"     },
-                    { "$ref": "#/components/parameters/profile"      }
+                    { "$ref": "#/components/parameters/pageSize"     }
                 ],
                 "responses": {
                     "200": {
                         "description": "The request was executed successfully.",
                         "content": {
                             "application/ld+json": {
-                                "schema": { "$ref": "#/components/schemas/PageResponse" }
+                                "schema": { "$ref": "#/components/schemas/ItemSearchResponse" }
                             },
                             "application/json": {
-                                "schema": { "$ref": "#/components/schemas/PageResponse" }
+                                "schema": { "$ref": "#/components/schemas/ItemSearchResponse" }
                             }
                         }
                     },
@@ -262,11 +257,12 @@
             "get": {
                 "tags": [ "Discovery" ],
                 "summary": "Search for user sets",
-                "description": "Search for annotations based on a given selection criteria.<p><b>Fields available for search:</b> set_id, creator (using local identifier or URI), contributor (using local identifier or URI), visibility, type (with value 'Collection' or 'BookmarkFolder', or 'EntityBestItemsSet'), item (with the local identifier of the record contained within the set), subject (with the URI), lang (with a two-letter code), title.</p><p><b>Fields available for sorting:</b> modified, score.</p><p><b>No faceting is available.</p>",
+                "description": "Search for user sets based on a given selection criteria.<p><b>Fields available for search:</b> set_id, creator (using local identifier or URI), contributor (using local identifier or URI), visibility, type (with value 'Collection' or 'BookmarkFolder', or 'EntityBestItemsSet'), item (with the local identifier of the record contained within the set), subject (with the URI), lang (with a two-letter code), title.</p><p><b>Fields available for sorting:</b> modified, score.</p><p><b>Fields available for faceting:</b> item.</p>",
                 "parameters": [
                     { "$ref": "#/components/parameters/query"         },
                     { "$ref": "#/components/parameters/qf"            },
                     { "$ref": "#/components/parameters/SearchProfile" },
+                    { "$ref": "#/components/parameters/facet"         },
                     { "$ref": "#/components/parameters/sort"          },
                     { "$ref": "#/components/parameters/page"          },
                     { "$ref": "#/components/parameters/pageSize"      }
@@ -276,10 +272,10 @@
                         "description": "The request was executed successfully.",
                         "content": {
                             "application/ld+json": {
-                                "schema": { "$ref": "#/components/schemas/SearchResponse" }
+                                "schema": { "$ref": "#/components/schemas/SetSearchResponse" }
                             },
                             "application/json": {
-                                "schema": { "$ref": "#/components/schemas/SearchResponse" }
+                                "schema": { "$ref": "#/components/schemas/SetSearchResponse" }
                             }
                         }
                     },

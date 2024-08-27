@@ -29,13 +29,13 @@
                 },
                 "label"      : { 
                     "type": "array", "minItems": 1, 
-                    "description": "A human readable label, name or title for the item.",
+                    "description": "The title of the item in multiple languages when available.",
                     "example": [ { "@language": "de", "@value": "Hamburger Anzeiger - 1918-04-24" } ],
                     "items": { "$ref": "#/definitions/LanguageValue" }
                 },
                 "description": {  
                     "type": "array", "minItems": 1, 
-                    "description": "A longer-form prose description of the item.",
+                    "description": "A longer-form prose description of the item in multiple languages when available.",
                     "example": [ { "@language": "en", "@value": "A long description for this item" } ],
                     "items": { "$ref": "#/definitions/LanguageValue" }
                 },
@@ -117,12 +117,12 @@
                 },
                 "height"      : { 
                     "type": "integer",
-                    "description": "The height of this Canvas.",
+                    "description": "he height of this Canvas which corresponds to the height of the image.",
                     "example": 3635
                 },
                 "width"       : { 
                     "type": "integer",
-                    "description": "The width of this Canvas.",
+                    "description": "The width of this Canvas which corresponds to the width of the image.",
                     "example": 2587
                 },
                 "attribution" : { "$ref": "#/definitions/Attribution" },
@@ -130,11 +130,12 @@
                 "thumbnail"   : { "$ref": "#/definitions/Thumbnail"   },
                 "images"      : { 
                     "type": "array", "minItems": 1, 
+                    "description": "A list of painting annotations that represent the content that is display in the canvas. Only one painting annotation is present per canvas.",
                     "items": { "$ref": "#/definitions/PaintingAnnotation" } 
                 },
                 "otherContent": { 
                     "type": "array", "minItems": 1, 
-                    "items": { "$ref": "#/definitions/FulltextAnnotationsReference" }
+                    "items": { "$ref": "#/definitions/FulltextReference" }
                 }
             },
             "required": [ "@id", "@type", "label", "height", "width", "images" ],
@@ -150,6 +151,7 @@
                 },
                 "motivation": { 
                     "type": "string", 
+                    "description": "A motivation for the annotation, in this case declaring that the image will be “painted“ on to the canvas.",
                     "const": "sc:painting", "example": "sc:painting"
                 },
                 "resource"  : { "$ref": "#/definitions/ImageResource" },
@@ -194,7 +196,7 @@
                 },
                 "service" : { "$ref": "#/definitions/ImageService" }
             },
-            "required": [ "@id", "@type" ],
+            "required": [ "@id", "@type", "format", "width", "height" ],
             "additionalProperties": false
         },
         "ImageService": {
@@ -239,11 +241,12 @@
                 },
                 "@id"     : { 
                     "type": "string", "format": "uri",
-                    "description": "The URL of the Content Search endpoint.",
+                    "description": "The URL of the Content Search endpoint for this item.",
                     "example": "https://iiif.europeana.eu/presentation/9200338/BibliographicResource_3000094647100/search"
                 },
                 "profile" : { 
                     "type": "string", "format": "uri",
+                    "description": "The version of the content search service.",
                     "const": "http://iiif.io/api/search/1/search",
                     "example": "http://iiif.io/api/search/1/search" 
                 }
@@ -251,7 +254,7 @@
             "required": [ "@context", "@id", "profile" ],
             "additionalProperties": false
         },
-        "FulltextAnnotationsReference": {
+        "FulltextReference": {
             "type": "string", "format": "uri",
             "description": "A reference to a page containing all full-text annotations available for this content resource.",
             "example": "https://iiif.europeana.eu/presentation/9200338/BibliographicResource_3000094647100/annopage/6f7a428?lang=de"
@@ -281,7 +284,7 @@
         },
         "Rights": {
             "type": "string", "format": "uri",
-            "description": "A rights statement that indicates the copyright, usage and access rights that apply to the content resource.",
+            "description": "A rights statement that indicates the copyright, usage and access rights that apply to the digital object.",
             "example": "http://creativecommons.org/licenses/by-sa/1.0/"
         },
         "Thumbnail": {

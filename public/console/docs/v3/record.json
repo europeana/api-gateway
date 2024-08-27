@@ -43,18 +43,51 @@
         },
         {
             "name": "Record v3",
-            "description": "Coming soon..."
+            "description": "Presently under development: available for alpha testing"
         }
     ],
     "components": {
         "securitySchemes": {
-            "X-Api-Key": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
-            "wskey"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
-            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token"     }
+            "X-Api-Key": { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
+            "token"    : { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/token"     }
+        },
+        "schemas": {
+            "RecordRequest": {
+                "type": "array",
+                "items": {
+                    "type": "string", "format": "uri", 
+                    "description": "The identifier of the record which can either be in the full (or relative) URI form.",
+                    "example": "http://data.europeana.eu/item/2021672/resource_document_mauritshuis_670"
+                },
+                "example": [
+                    "http://data.europeana.eu/item/2021672/resource_document_mauritshuis_670",
+                    "/15502/GG_9128",
+                    "/2024903/photography_ProvidedCHO_KU_Leuven_9990939560101488"
+                ]
+            }
         },
         "parameters": {
-            "datasetId": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/datasetId" },
-            "recordId" : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/parameters/recordId" }
+            "datasetId": { "$ref": "/console/docs/v3/common.json#/components/parameters/datasetId" },
+            "recordId" : { "$ref": "/console/docs/v3/common.json#/components/parameters/recordId" },
+            "ProfileV3": {
+                "name": "profile",
+                "in": "query",
+                "description": "A profile typically determines how extensive the response will be, by either dictating the metadata fields that will be present or appending additional data elements. Profiles can be combined to expose different extents of the metadata.<table cellpadding='10px' border='1'><tr><td colspan='2'><b>Profiles related to descriptive metadata:</b> Displays an increased extent of descriptive metadata properties</td></tr><tr><td><b>meta.basic</b></td><td>Displays a small subsets of metadata properties, namely: id, type, title, description, creator, edmType</td></tr><tr><td><b>meta.elemental</b></td><td>Displays a larget subset of descriptive metadata properties beyond meta.basic that corresponds to the EPF enabling elements, namely: created, issued, temporal, hasMet, subject, format, dcType, medium, contributor, publisher, subject, spatial, currentLocation</td></tr><tr><td><b>meta.full</b></td>Displays all descriptive metadata<td></td></tr><tr><td colspan='2'><b>Profiles related to media resources:</b> Meant to display an increased extent of properties that relate to media resources (e.g. edm:isShownAt, edm:isShownBy, edm:hasView, edm:object) and their respective descriptions</td></tr><tr><td><b>media.basic</b></td><td>Displays only the URLs of isShownBy, isShownAt and the preview thumbnail</td></tr><tr><td><b>media.all</b></td><td>Additionally displays the URLs of edm:hasView(s) and edm:object</td></tr><tr><td><b>media.meta</b></td><td>Displays only descriptive metadata associated to web resources</td></tr><tr><td><b>media.techmeta</b></td><td>Displays only technical metadata associated to web resources</td></tr><tr><td><b>media.full</b></td><td>Displays all metadata associated to web resources</td></tr><tr><td colspan='2'><b>Profiles related to provenance information:</b> Meant to display metadata related to provenance, copyright and administration  (ie. metadata associated to aggregations)</td></tr><tr><td><b>prov.basic</b></td><td>Displays the basic provenance information such as the dataProvider, rights and landingPage</td></tr><tr><td><b>prov.full</b></td><td>Displays all provenance, copyright and administrative information associated to aggregations</td></tr><tr><td colspan='2'><b>Profiles related to EDM internal vs external:</b> Meant to differentiate between EDM internal and external. The main difference bettween internal and external is the presence of Proxies which distinguish the metadata coming from difference sources/stages in the aggregation process.</td></tr><tr><td><b>external</b></td><td>All metadata consolidated and made available for the ProvidedCHO</td></tr><tr><td><b>internal</b> (coming...)</td><td>All metadata differentiated using edm:Proxy</td></tr><tr><td colspan='2'><b>Combined profiles:</b> List of profile aliases that combite difference data facets and are made available for convenience</td></tr><tr><td><b>snippet</b></td><td>meta.basic + prov.basic + media.basic</td></tr></table>",
+                "required": false,
+                "schema": { 
+                    "type": "array",
+                    "items": { 
+                        "type": "string", 
+                        "enum": [ "meta.basic", "meta.elemental", "meta.full", 
+                                  "media.basic", "media.all", "media.meta", "media.techmeta", "media.full", 
+                                  "prov.basic", "prov.full", 
+                                  "external", 
+                                  "snippet" ],
+                        "example": "snippet"
+                    }
+                }
+            }
         }
     },
     "paths": {
@@ -91,8 +124,157 @@
                 ],
                 "responses": {
                     "200": { "description": "The request was executed successfully." },
-                    "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
-                    "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" }
+                    "400": { "$ref": "/console/docs/v3/common.json#/components/responses/400" },
+                    "401": { "$ref": "/console/docs/v3/common.json#/components/responses/401" }
+                }
+            }
+        },
+        "/v3/{datasetId}/{recordId}": {
+            "get": {
+                "tags": [ "Record v3" ],
+                "summary": "Retrieve data for a record in specific format.",
+                "description": "<p>This is the new version of the Record API that has recently been developed and is now in available for alpha testing!</p>",
+                "servers": [
+                    {
+                        "url": "https://record-api-v3.test.eanadev.org/record",
+                        "description": "Public endpoint for alpha testing."
+                    }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/recordId"  },
+                    { "$ref": "#/components/parameters/datasetId" },
+                    { "$ref": "#/components/parameters/ProfileV3" }
+                ],
+                "responses": {
+                    "200": { 
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json": {
+                            },
+                            "application/json": {
+                            },
+                            "application/rdf+xml": {
+                            },
+                            "application/xml": {
+                            },
+                            "text/xml": {
+                            },
+                            "rdf/xml": {
+                            },
+                            "text/turtle": {
+                            },
+                            "application/turtle": {
+                            },
+                            "application/x-turtle": {
+                            },
+                            "text/n3": {
+                            },
+                            "text/rdf+n3": {
+                            },
+                            "application/n3": {
+                            },
+                            "application/n-triples": {
+                            },
+                            "application/ntriples": {
+                            },
+                            "text/nt": {
+                            }
+                        }
+                    },
+                    "400": { "$ref": "/console/docs/v3/common.json#/components/responses/400" },
+                    "401": { "$ref": "/console/docs/v3/common.json#/components/responses/401" }
+                }
+            }
+        },
+        "/v3/{datasetId}/{recordId}.{format}": {
+            "get": {
+                "tags": [ "Record v3" ],
+                "summary": "Retrieve data for a record in specific format.",
+                "description": "<p>This is the new version of the Record API that has recently been developed and is now in available for alpha testing!</p>",
+                "servers": [
+                    {
+                        "url": "https://record-api-v3.acceptance.eanadev.org/record",
+                        "description": "Public endpoint for alpha testing."
+                    }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/recordId"  },
+                    { "$ref": "#/components/parameters/datasetId" },
+                    {
+                        "name": "format",
+                        "in": "path",
+                        "description": "The extension of the format in which the record should be serialised in the response",
+                        "required": true,
+                        "schema": {
+                          "type": "string",
+                          "enum": [ "json", "jsonld", "xml", "rdf", "ttl", "n3", "nt" ]
+                        }
+                    },
+                    { "$ref": "#/components/parameters/ProfileV3" }
+                ],
+                "responses": {
+                    "200": { "description": "The request was executed successfully." },
+                    "400": { "$ref": "/console/docs/v3/common.json#/components/responses/400" },
+                    "401": { "$ref": "/console/docs/v3/common.json#/components/responses/401" }
+                }
+            }
+        },
+        "/v3/retrieve": {
+            "post": {
+                "tags": [ "Record v3" ],
+                "summary": "Retrieve data for multiple records in a specific format.",
+                "description": "<p>This is a novel method introduced in v3 to allow for the retrieval of multiple records in one go. It is now in available for alpha testing!</p>",
+                "servers": [
+                    {
+                        "url": "https://record-api-v3.acceptance.eanadev.org/record",
+                        "description": "Public endpoint for alpha testing."
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": { 
+                            "schema": { "$ref": "#/components/schemas/RecordRequest" }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": { 
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/ld+json": {
+                            },
+                            "application/json": {
+                            },
+                            "application/rdf+xml": {
+                            },
+                            "application/xml": {
+                            },
+                            "text/xml": {
+                            },
+                            "rdf/xml": {
+                            },
+                            "text/turtle": {
+                            },
+                            "application/turtle": {
+                            },
+                            "application/x-turtle": {
+                            },
+                            "text/n3": {
+                            },
+                            "text/rdf+n3": {
+                            },
+                            "application/n3": {
+                            },
+                            "application/n-triples": {
+                            },
+                            "application/ntriples": {
+                            },
+                            "text/nt": {
+                            }
+                        }
+                    },
+                    "400": { "$ref": "/console/docs/v3/common.json#/components/responses/400" },
+                    "401": { "$ref": "/console/docs/v3/common.json#/components/responses/401" }
                 }
             }
         }

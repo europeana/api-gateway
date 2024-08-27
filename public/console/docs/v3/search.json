@@ -23,10 +23,6 @@
         {
             "url": "https://api.europeana.eu/",
             "description": "Public endpoint for all production api services."
-        },
-        {
-            "url": "https://search-api.acceptance.eanadev.org/",
-            "description": "Internal endpoint used for acceptance testing."
         }
     ],
     "security": [
@@ -47,7 +43,7 @@
         },
         {
             "name": "Search v3",
-            "description": "Coming soon..."
+            "description": "Presently under development: available for alpha testing"
         },
         {
             "name": "OpenSearch.RSS",
@@ -59,32 +55,32 @@
     ],
     "components": {
         "securitySchemes": {
-            "X-Api-Key": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
-            "wskey"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
-            "token"    : { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/securitySchemes/token"     }
+            "X-Api-Key": { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
+            "token"    : { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/token"     }
         },
         "schemas": {
-            "ErrorResponse": { "$ref": "https://api.europeana.eu/schema/json/error.schema.json"                                    },
-            "SearchRequest": { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json"                            },
-            "Boost"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Boost"         },
-            "Callback"     : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Callback"      },
-            "ColourPalette": { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/ColourPalette" },
-            "Cursor"       : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Cursor"        },
-            "Facet"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Facet"         },
-            "HitFl"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/HitFl"         },
-            "HitSelectors" : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/HitSelectors"  },
-            "LandingPage"  : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/LandingPage"   },
-            "Media"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Media"         },
-            "Profile"      : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Profile"       },
-            "Query"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Query"         },
-            "QF"           : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/QF"            },
-            "Reusability"  : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Reusability"   },
-            "Rows"         : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Rows"          },
-            "Sort"         : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Sort"          },
-            "Start"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Start"         },
-            "TextFulltext" : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/TextFulltext"  },
-            "Theme"        : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Theme"         },
-            "Thumbnail"    : { "$ref": "https://api.europeana.eu/schema/json/record/search.schema.json#/definitions/Thumbnail"     }
+            "ErrorResponse": { "$ref": "/schema/json/error.schema.json"                                    },
+            "SearchRequest": { "$ref": "/schema/json/record/search.schema.json"                            },
+            "Boost"        : { "$ref": "/schema/json/record/search.schema.json#/definitions/Boost"         },
+            "Callback"     : { "$ref": "/schema/json/record/search.schema.json#/definitions/Callback"      },
+            "ColourPalette": { "$ref": "/schema/json/record/search.schema.json#/definitions/ColourPalette" },
+            "Cursor"       : { "$ref": "/schema/json/record/search.schema.json#/definitions/Cursor"        },
+            "Facet"        : { "$ref": "/schema/json/record/search.schema.json#/definitions/Facet"         },
+            "HitFl"        : { "$ref": "/schema/json/record/search.schema.json#/definitions/HitFl"         },
+            "HitSelectors" : { "$ref": "/schema/json/record/search.schema.json#/definitions/HitSelectors"  },
+            "LandingPage"  : { "$ref": "/schema/json/record/search.schema.json#/definitions/LandingPage"   },
+            "Media"        : { "$ref": "/schema/json/record/search.schema.json#/definitions/Media"         },
+            "Profile"      : { "$ref": "/schema/json/record/search.schema.json#/definitions/Profile"       },
+            "Query"        : { "$ref": "/schema/json/record/search.schema.json#/definitions/Query"         },
+            "QF"           : { "$ref": "/schema/json/record/search.schema.json#/definitions/QF"            },
+            "Reusability"  : { "$ref": "/schema/json/record/search.schema.json#/definitions/Reusability"   },
+            "Rows"         : { "$ref": "/schema/json/record/search.schema.json#/definitions/Rows"          },
+            "Sort"         : { "$ref": "/schema/json/record/search.schema.json#/definitions/Sort"          },
+            "Start"        : { "$ref": "/schema/json/record/search.schema.json#/definitions/Start"         },
+            "TextFulltext" : { "$ref": "/schema/json/record/search.schema.json#/definitions/TextFulltext"  },
+            "Theme"        : { "$ref": "/schema/json/record/search.schema.json#/definitions/Theme"         },
+            "Thumbnail"    : { "$ref": "/schema/json/record/search.schema.json#/definitions/Thumbnail"     }
         },
         "parameters": {
             "Query": {
@@ -237,14 +233,134 @@
                 "description": "Name of a client side callback function, see <a target='_blank' href='https://pro.europeana.eu/page/intro#JSONP'>JSONP</a>.",
                 "required": false,
                 "schema": { "$ref": "#/components/schemas/Callback" }
-              }
+            },
+
+
+
+            "QueryV3": {
+                "name": "query",
+                "in": "query",
+                "description": "The text or search criteria to be used for searching.<p><i>This parameter uses a new syntax for search and is for the time being limited only to geo and date search.</i></p>",
+                "required": true,
+                "schema": { 
+                    "type": "string",
+                    "example": "*"
+                 }
+            },
+            "QFV3": {
+                "name": "qf",
+                "in": "query",
+                "description": "A search query filter, ie. a filter is applied on the result list to remove unwanted results and therefore has no effect on ranking. This parameter can be used multiple types if more than one query filter is needed.<p><i>This parameter uses a new syntax for search and is for the time being limited only to geo and date search.</i></p>",
+                "required": false,
+                "style": "form",
+                "schema": { "$ref": "#/components/schemas/QF" }
+            },
+            "ProfileV3": {
+                "name": "profile",
+                "in": "query",
+                "description": "A profile typically determines how extensive the response will be, by either dictating the metadata fields that will be present or appending additional data elements such as facets. Most profiles can be combined with the exception of the metadata based profiles or combined profiles such as rich.",
+                "required": false,
+                "schema": { 
+                    "type": "array",
+                    "items": { 
+                        "type": "string", 
+                        "enum": [ "minimal", "standard", "rich", "facets", "debug" ],
+                        "default": "standard",
+                        "example": "minimal"
+                    }
+                }
+            },
+            "FacetV3": {
+                "name": "facet",
+                "in": "query",
+                "description": "The name of the field where faceting will be applied. It is possible to facet on more then one field.",
+                "required": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [ "created", "issued", "coverageLocation", "currentLocation" ],
+                        "example": "created"
+                    }
+                 }
+            },
+            "FacetStartV3": {
+                "name": "facet.{FIELD_NAME}.start",
+                "in": "query",
+                "description": "The date from which faceting will start.",
+                "required": false,
+                "style": "form",
+                "schema": {
+                  "type": "string", "format": "regex", "pattern": "^NOW|([0-9]{1,4}(-[0-9]{1,2}(-[0-9]{1,2})?)?)$",
+                  "example": 1980
+                }
+            },
+            "FacetEndV3": {
+                "name": "facet.{FIELD_NAME}.end",
+                "in": "query",
+                "description": "The date until which facets are generated.",
+                "required": false,
+                "style": "form",
+                "schema": {
+                  "type": "string", "format": "regex", "pattern": "^NOW|([0-9]{1,4}(-[0-9]{1,2}(-[0-9]{1,2})?)?)$",
+                  "default": "NOW",
+                  "example": 1990
+                }
+            },
+            "FacetGapV3": {
+                "name": "facet.{FIELD_NAME}.gap",
+                "in": "query",
+                "description": "The interval covered by each facet value.",
+                "required": false,
+                "style": "form",
+                "schema": {
+                  "type": "string", "format": "regex", "pattern": "^[0-9]+[YMdHms]$",
+                  "example": "1Y"
+                }
+            },
+            "FacetLimitV3": {
+                "name": "facet.{FIELD_NAME}.limit",
+                "in": "query",
+                "description": "Number of values an individual facet should contain. Set a limit of '0' to not return anything for that facet. By default, the limit of values of an individual facet is 50. This can be overriden by setting a custom limit e.g. via &f.DEFAULT.facet.limit=100.",
+                "required": false,
+                "style": "form",
+                "schema": {
+                  "type": "integer", "minimum": 0, "default": 50,
+                  "example": 10
+                }
+            },
+            "FacetOffsetV3": {
+                "name": "facet.{FIELD_NAME}.offset",
+                "in": "query",
+                "description": "The offset of the first value in an individual facet. The default offset value is '0', starting from the first item in the list while value '1' offsets the list by one, so the first item to return is the second and so on.",
+                "required": false,
+                "style": "form",
+                "schema": {
+                  "type": "integer", "minimum": 0, "default": 0,
+                  "example": 0
+                }
+            },
+            "SortV3": {
+                "name": "sort",
+                "in": "query",
+                "description": "Sorting records in ascending or descending order of search fields.",
+                "required": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [ "created asc", "created desc", "issued asc", "issued desc", "distance" ],
+                      "example": "created asc"
+                    }
+                }
+            }
         },
         "responses": {
             "200": {
                 "description": "The request was executed successfully"
             },
-            "400": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/400" },
-            "401": { "$ref": "https://api.europeana.eu/console/docs/v3/common.json#/components/responses/401" }
+            "400": { "$ref": "/console/docs/v3/common.json#/components/responses/400" },
+            "401": { "$ref": "/console/docs/v3/common.json#/components/responses/401" }
         }
     },
     "paths": {
@@ -254,6 +370,13 @@
                 "summary": "Search for records on Europeana",
                 "parameters": [
                     { "$ref": "#/components/parameters/Query"         },
+                    { "$ref": "#/components/parameters/QF"            },
+                    { "$ref": "#/components/parameters/Theme"         },
+                    { "$ref": "#/components/parameters/Reusability"   },
+                    { "$ref": "#/components/parameters/LandingPage"   },
+                    { "$ref": "#/components/parameters/Media"         },
+                    { "$ref": "#/components/parameters/Thumbnail"     },
+                    { "$ref": "#/components/parameters/TextFulltext"  },
                     { "$ref": "#/components/parameters/Profile"       },
                     { "$ref": "#/components/parameters/Facet"         },
                     { "$ref": "#/components/parameters/FacetLimit"    },
@@ -262,13 +385,6 @@
                     { "$ref": "#/components/parameters/Start"         },
                     { "$ref": "#/components/parameters/Rows"          },
                     { "$ref": "#/components/parameters/Cursor"        },
-                    { "$ref": "#/components/parameters/QF"            },
-                    { "$ref": "#/components/parameters/Theme"         },
-                    { "$ref": "#/components/parameters/Reusability"   },
-                    { "$ref": "#/components/parameters/LandingPage"   },
-                    { "$ref": "#/components/parameters/Media"         },
-                    { "$ref": "#/components/parameters/Thumbnail"     },
-                    { "$ref": "#/components/parameters/TextFulltext"  },
                     { "$ref": "#/components/parameters/Callback"      }
                 ],
                 "responses": {
@@ -291,6 +407,30 @@
                     "200": {
                         "description": "The request was executed successfully"
                     },
+                    "400": { "$ref": "#/components/responses/400" },
+                    "401": { "$ref": "#/components/responses/401" }
+                }
+            }
+        },
+        "/record/v3/search.json": {
+            "get": {
+                "tags": [ "Search v3" ],
+                "summary": "Search for records on Europeana",
+                "description": "<p>This is the new version of the Search API that is now under development!</p><p>For the moment, most of the functionality is the same as in v2 so that the API can still be used, however, it is expected that this version will drastically change:<br/>1) the parameters and their syntax;<br/>2) the field names and types both in the query syntax and query results;<br/>3) the schema of the response body which will be aligned with the new version of the Record API v3.</p><p><b><i>The new features will be released for alpha testing as they are developed and will be clearly differentiated from v2.</i></b></p>",
+                "parameters": [
+                    { "$ref": "#/components/parameters/Query"         },
+                    { "$ref": "#/components/parameters/QFV3"          },
+                    { "$ref": "#/components/parameters/ProfileV3"     },
+                    { "$ref": "#/components/parameters/FacetV3"       },
+                    { "$ref": "#/components/parameters/FacetStartV3"  },
+                    { "$ref": "#/components/parameters/FacetEndV3"    },
+                    { "$ref": "#/components/parameters/FacetGapV3"    },
+                    { "$ref": "#/components/parameters/SortV3"        },
+                    { "$ref": "#/components/parameters/Start"         },
+                    { "$ref": "#/components/parameters/Rows"          }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200" },
                     "400": { "$ref": "#/components/responses/400" },
                     "401": { "$ref": "#/components/responses/401" }
                 }

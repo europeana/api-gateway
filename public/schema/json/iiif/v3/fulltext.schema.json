@@ -60,7 +60,7 @@
             "type": "object",
             "description": "The list of all full-text resources associated to an item.",
             "properties": {
-                "@context": { "$ref": "#/definitions/Context" },
+                "@context": {},
                 "items"   : { 
                     "type": "array", "minItems": 0, 
                     "items": { 
@@ -127,8 +127,6 @@
                     "type": "string", 
                     "const": "AnnotationPage", "example": "AnnotationPage"
                 },
-                "language"       : { "$ref": "#/definitions/Language"            },
-                "textGranularity": { "$ref": "#/definitions/TextGranularityList" },
                 "items"          : { "$ref": "#/definitions/Annotations"         },
                 "hits"           : { 
                     "type": "array", "minItems": 0, 
@@ -136,7 +134,7 @@
                     "items": { "$ref": "#/definitions/Hit" }
                 }
              },
-            "required": [ "id", "type", "language", "items" ],
+            "required": [ "id", "type", "items" ],
             "additionalProperties": false
         },
         "Annotation": {
@@ -167,7 +165,7 @@
         },
          "FullTextResource": {
             "type": "object",
-            "description": "A textual representation of the media resource.",
+            "description": "A textual representation of the content resource.",
             "properties": {
                 "@context"  : { "$ref": "#/definitions/ContextEDM"          },
                 "id"        : { "$ref": "#/definitions/FullTextResourceURI" },
@@ -233,7 +231,7 @@
         },
         "Targets": {
             "type": "array", "minItems": 1, 
-            "description": "The target(s) of the annotation. Always refers to the media resource (or a portion of it) that this textual representation correspond to.",
+            "description": "The target(s) of the annotation. Always refers to the content resource (or a section of it) that this textual representation correspond to. For annotations that are at a granularity level lower than page, it will point to the specific coordinates on the image where the text is found, using the Media Fragments specification.",
             "items": { 
                 "type": "string",  "format": "uri",
                 "example": "https://iiif.europeana.eu/image/GPNNPGBENPQFFOB7PHRRSCK4GJFXZCJ7YFLGCZCJ5QMNJOWVVRJA/presentation_images/c5927d61-022b-11e6-a696-fa163e2dd531/node-3/image/BNL/La_clef_du_cabinet_des_princes_de_l'Europe/1704/09/01/00159/full/full/0/default.jpg"
@@ -289,7 +287,7 @@
         },
         "Language": {
           "type": "string",
-          "description": "The language of the full-text represented as a two letter <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a> and match the languages that are supported by Europeana.",
+          "description": "The more predominante language of the transcription text represented as a <a target='_blank' href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO639 code</a>Parts of the text may be written in different languages. When that is the case, the language information will be indicated as part of the full-text Annotations.",
           "example": "en",
           "enum": [ "en", "nl", "fr", "de", "es", "sv", "it", "fi", "da", "el", "cs", "sk", "sl", "pt", "hu", "lt", "pl", "ro", "bg", "hr", "lv", "ga", "mt", "et", "no", "ca", "ru", "eu"]
         }
