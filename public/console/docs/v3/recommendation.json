@@ -1,0 +1,167 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Recommendation API",
+        "description": "This console provides an overview of the methods publicly available for the Europeana Recommendation API",
+        "version": "1.x",
+        "termsOfService": "https://www.europeana.eu/en/rights/api-terms-of-use",
+        "contact": {
+            "name": "API Mailbox",
+            "url": "https://pro.europeana.eu/page/apis",
+            "email": "api@europeana.eu"
+        },
+        "license": {
+            "name": "EUPL-1.2",
+            "url": "https://joinup.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
+        }
+    },
+    "servers": [
+        { 
+            "url": "https://api.europeana.eu/recommend",
+            "description": "Public endpoint for the production service."
+        }
+    ],
+    "externalDocs": {
+        "description": "For more information, head to our comprehensive online documentation",
+        "url": "https://pro.europeana.eu/page/recommend"
+    },
+    "security": [
+        {
+            "X-Api-Key": [],
+            "wskey": [],
+            "token": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Recommendations",
+            "description": "Methods for getting recommendations for an item, entity or user set."
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "X-Api-Key": { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/X-Api-Key" },
+            "wskey"    : { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/wskey"     },
+            "token"    : { "$ref": "/console/docs/v3/common.json#/components/securitySchemes/token"     }
+        },
+        "parameters": {
+            "datasetId" : { "$ref": "/console/docs/v3/common.json#/components/parameters/datasetId"  },
+            "recordId"  : { "$ref": "/console/docs/v3/common.json#/components/parameters/recordId"   },
+            "entityType": { "$ref": "/console/docs/v3/entity.json#/components/parameters/entityType" },
+            "entityId"  : { "$ref": "/console/docs/v3/entity.json#/components/parameters/entityId"   },
+            "setId"     : { "$ref": "/console/docs/v3/set.json#/components/parameters/setId"         },
+            "page": {
+                "name": "page", "in": "query",
+                "description": "The page number of the list of recommendations to allow for scrolling along the results (default is 1).",
+                "required": false,
+                "schema": {
+                    "type"   : "integer", "format" : "int64",
+                    "minimum": 0, "default": 1,
+                    "example": 1
+                }
+            },
+            "pageSize": {
+                "name": "pageSize", "in": "query",
+                "description": "The number of suggested items being returned. The default is 10 and limited to 50.",
+                "required": false,
+                "example": "10",
+                "schema": {
+                    "type"   : "integer", "format" : "int64", 
+                    "minimum": 1, "maximum": 50, "default": 10
+                }
+            },
+            "seed": {
+                "name": "seed", "in": "query",
+                "description": "An integer number used as seed to randomise the top recommendations.",
+                "required": false,
+                "schema": {
+                    "type"   : "integer", "format" : "int64",
+                    "minimum": 0, 
+                    "example": 1
+                }
+            }
+        },
+        "responses": {
+            "200": { "$ref": "/console/docs/v3/common.json#/components/responses/200" },
+            "400": { "$ref": "/console/docs/v3/common.json#/components/responses/400" },
+            "401": { "$ref": "/console/docs/v3/common.json#/components/responses/401" },
+            "404": { "$ref": "/console/docs/v3/common.json#/components/responses/404" }
+        }
+    },
+    "paths": {
+        "/record/{datasetId}/{recordId}": {
+            "get": {
+                "tags": [ "Recommendations" ],
+                "summary": "Retrieve recommendation for an item.",
+                "description": "Retrieves a list of recommended items for a specific item in Europeana.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/datasetId" },
+                    { "$ref": "#/components/parameters/recordId"  },
+                    { "$ref": "#/components/parameters/page"      },
+                    { "$ref": "#/components/parameters/pageSize"  },
+                    { "$ref": "#/components/parameters/seed"      }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" }, 
+                    "401": { "$ref": "#/components/responses/401" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/entity/{entityType}/{entityId}": {
+            "get": {
+                "tags": [ "Recommendations" ],
+                "summary": "Retrieve recommendation for an entity.",
+                "description": "Retrieves a list of recommended items for a specific entity in Europeana.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/entityType" },
+                    { "$ref": "#/components/parameters/entityId"   },
+                    { "$ref": "#/components/parameters/page"       },
+                    { "$ref": "#/components/parameters/pageSize"   },
+                    { "$ref": "#/components/parameters/seed"       }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" }, 
+                    "401": { "$ref": "#/components/responses/401" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        },
+        "/set/{setId}": {
+            "get": {
+                "tags": [ "Recommendations" ],
+                "summary": "Retrieve recommendation for an user set.",
+                "description": "Retrieves a list of recommended items for a specific user set in Europeana.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/setId"    },
+                    { "$ref": "#/components/parameters/page"     },
+                    { "$ref": "#/components/parameters/pageSize" },
+                    { "$ref": "#/components/parameters/seed"     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "400": { "$ref": "#/components/responses/400" }, 
+                    "401": { "$ref": "#/components/responses/401" },
+                    "404": { "$ref": "#/components/responses/404" }
+                }
+            }
+        }
+    }
+}
