@@ -34,7 +34,7 @@ http {
         # We'll not only specify server name using env variables but also settings
         # This way we can mark a server as down (for maintenance) in a deployment job
         server ${EMBEDDING_SERVER1_SETTINGS};
-        #server ${EMBEDDING_SERVER2_SETTINGS};
+        server ${EMBEDDING_SERVER2_SETTINGS};
     }
 
     upstream entity_api {
