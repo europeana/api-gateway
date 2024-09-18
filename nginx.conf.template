@@ -62,6 +62,14 @@ http {
         server ${MANIFEST_API_HOST};
     }
 
+    upstream milvus {
+        keepalive 10;
+        # We'll not only specify server name and port using env variables but also settings
+        # This way we can mark a server as down (for maintenance) in a deployment job
+        server ${MILVUS_SERVER1_SETTINGS};
+        server ${MILVUS_SERVER2_SETTINGS};
+    }
+
     upstream newspaper_api {
         keepalive 10;
         server ${NEWSPAPER_API_HOST};
@@ -341,7 +349,18 @@ http {
         }
 
 
-        ## ----- Embeddings API ----- ##
+        ## ----- Milvus and Embeddings API (load balanced)----- ##
+
+        # Milvus
+        location ~* ^/milvus/(.*) {
+            proxy_set_header Host ${MILVUS_HOST};
+
+            # No load balancing algorithm defined, so by default round-robin is used
+            proxy_pass http://milvus/$1$is_args$args;
+
+            # Send to next server in list in case of errors
+            proxy_next_upstream error timeout http_502 http_503 http_504;
+        }
 
         # Embedding API (load balanced!)
         location ~* ^/embedding/(.*) {
