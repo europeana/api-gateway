@@ -410,8 +410,13 @@ http {
 
         http2 on;
 
+        location /nginx-health {
+            default_type application/json;
+            return 200 '{"status":"grpc endpoint available"}';
+        }
+
         location / {
-            # proxy_set_header Host ${MILVUS_HOST};
+            proxy_set_header Host ${MILVUS_HOST};
 
             # The ‘grpc://’ prefix is optional; unencrypted gRPC is the default
             grpc_pass grpcs://milvus_servers;
