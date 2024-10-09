@@ -1,4 +1,4 @@
-FROM nginx:1.23
+FROM nginx:1.27.2
 
 LABEL Author="Europeana Foundation <development@europeana.eu>"
 
