@@ -406,7 +406,7 @@ http {
 
     ## ----- For communication with Milvus we use a dedicated port----- ##
     server {
-        listen ${MILVUS_PORT} http2;
+        listen ${MILVUS_PORT};
 
         http2 on;
 
@@ -414,7 +414,7 @@ http {
             # proxy_set_header Host ${MILVUS_HOST};
 
             # The ‘grpc://’ prefix is optional; unencrypted gRPC is the default
-            grpc_pass grpc://milvus_servers;
+            grpc_pass grpcs://milvus_servers;
 
             # Send to next server in list in case of errors
             grpc_next_upstream error timeout http_502 http_503 http_504;
