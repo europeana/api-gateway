@@ -13,7 +13,7 @@ events {
 http {
     charset utf-8;
     # EA-2236: Disable access logs
-    #access_log off;
+    access_log off;
     default_type application/octet-stream;
     include mime.types;
     sendfile on;
@@ -67,7 +67,7 @@ http {
         # We'll not only specify server name and port using env variables but also settings
         # This way we can mark a server as down (for maintenance) in a deployment job
         server ${MILVUS_SERVER1_SETTINGS};
-        #server ${MILVUS_SERVER2_SETTINGS};
+        server ${MILVUS_SERVER2_SETTINGS};
     }
 
     upstream newspaper_api {
@@ -406,16 +406,19 @@ http {
 
     ## ----- For communication with Milvus we use a dedicated port----- ##
     server {
-        listen ${MILVUS_PORT} http2;
+        listen ${MILVUS_PORT};
+
+        http2 on;
+        access_log on;
 
         location / {
-            # proxy_set_header Host ${MILVUS_HOST};
+            proxy_set_header Host ${MILVUS_HOST};
 
             # The ‘grpc://’ prefix is optional; unencrypted gRPC is the default
             grpc_pass grpc://milvus_servers;
 
             # Send to next server in list in case of errors
-            # proxy_next_upstream error timeout http_502 http_503 http_504;
+            grpc_next_upstream error timeout http_502 http_503 http_504;
         }
 
     }
