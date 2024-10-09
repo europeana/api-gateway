@@ -412,7 +412,7 @@ http {
             # proxy_set_header Host ${MILVUS_HOST};
 
             # The ‘grpc://’ prefix is optional; unencrypted gRPC is the default
-            grpc_pass grpc://milvus_servers;
+            grpc_pass milvus_servers;
 
             # Send to next server in list in case of errors
             # proxy_next_upstream error timeout http_502 http_503 http_504;
