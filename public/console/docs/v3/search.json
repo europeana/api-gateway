@@ -1,5 +1,5 @@
 {
-    "openapi": "3.0.0",
+    "openapi": "3.0.3",
     "info": {
         "title": "Search API",
         "description": "This console provides an overview of the API methods publicly available for the Europeana Search API",
@@ -103,6 +103,7 @@
                 "description": "The name of the field where faceting will be applied. It is possible to facet on more then one field.",
                 "required": false,
                 "style": "form",
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/Facet" }
             },
             "FacetLimit": {
@@ -111,6 +112,7 @@
                 "description": "Number of values an individual facet should contain. Set a limit of '0' to not return anything for that facet. By default, the limit of values of an individual facet is 50. This can be overriden by setting a custom limit e.g. via &f.DEFAULT.facet.limit=100.",
                 "required": false,
                 "style": "form",
+                "example": "",
                 "schema": {
                   "type": "integer", "minimum": 0, "default": 50,
                   "example": 10
@@ -122,6 +124,7 @@
                 "description": "The offset of the first value in an individual facet. The default offset value is '0', starting from the first item in the list while value '1' offsets the list by one, so the first item to return is the second and so on.",
                 "required": false,
                 "style": "form",
+                "example": "",
                 "schema": {
                   "type": "integer", "minimum": 0, "default": 0,
                   "example": 0
@@ -132,6 +135,7 @@
                 "in": "query",
                 "description": "Fields for which hit highlighting is generated. A wildcard of “*” (asterisk) can be used to match multiple fields, such as “fulltext.*” or even “*” to highlight on all fields where highlighting is possible. If omitted default to “*”. Multiple fields can be indicated using a comma or space.",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/HitFl" }
             },
             "HitSelectors": {
@@ -139,6 +143,7 @@
                 "in": "query",
                 "description": "The maximum number of highlighted selectors to generate per item. If omitted defaults to 3. It is possible for any number of selectors from 1 to this value to be generated, up to a limit of 10.",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/HitSelectors" }
             },
             "Sort": {
@@ -146,6 +151,7 @@
                 "in": "query",
                 "description": "Sorting records in ascending or descending order of search fields. The following fields are supported: score (relenvancy of the search result), timestamp_created, timestamp_update, europeana_id, COMPLETENESS, is_fulltext, has_thumbnails, and has_media. Sorting on more than one field is possible by supplying as comma separated values. It is also possible to randomly order items by using the keyword 'random' instead of a field name. You can also request for a fixed random order by indicating a seed 'random_SEED' which is useful when paginating along the same randomized order.</br>Use: field_name+sort_order.",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/Sort" }
             },
             "Start": {
@@ -153,6 +159,7 @@
                 "in": "query",
                 "description": "The item in the search results to start with when using basic pagination. First item is 1. Defaults to 1.",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/Start" }
             },
             "Rows": {
@@ -160,6 +167,7 @@
                 "in": "query",
                 "description": "The number of records to return. Maximum is 100. Defaults to 12.",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/Rows" }
             },
             "Cursor": {
@@ -167,6 +175,7 @@
                 "in": "query",
                 "description": "A cursor mark from where to start the search result set when using deep pagination. Set to '*' to start cursor-based pagination.",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/Cursor" }
             },
             "QF": {
@@ -175,6 +184,7 @@
                 "description": "A search query filter, ie. a filter is applied on the result list to remove unwanted results and therefore has no effect on ranking. This parameter can be used multiple types if more than one query filter is needed.",
                 "required": false,
                 "style": "form",
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/QF" }
             },
             "Theme": {
@@ -182,6 +192,7 @@
                 "in": "query",
                 "description": "Restrict the query over one of the Europeana <a href='https://www.europeana.eu/en/collections'>Thematic Collections</a>. The possible values are: archaelogy, art, fashion, industrial, manuscript, map, migration, music, nature, newspaper, photography, sport, ww1.",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/Theme" }
             },
             "Reusability": {
@@ -189,7 +200,6 @@
                 "in": "query",
                 "description": "Filter by copyright status. Possible values are: open, restricted or permission.",
                 "required": false,
-                "style": "form",
                 "schema": { "$ref": "#/components/schemas/Reusability" }
             },
             "LandingPage": {
@@ -197,6 +207,7 @@
                 "in": "query",
                 "description": "Filter by items where the link to the original object on the providers website (edm:isShownAt) is present and verified to be working.",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/LandingPage" }
             },
             "Media": {
@@ -204,6 +215,7 @@
                 "in": "query",
                 "description": "Filter by items where an URL to the full media resource is present in the edm:isShownBy or edm:hasView metadata and is resolvable.",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/Media" }
             },
             "Thumbnail": {
@@ -211,6 +223,7 @@
                 "in": "query",
                 "description": "Filter by items where a thumbnail image has been generated for any of the WebResource media resources (thumbnail available in the edmPreview field).",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/Thumbnail" }
             },
             "TextFulltext": {
@@ -218,6 +231,7 @@
                 "in": "query",
                 "description": "Filter by web resources containing text, e.g. a PDF with full-text.",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/TextFulltext" }
             },
             "Boost": {
@@ -225,6 +239,7 @@
                 "in": "query",
                 "description": "boost",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/Boost" }
             },
             "Callback": {
@@ -232,6 +247,7 @@
                 "in": "query",
                 "description": "Name of a client side callback function, see <a target='_blank' href='https://pro.europeana.eu/page/intro#JSONP'>JSONP</a>.",
                 "required": false,
+                "example": "",
                 "schema": { "$ref": "#/components/schemas/Callback" }
             },
 
@@ -275,6 +291,7 @@
                 "in": "query",
                 "description": "The name of the field where faceting will be applied. It is possible to facet on more then one field.",
                 "required": false,
+                "example": "",
                 "schema": {
                     "type": "array",
                     "items": {
@@ -290,6 +307,7 @@
                 "description": "The date from which faceting will start.",
                 "required": false,
                 "style": "form",
+                "example": "",
                 "schema": {
                   "type": "string", "format": "regex", "pattern": "^NOW|([0-9]{1,4}(-[0-9]{1,2}(-[0-9]{1,2})?)?)$",
                   "example": 1980
@@ -301,6 +319,7 @@
                 "description": "The date until which facets are generated.",
                 "required": false,
                 "style": "form",
+                "example": "",
                 "schema": {
                   "type": "string", "format": "regex", "pattern": "^NOW|([0-9]{1,4}(-[0-9]{1,2}(-[0-9]{1,2})?)?)$",
                   "default": "NOW",
@@ -312,6 +331,7 @@
                 "in": "query",
                 "description": "The interval covered by each facet value.",
                 "required": false,
+                "example": "",
                 "style": "form",
                 "schema": {
                   "type": "string", "format": "regex", "pattern": "^[0-9]+[YMdHms]$",
@@ -324,6 +344,7 @@
                 "description": "Number of values an individual facet should contain. Set a limit of '0' to not return anything for that facet. By default, the limit of values of an individual facet is 50. This can be overriden by setting a custom limit e.g. via &f.DEFAULT.facet.limit=100.",
                 "required": false,
                 "style": "form",
+                "example": "",
                 "schema": {
                   "type": "integer", "minimum": 0, "default": 50,
                   "example": 10
@@ -335,6 +356,7 @@
                 "description": "The offset of the first value in an individual facet. The default offset value is '0', starting from the first item in the list while value '1' offsets the list by one, so the first item to return is the second and so on.",
                 "required": false,
                 "style": "form",
+                "example": "",
                 "schema": {
                   "type": "integer", "minimum": 0, "default": 0,
                   "example": 0
@@ -345,6 +367,7 @@
                 "in": "query",
                 "description": "Sorting records in ascending or descending order of search fields.",
                 "required": false,
+                "example": "",
                 "schema": {
                     "type": "array",
                     "items": {
@@ -397,9 +420,56 @@
                 "tags": [ "Search v2" ],
                 "summary": "Search for records on Europeana",
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": { 
-                            "schema": { "$ref": "#/components/schemas/SearchRequest" }
+                            "schema": { "$ref": "#/components/schemas/SearchRequest" },
+                            "examples": {
+                                "basic": {
+                                    "summary": "Basic example",
+                                    "value": {
+                                        "query": "*"
+                                    }
+                                },
+                                "complete": {
+                                    "summary": "Complete example",
+                                    "value": {
+                                          "query": "*",
+                                          "profile": [
+                                            "minimal"
+                                          ],
+                                          "facet": [
+                                            "proxy_dc_creator"
+                                          ],
+                                          "hit": {
+                                            "fl": "fulltext.*",
+                                            "selectors": 2
+                                          },
+                                          "sort": [
+                                            "random_12345+asc"
+                                          ],
+                                          "start": 1,
+                                          "rows": 12,
+                                          "cursor": "string",
+                                          "qf": [
+                                            "proxy_dc_creator:*"
+                                          ],
+                                          "theme": "art",
+                                          "reusability": [
+                                            "open"
+                                          ],
+                                          "landingPage": true,
+                                          "media": true,
+                                          "thumbnail": true,
+                                          "colourPalette": [
+                                            "#8A2BE2"
+                                          ],
+                                          "textFulltext": "",
+                                          "boost": "",
+                                          "callback": "string"
+                                    }
+                                }
+                            }
                         }
                     }
                 },
