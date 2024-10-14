@@ -263,6 +263,7 @@
                     { "$ref": "#/components/parameters/profile" }
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/ld+json": {
                             "schema": { "$ref": "#/components/schemas/MultiRetrievalRequest" }

@@ -66,6 +66,7 @@
                 "tags": [ "Language Detection" ],
                 "summary": "Detects the language of the text.",
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": { 
                             "schema": { "$ref": "#/components/schemas/LangDetectRequest" }
@@ -92,6 +93,7 @@
                 "tags": [ "Translation" ],
                 "summary": "Translates the text into another language.",
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": { 
                             "schema": { "$ref": "#/components/schemas/TranslationRequest" }

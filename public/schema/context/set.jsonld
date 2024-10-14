@@ -17,6 +17,9 @@
         "EntityBestItemsSet": { "@id": "edm:EntityBestItemsSet"   },
         "DynamicCollection" : { "@id": "edm:DynamicCollection"    },
         "CollectionPage"    : { "@id": "as:OrderedCollectionPage" },
+
+        "collectionType"    : { "@id": "dc:type" , "@type": "@id" },
+        "Gallery"           : { "@id": "edm:Gallery" },
         
         "visibility"        : { "@id": "edm:visibility" },
         "title"             : { "@id": "dcterms:title", "@container": "@language" },
@@ -30,6 +33,11 @@
         "modified"          : { "@id": "dcterms:modified", "@type": "xsd:dateTime" },
         "issued"            : { "@id": "dcterms:issued", "@type": "xsd:dateTime" },
         "isDefinedBy"       : { "@id": "rdfs:isDefinedBy", "@type": "@id" },
+
+        "isShownBy"              : { "@id": "edm:isShownBy", "@type": "@id" },
+        "WebResource"            : { "@id": "edm:WebResource" },
+        "source"                 : { "@id": "dc:source", "@type": "@id" },
+        "thumbnail"              : { "@id": "edm:preview", "@type": "@id" },
 
         "ResultList"        : { "@id": "as:OrderedCollection"     },
         "ResultPage"        : { "@id": "as:OrderedCollectionPage" },

@@ -97,6 +97,7 @@
         "streetAddress"          : { "@id": "vcard:street-address"  },
         "hasGeo"                 : { "@id": "vcard:hasGeo"          },
         
+        "isShownBy"              : { "@id": "edm:isShownBy", "@type": "@id" },
         "WebResource"            : { "@id": "edm:WebResource"       },
         "source"                 : { "@id": "dc:source", "@type": "@id" },
         "thumbnail"              : { "@id": "edm:preview", "@type": "@id" },

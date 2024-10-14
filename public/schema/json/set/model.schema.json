@@ -11,24 +11,26 @@
         "Set": {
             "type": "object",
             "properties": {
-                "@context"   : { "$ref": "#/definitions/Context"     },
-                "id"         : { "$ref": "#/definitions/SetURI"      },
-                "type"       : { "$ref": "#/definitions/SetType"     },
-                "visibility" : { "$ref": "#/definitions/Visibility"  },
-                "title"      : { "$ref": "#/definitions/Title"       },
-                "description": { "$ref": "#/definitions/Description" },
-                "subject"    : { "$ref": "#/definitions/Subject"     },
-                "pinned"     : { "$ref": "#/definitions/Pinned"      },
-                "creator"    : { "$ref": "#/definitions/Creator"     },
-                "contributor": { "$ref": "#/definitions/Contributor" },
-                "provider"   : { "$ref": "#/definitions/Provider"    },
-                "created"    : { "$ref": "#/definitions/Created"     },
-                "modified"   : { "$ref": "#/definitions/Modified"    },
-                "issued"     : { "$ref": "#/definitions/Issued"      },
-                "isDefinedBy": { "$ref": "#/definitions/IsDefinedBy" },
-                "total"      : { "$ref": "#/definitions/Total"       },
-                "first"      : { "$ref": "#/definitions/First"       },
-                "last"       : { "$ref": "#/definitions/Last"        }
+                "@context"      : { "$ref": "#/definitions/Context"        },
+                "id"            : { "$ref": "#/definitions/SetURI"         },
+                "type"          : { "$ref": "#/definitions/SetType"        },
+                "collectionType": { "$ref": "#/definitions/CollectionType" },
+                "visibility"    : { "$ref": "#/definitions/Visibility"     },
+                "title"         : { "$ref": "#/definitions/Title"          },
+                "description"   : { "$ref": "#/definitions/Description"    },
+                "subject"       : { "$ref": "#/definitions/Subject"        },
+                "isShownBy"     : { "$ref": "#/definitions/IsShownBy"      },
+                "pinned"        : { "$ref": "#/definitions/Pinned"         },
+                "creator"       : { "$ref": "#/definitions/Creator"        },
+                "contributor"   : { "$ref": "#/definitions/Contributor"    },
+                "provider"      : { "$ref": "#/definitions/Provider"       },
+                "created"       : { "$ref": "#/definitions/Created"        },
+                "modified"      : { "$ref": "#/definitions/Modified"       },
+                "issued"        : { "$ref": "#/definitions/Issued"         },
+                "isDefinedBy"   : { "$ref": "#/definitions/IsDefinedBy"    },
+                "total"         : { "$ref": "#/definitions/Total"          },
+                "first"         : { "$ref": "#/definitions/First"          },
+                "last"          : { "$ref": "#/definitions/Last"           }
             },
             "required": [ "@context", "id", "type", "visibility", "created", "creator", "modified" ],
             "additionalProperties": false
@@ -37,7 +39,7 @@
             "type": "object",
             "description": "A page containing a subset of the items contained in a user set.",
             "properties": {
-                "context"    : { "$ref": "#/definitions/Context"     },
+                "@context"    : { "$ref": "#/definitions/Context"    },
                 "id"         : { "$ref": "#/definitions/SetPageURL"  },
                 "type"       : { 
                     "const": "CollectionPage",
@@ -95,6 +97,11 @@
             "description": "The type of the set. By default all sets are classified as 'Collection'. The 'BookmarkFolder' and 'EntityBestItemsSet' are types that are used to power specific functionality in the Europeana Website.",
             "example": "Collection"
         },
+        "CollectionType": {
+            "enum": [ "Gallery" ],
+            "description": "The nature of the set. For the time being, only 'Gallery' is defined for this property informing that the collection is made up of visual items that are meant to be displayed as a Gallery.",
+            "example": "Gallery"
+        },
         "Visibility": {
             "enum": [ "private", "public", "published" ],
             "description": "Access visibility of the set. The possible states are “private”, “public” and “published”. The default value assigned at the creation of the set when omitted is “private”. For “BookmarkFolder” sets, the visibility is immutable and cannot be changed to another value besides “private”.",
@@ -129,6 +136,38 @@
                 ]
             }
         },
+        "IsShownBy": {
+            "type": "object",
+            "description": "A image resource to be displayed for this set.",
+            "properties": {
+                "id"       : { "$ref": "#/definitions/WebResourceURL"    },
+                "type"     : { "$ref": "#/definitions/WebResourceType"   },
+                "source"   : { "$ref": "#/definitions/WebResourceSource" },
+                "thumbnail": { "$ref": "#/definitions/Thumbnail"         }
+            },
+            "required": [ "id", "type", "source", "thumbnail" ],
+            "additionalProperties": false
+        },
+        "WebResourceURL": {
+            "type": "string", "format": "uri",
+            "description": "The URL of the media resource",
+            "example": "https://lh3.googleusercontent.com/7qzT0pbclLB7y3fdS1GxzMnV7m3gD3gWnhlquhFaJSn6gNOvMmTUAX3wVlTzhMXIs8kM9IH8AsjHNVTs8em3XQI6uMY=s0"
+        },
+        "WebResourceType": {
+            "type": "string", "const": "WebResource",
+            "example": "WebResource"
+        },
+        "WebResourceSource": {
+            "type": "string", "format": "uri",
+            "description": "The source where the media resource was obtained from, typically the identifier of a record",
+            "example": "http://data.europeana.eu/item/90402/SK_A_4691"
+        },
+        "Thumbnail": {
+            "type": "string", "format": "uri",
+            "description": "The URL of a lower resolution thumbnail",
+            "example": "https://api.europeana.eu/thumbnail/v2/url.json?uri=https%3A%2F%2Fwww.rijksmuseum.nl%2Fassetimage2.jsp%3Fid%3DSK-A-4691&type=IMAGE"
+        },
+
         "Pinned": {
             "type": "number",
             "description": "The number of pinned items in the “EntityBestItemsSet” (only applicable for this kind of set). This is a temporary field while a more suitable option is found to handle user suggestions for Entities.",
@@ -138,7 +177,8 @@
             "type": "object",
             "description": "Refers to a registered user which is the creator and owner of the set.",
             "properties": {
-                "id"         : { "$ref": "#/definitions/UserURI" },
+                "id"         : { "$ref": "#/definitions/UserURI"    },
+                "type"       : { "$ref": "#/definitions/PersonType" },
                 "nickname"   : { 
                     "type": "string",
                     "description": "The username of the user. For privacy reasons, this is the only personal information made publicly available.",
@@ -147,6 +187,10 @@
             },
             "required": [ "id", "nickname" ],
             "additionalProperties": false
+        },
+        "PersonType": {
+            "type": "string", "const": "Person",
+            "example": "Person"
         },
         "Contributor": {
             "type": "array",
