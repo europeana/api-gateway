@@ -182,10 +182,10 @@ http {
             proxy_pass http://search_api/record/v3/search.json$is_args$args;
         }
 
-        # Search API
+        # Search API v2 and OpenSearch
         location ~ ^/record/(v2/)?(open)?search(.*)$ {
             proxy_set_header Host ${SEARCH_API_HOST};
-            proxy_pass http://search_api/record/search.json$is_args$args;
+            proxy_pass http://search_api/record/$2search$3$is_args$args;
         }
 
         # Record API
