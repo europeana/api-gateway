@@ -87,6 +87,16 @@ http {
         server ${SET_API_HOST};
     }
 
+    upstream sparql_api {
+        keepalive 10;
+        server ${SPARQL_API_HOST};
+    }
+
+    upstream sparql_ui {
+        keepalive 10;
+        server ${SPARQL_UI_HOST};
+    }
+
     upstream thumbnail_api {
         keepalive 10;
         server ${THUMBNAIL_API_HOST};
@@ -98,7 +108,19 @@ http {
         server ${TRANSLATION_API_HOST};
     }
 
-
+    # Some Accept headers indicate "machine" access to our SPARQL endpoint
+    map $http_accept $sparql_machine_access {
+        default                          0;
+        "application/sparql-results+xml" 1;
+        "text/rdf+n3"                    1;
+        "text/rdf+ttl"                   1;
+        "text/rdf+turtle"                1;
+        "text/turtle"                    1;
+        "text/n3"                        1;
+        "application/turtle"             1;
+        "application/x-turtle"           1;
+        "application/rdf+xml"            1;
+    }
 
     server {
         listen ${PORT} default_server;
@@ -109,7 +131,7 @@ http {
         # "upstream" servers do not use resolver settings by default (paid option), so we proxy directly to the urls
         #resolver ${RESOLVER_SETTINGS};
 
-        add_header Link "<http://creativecommons.org/publicdomain/zero/1.0/>;rel=license";
+        # add_header Link "<http://creativecommons.org/publicdomain/zero/1.0/>;rel=license";
 
         include nginx.conf.d/*.conf;
 
@@ -340,6 +362,28 @@ http {
             proxy_pass http://translation_api/$1$is_args$args;
         }
 
+        ## ----- SPARQL ----- ##
+
+        # Without trailing slash the SPARQL UI will not include the 'sparql' part of the path
+        # when trying to load its resources
+        location = /console/sparql {
+            return 302 http://$host/console/sparql/;
+        }
+        location ~* ^/console/sparql/(.*) {
+            proxy_set_header Host ${SPARQL_UI_HOST};
+            proxy_pass http://sparql_ui/$1$is_args$args;
+        }
+
+        location ~* ^/sparql(/)?(.*) {
+            # Human access is redirected to the UI
+            if ($sparql_machine_access != 1) {
+                return 302 http://$host/console/sparql/$2$is_args$args;
+            }
+
+            # Accept headers that indicate "machine" access are forwarded to API
+            proxy_set_header Host ${SPARQL_API_HOST};
+            proxy_pass http://sparql_api/sparql/$1$is_args$args;
+        }
 
         ## ----- Embeddings API (load balanced)----- ##
 
