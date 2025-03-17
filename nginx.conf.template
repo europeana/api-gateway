@@ -367,7 +367,7 @@ http {
         # Without trailing slash the SPARQL UI will not include the 'sparql' part of the path
         # when trying to load its resources
         location = /console/sparql {
-            return 302 http://$host/console/sparql/;
+            return 302 https://$host/console/sparql/;
         }
         location ~* ^/console/sparql/(.*) {
             proxy_set_header Host ${SPARQL_UI_HOST};
@@ -377,7 +377,7 @@ http {
         location ~* ^/sparql(/)?(.*) {
             # Human access is redirected to the UI
             if ($sparql_machine_access != 1) {
-                return 302 http://$host/console/sparql/$2$is_args$args;
+                return 302 https://$host/console/sparql/$2$is_args$args;
             }
 
             # Accept headers that indicate "machine" access are forwarded to API
