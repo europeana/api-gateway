@@ -110,26 +110,26 @@ http {
 
     # Some Accept headers indicate "machine" access to our SPARQL endpoint
     map $http_accept $sparql_machine_access {
-        default                             0;
-        "application/sparql-results+xml"    1;
-        "application/sparql-results+json"   1;
-        "application/sparql-results+thrift" 1;
-        "application/n-quads"               1;
-        "application/turtle"                1;
-        "application/x-turtle"              1;
-        "application/rdf+xml"               1;
-        "application/ld+json"               1;
-        "application/n-triples"             1;
-        "application/trig"                  1;
-        "application/x-trig"                1;
-        "text/rdf+n3"                       1;
-        "text/rdf+ttl"                      1;
-        "text/rdf+turtle"                   1;
-        "text/turtle"                       1;
-        "text/n3"                           1;
-        "text/csv"                          1;
-        "text/tab-separated-values"         1;
-        "text/x-nquads"                     1;
+        default                                 0;
+        ~*.*application/sparql-results+xml.*    1;
+        ~*.*application/sparql-results+json.*   1;
+        ~*.*application/sparql-results+thrift.* 1;    # But not supported by Virtuoso
+        ~*.*application/n-quads.*               1;    # But not supported by Virtuoso
+        ~*.*application/x-turtle.*              1;
+        ~*.*application/turtle.*                1;
+        ~*.*application/rdf+xml.*               1;
+        ~*.*application/ld+json.*               1;    # But not supported by Virtuoso
+        ~*.*application/n-triples.*             1;
+        ~*.*application/trig.*                  1;    # But not supported by Virtuoso
+        ~*.*application/x-trig.*                1;    # But not supported by Virtuoso
+        ~*.*text/rdf+n3.*                       1;
+        ~*.*text/rdf+ttl.*                      1;
+        ~*.*text/rdf+turtle.*                   1;
+        ~*.*text/turtle.*                       1;
+        ~*.*text/n3.*                           1;
+        ~*.*text/csv.*                          1;
+        ~*.*text/tab-separated-values.*         1;
+        ~*.*text/x-nquads.*                     1;    # But not supported by Virtuoso
     }
 
     server {
