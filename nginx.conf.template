@@ -132,6 +132,13 @@ http {
         ~*.*text/x-nquads.*                      1;    # But not supported by Virtuoso
     }
 
+    # HTML accept header for browsers
+    map $http_accept $browser_access {
+        default                                  0;
+        ~*.*text/html.*                          1;
+        ~*.*application/xhtml+xml.*              1;
+    }
+
     server {
         listen ${PORT} default_server;
         root ${PUBLIC_FOLDER};
@@ -184,6 +191,10 @@ http {
 
         # Redirect root
         location = / {
+            # Browser access redirected to the API Landing page
+            if ($browser_access == 1) {
+                return 302 ${API_LANDING_PAGE};
+            }
             return 302 ${ROOT_REDIRECT_URL};
         }
 
