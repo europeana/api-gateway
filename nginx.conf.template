@@ -137,6 +137,7 @@ http {
         default                                  0;
         ~*.*text/html.*                          1;
         ~*.*application/xhtml+xml.*              1;
+        ~*.**/*.*                                1;
     }
 
     server {
@@ -194,7 +195,8 @@ http {
             if ($browser_access != 1) {
                 return 302 ${ROOT_REDIRECT_URL};
             }
-            return 302 ${API_LANDING_PAGE};  # Browser access redirected to the API Landing page
+            proxy_set_header Host ${ROOT_REDIRECT_URL};
+            proxy_pass ${ROOT_REDIRECT_URL};   ##  Browser access reverse proxied to the API Landing page
         }
 
         # Used by Kubernetes health checks
