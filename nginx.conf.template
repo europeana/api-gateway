@@ -201,8 +201,6 @@ http {
             if ($browser_access = 1) {
                  proxy_pass https://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
             }
-            proxy_set_header Host ${ROOT_REDIRECT_HOST};
-            proxy_pass https://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
         }
 
         # Used by Kubernetes health checks
