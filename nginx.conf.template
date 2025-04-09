@@ -27,7 +27,7 @@ http {
 
     upstream apis_page {
         keepalive 10;
-        server ${$ROOT_REDIRECT_HOST};
+        server ${ROOT_REDIRECT_HOST};
     }
 
     upstream annotation_api {
