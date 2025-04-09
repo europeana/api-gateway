@@ -137,7 +137,7 @@ http {
         default                                  0;
         ~*.*text/html.*                          1;
         ~*.*application/xhtml+xml.*              1;
-        ~*.**/*.*                                1;
+        ~*.*/*.*                                 1;
     }
 
     server {
