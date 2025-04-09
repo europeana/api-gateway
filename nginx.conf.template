@@ -24,6 +24,12 @@ http {
     keepalive_timeout 60;
 
     # Note that for upstream servers all IP addresses/services need to be available on start-up!
+
+    upstream apis_page {
+        keepalive 10;
+        server ${$ROOT_REDIRECT_HOST};
+    }
+
     upstream annotation_api {
         keepalive 10;
         server ${ANNOTATION_API_HOST};
@@ -195,8 +201,8 @@ http {
             if ($browser_access != 1) {
                 return 302 ${ROOT_REDIRECT_URL};
             }
-            proxy_set_header Host ${ROOT_REDIRECT_URL};
-            proxy_pass ${ROOT_REDIRECT_URL};   ##  Browser access reverse proxied to the API Landing page
+            proxy_set_header Host ${ROOT_REDIRECT_HOST};
+            proxy_pass https://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
         }
 
         # Used by Kubernetes health checks
