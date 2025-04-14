@@ -202,7 +202,7 @@ http {
                  proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
             }
             if ($browser_access != 1) {
-                 return 403          ##  for all other headers return 403
+                 return 403 ;         ##  for all other headers return 403
             }
         }
 
