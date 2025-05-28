@@ -25,3 +25,25 @@ spec:
                 name: api-gateway-service
                 port:
                   number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-gateway-ingress2
+spec:
+  ingressClassName: public-iks-k8s-nginx
+  tls:
+    - hosts:
+        - ${K8S_HOSTNAME2}
+      secretName: ${K8S_HOSTNAME_SECRET2}
+  rules:
+    - host: ${K8S_HOSTNAME2}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway-service
+                port:
+                  number: 80
