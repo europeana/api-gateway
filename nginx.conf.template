@@ -146,6 +146,14 @@ http {
         ~*.*\*/\*.*                              1;
     }
 
+    # HTML accept header for Machine access
+    map $http_accept $machine_access {
+        default                                  0;
+        ~*.*text/xml.*                           1;
+        ~*.*application/xml.*                    1;
+        ~*.*\*/\*.*                              1;            # Any other
+    }
+
     server {
         listen ${PORT} default_server;
         root ${PUBLIC_FOLDER};
@@ -284,6 +292,17 @@ http {
         }
 
         ## ----- OAI-PMH ----- ##
+
+        location = /oai/record {
+            # Machine access is redirected
+            if ($machine_access = 1) {
+                return 301 https://$host/record/oai;
+            }
+        location = /oai/record {
+            # Browser access is redirected
+            if ($browser_access = 1) {
+                return 301 https://$host/console/oai;
+            }
 
         # OAI-PMH requests
         location = /oai/record {
