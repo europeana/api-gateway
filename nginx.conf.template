@@ -93,9 +93,12 @@ http {
         server ${SET_API_HOST};
     }
 
-    upstream sparql_api {
+    upstream sparql_apis {
         keepalive 10;
-        server ${SPARQL_API_HOST};
+        # We'll not only specify server name using env variables but also settings
+        # This way we can mark a server as down (for maintenance) in a deployment job
+        server ${SPARQL_API_SERVER1_SETTINGS};
+        server ${SPARQL_API_SERVER2_SETTINGS};
     }
 
     upstream sparql_ui {
@@ -408,8 +411,11 @@ http {
             }
 
             # Accept headers that indicate "machine" access are forwarded to API
+            # No load balancing algorithm defined, so by default round-robin is used
             proxy_set_header Host ${SPARQL_API_HOST};
-            proxy_pass http://sparql_api/sparql/$1$is_args$args;
+            proxy_pass http://sparql_apis/sparql/$1$is_args$args;
+            # Send to next server in list in case of errors (500 error returned by Virtuoso can mean the server is too busy/slow)
+            proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
         }
 
         ## ----- Embeddings API (load balanced)----- ##
