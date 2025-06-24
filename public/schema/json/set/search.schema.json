@@ -11,7 +11,7 @@
         "ItemResultPage": {
             "type": "object",
             "properties": {
-                "context"    : { "$ref": "#/definitions/Context"     },
+                "@context"    : { "$ref": "#/definitions/Context"     },
                 "id" : {
                     "type": "string", "format": "uri",
                     "regex": "https[:]//api[.]europeana[.]eu/set/[0-9]+/search?.*",
@@ -75,7 +75,7 @@
         "SetResultPage": {
             "type": "object",
             "properties": {
-                "context"    : { "$ref": "#/definitions/Context"     },
+                "@context"    : { "$ref": "#/definitions/Context"     },
                 "id" : {
                     "type": "string", "format": "uri",
                     "regex": "https[:]//api[.]europeana[.]eu/set/search?.*",
@@ -149,8 +149,8 @@
         "Context": {
             "type": "string", "format": "uri", 
             "description": "The JSON-LD context.",
-            "const": "http://www.europeana.eu/schemas/context/collection.jsonld",
-            "example": "http://www.europeana.eu/schemas/context/collection.jsonld"
+            "const": "https://api.europeana.eu/schema/context/set.jsonld",
+            "example": "https://api.europeana.eu/schema/context/set.jsonld"
         },
         "ResultPageType": {
             "type": "string",

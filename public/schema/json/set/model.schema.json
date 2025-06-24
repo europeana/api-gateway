@@ -77,8 +77,8 @@
         "Context": {
             "type": "string", "format": "uri", 
             "description": "The JSON-LD context.",
-            "const": "http://www.europeana.eu/schemas/context/collection.jsonld",
-            "example": "http://www.europeana.eu/schemas/context/collection.jsonld"
+            "const": "https://api.europeana.eu/schema/context/set.jsonld",
+            "example": "https://api.europeana.eu/schema/context/set.jsonld"
         },
         "SetURI": {
             "type"  : "string",
@@ -93,7 +93,7 @@
             "example": "https://api.europeana.eu/set/91?page=0&pageSize=10"
         },
         "SetType": {
-            "enum": [ "Collection", "BookmarkFolder", "EntityBestItemsSet" ],
+            "enum": [ "Collection", "DynamicCollection", "BookmarkFolder", "EntityBestItemsSet" ],
             "description": "The type of the set. By default all sets are classified as 'Collection'. The 'BookmarkFolder' and 'EntityBestItemsSet' are types that are used to power specific functionality in the Europeana Website.",
             "example": "Collection"
         },
@@ -160,6 +160,7 @@
         "WebResourceSource": {
             "type": "string", "format": "uri",
             "description": "The source where the media resource was obtained from, typically the identifier of a record",
+            "format": "http[:]//data[.]europeana[.]eu/item/.*",
             "example": "http://data.europeana.eu/item/90402/SK_A_4691"
         },
         "Thumbnail": {
@@ -185,7 +186,7 @@
                     "example": "my_username"
                 }
             },
-            "required": [ "id", "nickname" ],
+            "required": [ "id", "type", "nickname" ],
             "additionalProperties": false
         },
         "PersonType": {

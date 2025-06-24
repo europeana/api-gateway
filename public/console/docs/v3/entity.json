@@ -19,6 +19,10 @@
         { 
             "url": "https://api.europeana.eu/entity",
             "description": "Public endpoint for the production service."
+        },
+        { 
+            "url": "https://entity-management-api.acceptance.eanadev.org/entity",
+            "description": "Internal endpoint for the acceptance service."
         }
     ],
     "externalDocs": {
@@ -42,12 +46,12 @@
             "description": "Methods for discovering entities"
         },
         {
-            "name": "Internal",
-            "description": "Non-official methods used by Europeana internal systems (use at your own discretion)"
+          "name": "Management",
+          "description": "Methods restricted to Europeana staff"
         },
         {
-          "name": "Management",
-          "description": "Methods restricted to Europeana staff or internal systems"
+            "name": "Internal",
+            "description": "Non-official methods used by Europeana internal systems (use at your own discretion)"
         }
     ],
     "components": {
@@ -217,6 +221,40 @@
                     "401": { "$ref": "#/components/responses/401" },
                     "404": { "$ref": "#/components/responses/404" }
                 }
+            },
+            "delete": {
+                "tags": [ "Management" ],
+                "summary": "Deprecate an existing entity",
+                "description": "Offers a way to deprecate an entity. A record will be kept for the entity but it will no longer be listed and used for enrichment. The purpose of keeping a record is to prevent unintensionally adding the entity back to the collection.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/entityType" },
+                    { "$ref": "#/components/parameters/entityId"   }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The request was executed successfully.",
+                        "content": { 
+                            "application/json": {}
+                        }
+                     }
+                }
+            },
+            "post": {
+                "tags": [ "Management" ],
+                "summary": "Re-enable a previously deprecated entity",
+                "description": "Offers a way to re-enable an entity that was previously deprecated. The entity will no longer be deprecated and therefore be listed and used for enrichment as before.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/entityType" },
+                    { "$ref": "#/components/parameters/entityId"   }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": { 
+                            "application/json": {}
+                        }
+                     }
+                }
             }
         },
         "/{entityType}/{entityId}.{format}": {
@@ -372,6 +410,21 @@
                 }
             }
         },
+        "/stats": {
+            "get": {
+                "tags": [ "Internal" ],
+                "summary": "Obtain statistics about available entities (non-official, use at your discretion)",
+                "description": "Presents an overview of the entities available in the database based on a range of categories. The structure and content of this method will evolve with time and may suffer changes that are not backward compatibility.",
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": { 
+                            "application/json": {}
+                        }
+                     }
+                }
+            }
+        },
         "/enrich": {
             "get": {
                 "tags": [ "Internal" ],
@@ -435,11 +488,94 @@
                 }
             }
         },
-        "/stats": {
-            "get": {
+        "/": {
+            "post": {
                 "tags": [ "Management" ],
-                "summary": "Obtain statistics about available entities (non-official, use at your discretion)",
-                "description": "Presents an overview of the entities available in the database based on a range of categories. The structure and content of this method will evolve with time and may suffer changes that are not backward compatibility.",
+                "summary": "Register a new Entity",
+                "description": "Registers a new entity in the collection. If an entity already exists matching the URI, this method will redirect to the existing entity.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/ld+json": {
+                            "schema": {
+                                "example": {
+                                  "@context": "https://api.europeana.eu/schema/context/entity.jsonld",
+                                  "id": "http://viaf.org/viaf/282339631",
+                                  "type": "Concept"
+                                }
+                             }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "The request was executed successfully.",
+                        "content": { 
+                            "application/ld+json": {}
+                        }
+                     }
+                }
+            }
+        },
+        "/{entityType}/{entityId}/management/source": {
+            "put": {
+                "tags": [ "Management" ],
+                "summary": "Change the authoritative source of the metadata for an entity.",
+                "description": "Offers a way to change the source of the metadata for the entity. The URL indicated as parameter must correspond to one of the data sources supported by the service.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/entityType" },
+                    { "$ref": "#/components/parameters/entityId"   },
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "description": "The URL of the data source used as authoritative source of the metadata for this entity.",
+                        "required": true,
+                        "example": "http://viaf.org/viaf/282339631",
+                        "schema": {
+                            "type": "string", "format": "uri",
+                            "example": "http://viaf.org/viaf/282339631"
+                        }
+                    },
+                    
+                ],
+                "responses": {
+                    "202": {
+                        "description": "The request was executed successfully.",
+                        "content": { 
+                            "application/json": {}
+                        }
+                     }
+                }
+            }
+        },
+        "/{entityType}/{entityId}/management/enrich?action=disable": {
+            "post": {
+                "tags": [ "Management" ],
+                "summary": "Disable an entity for enrichment",
+                "description": "Offers a way data specialists to flag a particular entity as not being suitable for enriching items with. Common cases are entities that are ambiguous and may result in wrong enrichments. This only applies for enrichment using labels and not for enrichment using co-reference relations (ie. owl:sameAs, skos:exactMatch).",
+                "parameters": [
+                    { "$ref": "#/components/parameters/entityType" },
+                    { "$ref": "#/components/parameters/entityId"   }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The request was executed successfully.",
+                        "content": { 
+                            "application/json": {}
+                        }
+                     }
+                }
+            }
+        },
+        "/{entityType}/{entityId}/management": {
+            "delete": {
+                "tags": [ "Management" ],
+                "summary": "Permanentely delete an entity",
+                "description": "Offers a way to permanentely delete an entity. Considering the permanent nature of this method, it must only be used when it is certain that the entity is not being used in any product and is not relevant at all for Cultural Heritage. This method is only accessible for administrators.",
+                "parameters": [
+                    { "$ref": "#/components/parameters/entityType" },
+                    { "$ref": "#/components/parameters/entityId"   }
+                ],
                 "responses": {
                     "200": {
                         "description": "The request was executed successfully.",

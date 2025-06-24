@@ -26,6 +26,7 @@
         "Place"        : { "@id": "edm:Place"          },
         "TimeSpan"     : { "@id": "edm:TimeSpan"       },
         "Organization" : { "@id": "foaf:Organization"  },
+        "Aggregator"   : { "@id": "edm:Aggregator"     },
         "ConceptScheme": { "@id": "skos:ConceptScheme" },
         
         "acronym"                : { "@id": "edm:acronym", "@container": "@language" },
@@ -86,7 +87,14 @@
                                    , "@container": "@set" },
         "wasPresentAt"           : { "@id": "edm:wasPresentAt", "@type": "@id" },
         "aggregatedVia"          : { "@id": "edm:aggregatedVia", "@type": "@id" },
-        "aggregatesFrom"         : { "@id": "edm:aggregatesFrom", "@type": "@id" },
+
+        "geographicScope"                   : { "@id": "edm:geographicScope" },
+        "heritageDomain"                    : { "@id": "edm:heritageDomain" },
+        "providesSupportForMediaType"       : { "@id": "edm:providesSupportForMediaType" },
+        "providesSupportForDataActivity"    : { "@id": "edm:providesSupportForDataActivity" },
+        "providesCapacityBuildingActivity"  : { "@id": "edm:providesCapacityBuildingActivity" },
+        "providesAudienceEngagementActivity": { "@id": "edm:providesAudienceEngagementActivity" },
+        "aggregatesFrom"                    : { "@id": "edm:aggregatesFrom", "@type": "@id" },
         
         "Address"                : { "@id": "vcard:Address"         },
         "countryName"            : { "@id": "vcard:country-name"    },
@@ -101,7 +109,6 @@
         "WebResource"            : { "@id": "edm:WebResource"       },
         "source"                 : { "@id": "dc:source", "@type": "@id" },
         "thumbnail"              : { "@id": "edm:preview", "@type": "@id" },
-        
         
         "Aggregation"            : { "@id": "ore:Aggregation"    },
         "isAggregatedBy"         : { "@id": "ore:isAggregatedBy", "@type": "@id" },
