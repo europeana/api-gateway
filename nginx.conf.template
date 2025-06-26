@@ -204,6 +204,7 @@ http {
             if ($browser_access != 1) {
                  return 404 ;         ##  for all other headers return 404
             }
+            proxy_set_header Host ${ROOT_REDIRECT_HOST}
             proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
         }
 
