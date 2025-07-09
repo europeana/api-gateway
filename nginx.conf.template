@@ -293,18 +293,16 @@ http {
 
         ## ----- OAI-PMH ----- ##
 
-        ##Machine access redirected to OAI-PMH Application
         location = /record/oai {
+           # Machine access redirected to OAI-PMH Application
             if ($machine_access = 1) {
                 return 302 https://$host/oai/record/;
             }
-
-        ## Browser access redirected to console
-        location = /record/oai {
-            # Browser access is redirected
+            # Browser access is redirected to console
             if ($browser_access = 1) {
                 return 302 https://$host/console/oai;
             }
+        }
 
         # OAI-PMH requests
         location = /oai/record {
