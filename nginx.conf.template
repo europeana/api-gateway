@@ -151,7 +151,6 @@ http {
         default                                  0;
         ~*.*text/xml.*                           1;
         ~*.*application/xml.*                    1;
-        ~*.*\*/\*.*                              1;            # Any other
     }
 
     server {
