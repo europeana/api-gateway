@@ -143,7 +143,7 @@ http {
         default                                  0;
         ~*.*text/html.*                          1;
         ~*.*application/xhtml\+xml.*             1;
-        ~*.*\*/\*.*                              1;
+        ~*.*\*/\*.*                              2;
     }
 
     # HTML accept header for Machine access
@@ -151,6 +151,7 @@ http {
         default                                  0;
         ~*.*text/xml.*                           1;
         ~*.*application/xml.*                    1;
+        ~*.*\*/\*.*                              1;            # Any other
     }
 
     server {
@@ -205,7 +206,7 @@ http {
 
         # Redirect root
         location = / {
-            if ($browser_access != 1) {
+            if ($browser_access != 1 || $browser_access != 2) {
                  return 404 ;         ##  for all other headers return 404
             }
             proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
