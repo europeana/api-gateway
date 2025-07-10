@@ -296,11 +296,11 @@ http {
         location = /record/oai {
             # Browser access is redirected to console
             if ($browser_access = 1) {
-                return 302 https://$host/console/oai;
+                return 301 https://$host/console/oai;
             }
             # Machine access redirected to OAI-PMH Application
             if ($machine_access = 1) {
-                return 302 https://$host/oai/record/;
+                return 301 https://$host/oai/record/;
             }
         }
 
