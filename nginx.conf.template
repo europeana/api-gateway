@@ -300,7 +300,7 @@ http {
             }
             # Machine access redirected to OAI-PMH Application
             if ($machine_access = 1) {
-                return 301 https://$host/oai/record/;
+                return 301 https://$host/oai/record/$is_args$args;
             }
         }
 
