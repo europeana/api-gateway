@@ -93,6 +93,11 @@ http {
         server ${SET_API_HOST};
     }
 
+    upstream solr_host {
+        keepalive 10;
+        server ${SOLR_HOST};
+    }
+
     upstream sparql_apis {
         keepalive 10;
         # We'll not only specify server name using env variables but also settings
@@ -435,6 +440,12 @@ http {
 
         location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set|recommendation)$ {
             return 307 https://$host/console/index.html?url=docs/v3/$1.json;
+        }
+
+        ### EA-4255 solr for Search api v3 demo ####
+        location ~ ^/v3/solr/search/demo {
+            proxy_set_header Host ${SOLR_HOST};
+            proxy_pass http://solr_host/;
         }
 
 
