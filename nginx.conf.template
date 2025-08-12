@@ -443,7 +443,7 @@ http {
         }
 
         ### EA-4255 solr for Search api v3 demo ####
-        location = /v3/solr/search/demo {
+        location ~* ^/v3/solr/search/demo {
             proxy_pass http://solr_host;
         }
 
