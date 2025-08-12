@@ -444,7 +444,7 @@ http {
 
         ### EA-4255 solr for Search api v3 demo ####
         location ~ ^/v3/search/demo {
-            return 301 http://solr_host/solr;
+            return 301 http://$solr_host/solr/mvp_v1/select;
         }
 
 
