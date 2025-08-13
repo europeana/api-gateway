@@ -447,8 +447,6 @@ http {
             proxy_set_header Host ${SOLR_HOST};
             rewrite ^/v3/search/demo /solr/mvp_v1/select break;
             proxy_pass http://solr_host;
-
-            #return 301 http://$solr_host/solr/mvp_v1/select;
         }
 
 
