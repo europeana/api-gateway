@@ -400,9 +400,11 @@ http {
         location = /console/sparql {
             return 302 https://$host/console/sparql/;
         }
-        location ~* ^/console/sparql/(.*) {
+        # Don't use regex for SPARQL console because some of it's files have spaces in them which NGINX doesn't like
+        # See also https://stackoverflow.com/a/73166536
+        location ~ "/console/sparql/(.+)$ {
             proxy_set_header Host ${SPARQL_UI_HOST};
-            proxy_pass http://sparql_ui/$1$is_args$args;
+            proxy_pass http://sparql_ui;
         }
 
         location ~* ^/sparql(/)?(.*) {
