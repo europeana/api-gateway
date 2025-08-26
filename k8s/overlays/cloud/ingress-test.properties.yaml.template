@@ -13,8 +13,10 @@ spec:
   tls:
     - hosts:
         - ${K8S_HOSTNAME}
-        - ${K8S_HOSTNAME_SPARQL}
       secretName: ${K8S_HOSTNAME_SECRET}
+    - hosts:
+        - ${K8S_HOSTNAME_SPARQL}
+      secretName: ${K8S_HOSTNAME_SPARQL_SECRET}
   rules:
     - host: ${K8S_HOSTNAME}
       http:
