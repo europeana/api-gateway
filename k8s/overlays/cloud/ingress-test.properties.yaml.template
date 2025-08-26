@@ -14,8 +14,23 @@ spec:
     - hosts:
         - ${K8S_HOSTNAME}
       secretName: ${K8S_HOSTNAME_SECRET}
+
+    # Second hostname to support redirects from FQDN used by old SPARQL server
+    - hosts:
+        - ${K8S_HOSTNAME_SPARQL}
+      secretName: ${K8S_HOSTNAME_SPARQL_SECRET}
   rules:
     - host: ${K8S_HOSTNAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway-service
+                port:
+                  number: 80
+    - host: ${K8S_HOSTNAME_SPARQL}
       http:
         paths:
           - path: /

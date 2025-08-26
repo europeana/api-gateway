@@ -509,4 +509,22 @@ http {
         # }
     }
 
+    # --- sparql.europeana.eu ---
+    # Server block to redirect requests sent to old sparql server to API gateway instead (see EA-4154)
+    server {
+        listen 80;
+        server_name ${SPARQL_SERVER_REDIRECT};
+        root ${PUBLIC_FOLDER};
+
+        # Machine access is forwarded as is
+        if ($sparql_machine_access == 1) {
+            return 302 https://api.europeana.eu/sparql/$is_args$args;
+        }
+
+        # Human access is sent to the console
+        return 302 https://api.europeana.eu/console/sparql/$is_args$args;
+
+        # NOTE! For testing we do a 302, but for production we should change to a 301
+    }
+
 }

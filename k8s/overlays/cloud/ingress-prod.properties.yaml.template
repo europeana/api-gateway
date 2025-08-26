@@ -1,10 +1,18 @@
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: api-gateway-ingress
 spec:
   ingressClassName: public-iks-k8s-nginx
+  tls:
+    - hosts:
+      - ${K8S_HOSTNAME}
+    secretName: ${K8S_HOSTNAME_SECRET}
+
+    # Second hostname to support redirects from FQDN used by old SPARQL server
+    - hosts:
+      - ${K8S_HOSTNAME_SPARQL}
+    secretName: ${K8S_HOSTNAME_SPARQL_SECRET}
   rules:
   - host:  ${K8S_HOSTNAME}
     http:
@@ -16,22 +24,14 @@ spec:
               number: 80
         path: /
         pathType: Prefix
-  # Alternative path is deprecated
-  # - host:  ${K8S_SERVER_ALIAS}
-  #  http:
-  #    paths:
-  #    - backend:
-  #        service:
-  #          name: api-gateway-service
-  #          port:
-  #            number: 80
-  #      path: /
-  #      pathType: Prefix
 
-  tls:
-  - hosts:
-    - ${K8S_HOSTNAME}
-    secretName: ${K8S_HOSTNAME_SECRET}
-  # - hosts:
-  #  - ${K8S_SERVER_ALIAS}
-  #  secretName: ${K8S_SERVER_ALIAS_SECRET}
+  - host:  ${K8S_HOSTNAME_SPARQL}
+    http:
+      paths:
+      - backend:
+          service:
+            name: api-gateway-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
