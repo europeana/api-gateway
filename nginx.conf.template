@@ -517,7 +517,7 @@ http {
         root ${PUBLIC_FOLDER};
 
         # Machine access is forwarded as is
-        if ($sparql_machine_access == 1) {
+        if ($sparql_machine_access = 1) {
             return 302 https://api.europeana.eu/sparql/$is_args$args;
         }
 
