@@ -474,14 +474,4 @@ http {
         # }
     }
 
-    # Server block to redirect requests sent to sparql.europeana.eu to API gateway (see EA-4154)
-    server {
-        listen 80;
-        server_name ${SPARQL_SERVER_REDIRECT};
-        root ${PUBLIC_FOLDER};
-
-        # For testing we can do a 302, but for production we should change to a 301
-        rewrite ^/(.*)$ https://$host/sparql$1;  #permanent;
-    }
-
 }
