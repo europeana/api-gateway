@@ -5,7 +5,7 @@ error_log stderr warn;
 
 events {
     # For deployment in Kubernetes we should always "use epoll" (most efficient). Optionally you can disable it for local testing.
-    ${USE_EPOLL};
+    ${USE_EPOLL}
     worker_connections ${WORKER_CONNECTIONS};
     multi_accept on;
 }
@@ -443,7 +443,7 @@ http {
         }
 
         ### EA-4255 solr for Search api v3 demo ####
-        location ~ ^/v3/search/demo {
+        location ~ ^/v3/search/(.*)/demo {
             if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' '*';
                 add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
@@ -468,7 +468,8 @@ http {
             }
 
             proxy_set_header Host ${SOLR_HOST};
-            rewrite ^/v3/search/demo /solr/mvp_v1/select break;
+            ###  rewrite ^/v3/search/demo /solr/mvp_v1/select break;
+            rewrite ^/v3/search/(.*)/demo /solr/$1/select break;
             proxy_pass http://solr_host;
         }
 
