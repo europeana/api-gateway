@@ -2,7 +2,7 @@
 
 # Substitute env var strings in NGINX config with values from env
 
-export USE_EPOLL='use epoll;'
+export USE_EPOLL='use epoll'
 export WORKER_CONNECTIONS=1024
 export PORT='80'
 export PUBLIC_FOLDER='/usr/share/nginx/html'
@@ -31,6 +31,8 @@ vars='$ANNOTATION_API_HOST
       $SPARQL_UI_HOST
       $THUMBNAIL_API_HOST
       $TRANSLATION_API_HOST
+      $SOLR_HOST
+
       $ROOT_REDIRECT_HOST
       $APIS_LANDINGPAGE
 
@@ -38,7 +40,10 @@ vars='$ANNOTATION_API_HOST
       $USE_EPOLL
       $WORKER_CONNECTIONS
       $PORT
-      $PUBLIC_FOLDER'
+      $PUBLIC_FOLDER
+
+      $SPARQL_SERVER_OLD
+      $SPARQL_SERVER_NEW'
 
 envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
