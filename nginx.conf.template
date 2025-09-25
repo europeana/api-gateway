@@ -149,6 +149,14 @@ http {
         ~*.*\*/\*.*                              1;
     }
 
+    # HTML accept header for Machine access
+    map $http_accept $machine_access {
+        default                                  0;
+        ~*.*text/xml.*                           1;
+        ~*.*application/xml.*                    1;
+        ~*.*\*/\*.*                              1;            # Any other
+    }
+
     server {
         listen ${PORT} default_server;
         root ${PUBLIC_FOLDER};
@@ -490,5 +498,22 @@ http {
 
         # NOTE! For testing we do a 302, but for production we should change to a 301
     }
+
+     # --- oai-pmh ---
+        # Server block to redirect requests sent to old sparql server to API gateway instead (see EA-4154)
+        server {
+            listen 80;
+            server_name ${OAI_SERVER_OLD};
+            root ${PUBLIC_FOLDER};
+
+            # Browser access is redirected to console
+            if ($browser_access = 1) {
+                return 301 https://${OAI_SERVER_NEW}/console/oai/$is_args$args;
+            }
+            # Machine access redirected to OAI-PMH Application
+            if ($machine_access = 1) {
+                return 301 https://${OAI_SERVER_NEW}/oai/record/$is_args$args;
+            }
+        }
 
 }

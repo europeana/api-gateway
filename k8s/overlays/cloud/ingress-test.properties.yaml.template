@@ -19,6 +19,11 @@ spec:
     - hosts:
         - ${K8S_HOSTNAME_SPARQL}
       secretName: ${K8S_HOSTNAME_SPARQL_SECRET}
+
+     # Third hostname to support redirects from FQDN used by old oai server
+     - hosts:
+         - ${K8S_HOSTNAME_OAI}
+       secretName: ${K8S_HOSTNAME_OAI_SECRET}
   rules:
     - host: ${K8S_HOSTNAME}
       http:
@@ -31,6 +36,16 @@ spec:
                 port:
                   number: 80
     - host: ${K8S_HOSTNAME_SPARQL}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway-service
+                port:
+                  number: 80
+    - host: ${K8S_HOSTNAME_OAI}
       http:
         paths:
           - path: /

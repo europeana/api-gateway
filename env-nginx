@@ -43,7 +43,9 @@ vars='$ANNOTATION_API_HOST
       $PUBLIC_FOLDER
 
       $SPARQL_SERVER_OLD
-      $SPARQL_SERVER_NEW'
+      $SPARQL_SERVER_NEW
+      $OAI_SERVER_OLD
+      $OAI_SERVER_NEW'
 
 envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
