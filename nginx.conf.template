@@ -225,7 +225,7 @@ http {
         # Old /api/v2/record and search.json requests
         location ~ ^/api/(.*) {
             rewrite ^/api/(.*)$ /api/$1 break;
-            proxy_set_header Host ${$ROOT_REDIRECT_HOST};
+            proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api;
         }
 
