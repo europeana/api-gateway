@@ -206,7 +206,7 @@ http {
             }
             add_header X-debug-message "here in browser access root redirect" always;
             proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
-            proxy_redirect /en/ http://apis_page/;
+            proxy_redirect default;
             add_header X-debug-message "here fixing application redirect" always;
         }
 
