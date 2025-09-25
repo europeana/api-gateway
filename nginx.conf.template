@@ -209,10 +209,10 @@ http {
             # proxy_redirect default;
         }
 
-         location = /en {
+        location = /en {
              add_header X-debug-message "here fixing application redirect" always;
              proxy_pass http://apis_page/en;
-         }
+        }
 
         # Used by Kubernetes health checks
         location /nginx-health {
