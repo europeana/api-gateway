@@ -295,32 +295,6 @@ http {
             proxy_pass http://thumbnail_api/thumbnail/v3/$2$is_args$args;
         }
 
-        ## ----- OAI-PMH ----- ##
-
-        # OAI-PMH requests
-        location = /oai/record {
-            proxy_set_header Host ${OAI_RECORD_HOST};
-            proxy_pass http://oai_record/oai/$is_args$args;
-        }
-
-        # OAI-PMH index page
-        location = /oai/record/ {
-            proxy_set_header Host ${OAI_RECORD_HOST};
-            proxy_pass http://oai_record/index.html;
-        }
-
-        # Change all OAI-PMH .shtml form pages to .html
-        location ~ ^/oai/record/(.*)\.shtml {
-            return 301 https://$host/oai/record/$1.html;
-        }
-
-        # OAI-PMH query forms
-        location ~ ^/oai/record/(.*)\.html {
-            proxy_set_header Host ${OAI_RECORD_HOST};
-            proxy_pass http://oai_record/$1.html;
-        }
-
-
         ## ----- Annotation API ----- ##
 
         location ~ ^/annotation/(.*) {
