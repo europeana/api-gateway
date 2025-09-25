@@ -206,9 +206,13 @@ http {
             }
             add_header X-debug-message "here in browser access root redirect" always;
             proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
-            proxy_redirect default;
-            add_header X-debug-message "here fixing application redirect" always;
+            # proxy_redirect default;
         }
+
+         location = /en {
+             add_header X-debug-message "here fixing application redirect" always;
+             proxy_pass http://apis_page/en;
+         }
 
         # Used by Kubernetes health checks
         location /nginx-health {
@@ -221,7 +225,7 @@ http {
         # Old /api/v2/record and search.json requests
         location ~ ^/api/(.*) {
             rewrite ^/api/(.*)$ /api/$1 break;
-            proxy_set_header Host ${SEARCH_API_HOST};
+            proxy_set_header Host ${$ROOT_REDIRECT_HOST};
             proxy_pass http://search_api;
         }
 
