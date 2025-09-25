@@ -20,10 +20,10 @@ spec:
         - ${K8S_HOSTNAME_SPARQL}
       secretName: ${K8S_HOSTNAME_SPARQL_SECRET}
 
-     # Third hostname to support redirects from FQDN used by old oai server
-     - hosts:
+    # Third hostname to support redirects from FQDN used by old oai server
+    - hosts:
          - ${K8S_HOSTNAME_OAI}
-       secretName: ${K8S_HOSTNAME_OAI_SECRET}
+      secretName: ${K8S_HOSTNAME_OAI_SECRET}
   rules:
     - host: ${K8S_HOSTNAME}
       http:
