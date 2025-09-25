@@ -205,10 +205,10 @@ http {
                  return 404 ;         ##  for all other headers return 404
             }
             add_header X-debug-message "here in browser access root redirect" always;
-            proxy_set_header Host $host;
+            proxy_set_header Host ${ROOT_REDIRECT_HOST};
             proxy_set_header Connection "";
-            proxy_pass http://apis_page/;   ##  Browser access reverse proxied to the APIs Landing page
-            proxy_redirect http://$host http://apis_page/;
+            proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
+            # proxy_redirect http://$host http://apis_page/;
         }
 
         # Used by Kubernetes health checks
