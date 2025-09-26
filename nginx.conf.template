@@ -507,11 +507,11 @@ http {
 
             # Browser access is redirected to console
             if ($browser_access = 1) {
-                return 301 https://${OAI_SERVER_NEW}/console/oai/$is_args$args;
+                return 301 https://${OAI_SERVER_NEW}/console/oai$is_args$args;
             }
             # Machine access redirected to OAI-PMH Application
             if ($machine_access = 1) {
-                return 301 https://${OAI_SERVER_NEW}/oai/record/$is_args$args;
+                return 301 https://${OAI_SERVER_NEW}/oai/record$is_args$args;
             }
         }
 
