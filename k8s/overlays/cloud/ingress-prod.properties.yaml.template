@@ -6,13 +6,18 @@ spec:
   ingressClassName: public-iks-k8s-nginx
   tls:
     - hosts:
-      - ${K8S_HOSTNAME}
-    secretName: ${K8S_HOSTNAME_SECRET}
+        - ${K8S_HOSTNAME}
+      secretName: ${K8S_HOSTNAME_SECRET}
 
     # Second hostname to support redirects from FQDN used by old SPARQL server
     - hosts:
-      - ${K8S_HOSTNAME_SPARQL}
-    secretName: ${K8S_HOSTNAME_SPARQL_SECRET}
+        - ${K8S_HOSTNAME_SPARQL}
+      secretName: ${K8S_HOSTNAME_SPARQL_SECRET}
+
+    # Third hostname to support redirects from FQDN used by old oai server
+    - hosts:
+        - ${K8S_HOSTNAME_OAI}
+      secretName: ${K8S_HOSTNAME_OAI_SECRET}
   rules:
   - host:  ${K8S_HOSTNAME}
     http:
@@ -26,6 +31,16 @@ spec:
         pathType: Prefix
 
   - host:  ${K8S_HOSTNAME_SPARQL}
+    http:
+      paths:
+      - backend:
+          service:
+            name: api-gateway-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  - host:  ${K8S_HOSTNAME_OAI}
     http:
       paths:
       - backend:
