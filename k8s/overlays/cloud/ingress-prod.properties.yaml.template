@@ -16,8 +16,14 @@ spec:
 
     # Third hostname to support redirects from FQDN used by old oai server
     - hosts:
-        - ${K8S_HOSTNAME_OAI}
-      secretName: ${K8S_HOSTNAME_OAI_SECRET}
+        - ${K8S_HOSTNAME_OAI_1}
+      secretName: ${K8S_HOSTNAME_OAI_SECRET_1}
+
+    # Fourth hostname to support redirects from FQDN used by old oai server
+    - hosts:
+        - ${K8S_HOSTNAME_OAI_2}
+        - ${K8S_HOSTNAME_OAI_3}
+      secretName: ${K8S_HOSTNAME_OAI_SECRET_2}
   rules:
   - host:  ${K8S_HOSTNAME}
     http:
@@ -40,7 +46,27 @@ spec:
               number: 80
         path: /
         pathType: Prefix
-  - host:  ${K8S_HOSTNAME_OAI}
+  - host:  ${K8S_HOSTNAME_OAI_1}
+    http:
+      paths:
+      - backend:
+          service:
+            name: api-gateway-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  - host:  ${K8S_HOSTNAME_OAI_2}
+    http:
+      paths:
+      - backend:
+          service:
+            name: api-gateway-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  - host:  ${K8S_HOSTNAME_OAI_3}
     http:
       paths:
       - backend:
