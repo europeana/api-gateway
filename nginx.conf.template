@@ -209,7 +209,7 @@ http {
             proxy_set_header Connection "";
             proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
             proxy_redirect https://apis_page/en https://$host/;
-            proxy_redirect https://apis_page https://$host/;
+            proxy_redirect https://${ROOT_REDIRECT_HOST} https://$host/;
             add_header X-uri "$host";
             add_header X-uri "${ROOT_REDIRECT_HOST}";
             add_header X-uri "apis_page";
