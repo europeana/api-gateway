@@ -211,7 +211,9 @@ http {
             proxy_redirect https://apis_page/en https://$host/;
             proxy_redirect https://apis_page https://$host/;
             add_header X-uri "$host";
-            add_header X-uri "$apis_page";
+            add_header X-uri "${ROOT_REDIRECT_HOST}";
+            add_header X-uri "apis_page";
+
             #proxy_redirect     off;
         }
 
