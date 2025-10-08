@@ -210,6 +210,8 @@ http {
             proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
             proxy_redirect https://apis_page/en https://$host/;
             proxy_redirect https://apis_page https://$host/;
+            add_header X-uri "$host";
+            add_header X-uri "$apis_page";
             #proxy_redirect     off;
         }
 
