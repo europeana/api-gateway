@@ -162,6 +162,10 @@ http {
 
         include nginx.conf.d/*.conf;
 
+        proxy_buffer_size 128k;
+        proxy_buffers 4 256k;
+        proxy_busy_buffers_size 256k;
+
         # ----------------------------------------------------------
         # CORS config for nginx
         # "location /" works as "last resort" and applies to everything that is not matched by other rules
@@ -219,7 +223,6 @@ http {
 
         location = /en {
             add_header X-debug-message "here in en redirect" always;
-            proxy_buffering off;
             proxy_set_header Host $host;
             proxy_set_header Connection "";
             proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
