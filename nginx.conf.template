@@ -222,8 +222,9 @@ http {
         }
 
         location = /en {
-            proxy_set_header X-Real-IP  $remote_addr;
-            proxy_set_header X-Forwarded-For $remote_addr;
+            #proxy_set_header X-Real-IP  $remote_addr;
+            #proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_responses 0
             proxy_set_header Host $host;
             proxy_set_header Connection "";
             proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
