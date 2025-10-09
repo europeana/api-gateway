@@ -154,11 +154,6 @@ http {
         root ${PUBLIC_FOLDER};
         index index.html;
 
-        http {
-          proxy_buffering off;
-        }
-
-
         # HTTPS enforcement should be done within Kubernetes ingress
         # "upstream" servers do not use resolver settings by default (paid option), so we proxy directly to the urls
         #resolver ${RESOLVER_SETTINGS};
@@ -224,6 +219,7 @@ http {
 
         location = /en {
             add_header X-debug-message "here in en redirect" always;
+            proxy_buffering off;
             proxy_set_header Host $host;
             proxy_set_header Connection "";
             proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
