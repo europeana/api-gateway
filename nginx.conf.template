@@ -149,10 +149,6 @@ http {
         ~*.*\*/\*.*                              1;
     }
 
-    events {
-      worker_connections  4096;  ## Default: 1024
-    }
-
     server {
         listen ${PORT} default_server;
         root ${PUBLIC_FOLDER};
