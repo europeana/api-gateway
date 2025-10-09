@@ -165,6 +165,7 @@ http {
         proxy_buffer_size 128k;
         proxy_buffers 4 256k;
         proxy_busy_buffers_size 256k;
+        proxy_responses 0;
 
         # ----------------------------------------------------------
         # CORS config for nginx
@@ -224,7 +225,6 @@ http {
         location = /en {
             #proxy_set_header X-Real-IP  $remote_addr;
             #proxy_set_header X-Forwarded-For $remote_addr;
-            proxy_responses 0
             proxy_set_header Host $host;
             proxy_set_header Connection "";
             proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
