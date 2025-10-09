@@ -222,7 +222,6 @@ http {
         }
 
         location = /en {
-            add_header X-debug-message "here in en redirect" always;
             proxy_set_header Host $host;
             proxy_set_header Connection "";
             proxy_pass http://apis_page;   ##  Browser access reverse proxied to the APIs Landing page
