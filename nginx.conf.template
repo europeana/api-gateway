@@ -10,6 +10,12 @@ events {
     multi_accept on;
 }
 
+ stream {
+     server {
+         proxy_responses 0;
+     }
+ }
+
 http {
     charset utf-8;
     # EA-2236: Disable access logs
@@ -165,7 +171,6 @@ http {
         proxy_buffer_size 128k;
         proxy_buffers 4 256k;
         proxy_busy_buffers_size 256k;
-        proxy_responses 0;
 
         # ----------------------------------------------------------
         # CORS config for nginx
