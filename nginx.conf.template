@@ -10,12 +10,6 @@ events {
     multi_accept on;
 }
 
- stream {
-     server {
-         proxy_responses 0;
-     }
- }
-
 http {
     charset utf-8;
     # EA-2236: Disable access logs
