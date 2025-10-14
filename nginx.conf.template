@@ -474,13 +474,11 @@ http {
 
         # Machine access is forwarded as is
         if ($sparql_machine_access = 1) {
-            return 302 https://${SPARQL_SERVER_NEW}/sparql/$is_args$args;
+            return 301 https://${SPARQL_SERVER_NEW}/sparql/$is_args$args;
         }
 
         # Human access is sent to the console
-        return 302 https://${SPARQL_SERVER_NEW}/console/sparql/$is_args$args;
-
-        # NOTE! For testing we do a 302, but for production we should change to a 301
+        return 301 https://${SPARQL_SERVER_NEW}/console/sparql/$is_args$args;
     }
 
      # --- oai-pmh.europeana.eu and oai.europeana.eu ---
@@ -492,12 +490,12 @@ http {
 
             # All requests to path /oai are forwarded to the OAI-PMH application as is
             location = /oai {
-                return 302 https://${OAI_SERVER_NEW}/oai/record$is_args$args;
+                return 301 https://${OAI_SERVER_NEW}/oai/record$is_args$args;
             }
 
             # All requests to path / are forwarded to the console. We don't forward the arguments
             location ~* /(.*.html)? {
-                return 302 https://${OAI_SERVER_NEW}/console/oai;
+                return 301 https://${OAI_SERVER_NEW}/console/oai;
             }
         }
 
