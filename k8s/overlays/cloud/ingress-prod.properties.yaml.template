@@ -5,21 +5,14 @@ metadata:
 spec:
   ingressClassName: public-iks-k8s-nginx
   tls:
-    # Main hostname
     - hosts:
+        # Main hostname
         - ${K8S_HOSTNAME}
-      secretName: ${K8S_HOSTNAME_SECRET}
-
-    # Second hostname to support redirects from FQDN used by old SPARQL server
-    - hosts:
+        # Extra hostnames for redirecting old FQDNs
         - ${K8S_HOSTNAME_SPARQL}
-      secretName: ${K8S_HOSTNAME_SPARQL_SECRET}
-
-    # Third and fourth hostname to support redirects from FQDNs used by old oai server
-    - hosts:
         - ${K8S_HOSTNAME_OAI1}
         - ${K8S_HOSTNAME_OAI2}
-      secretName: ${K8S_HOSTNAME_OAI_SECRET}
+      secretName: ${K8S_HOSTNAME_SECRET}
   rules:
   - host:  ${K8S_HOSTNAME}
     http:
