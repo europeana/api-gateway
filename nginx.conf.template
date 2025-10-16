@@ -162,10 +162,6 @@ http {
 
         include nginx.conf.d/*.conf;
 
-        proxy_buffer_size 128k;
-        proxy_buffers 4 256k;
-        proxy_busy_buffers_size 256k;
-
         # ----------------------------------------------------------
         # CORS config for nginx
         # "location /" works as "last resort" and applies to everything that is not matched by other rules
