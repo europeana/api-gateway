@@ -214,6 +214,11 @@ http {
             add_header X-debug-message "here in browser access root redirect" always;
         }
 
+        location = /en {
+            proxy_set_header Host $host;
+            proxy_pass http://apis_page/en
+            add_header X-debug-message "here in en redirect" always;
+        }
 
         # Used by Kubernetes health checks
         location /nginx-health {
