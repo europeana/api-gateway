@@ -205,10 +205,13 @@ http {
 
         # Redirect root
         location = / {
+            proxy_pass         http://172.17.35.151:8080/;
+            proxy_redirect     off;
+
+            proxy_set_header   Host             $host;
+            proxy_set_header   X-Real-IP        $remote_addr;
+            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
             add_header X-debug-message "here in browser access root redirect" always;
-            proxy_set_header Host $host;
-            proxy_set_header Connection "";
-            proxy_pass http://apis_page/en;   ##  Browser access reverse proxied to the APIs Landing page
         }
 
 
