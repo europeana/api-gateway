@@ -211,7 +211,6 @@ http {
 
         # APIs landing page redirects to /en. Hence we need to tell reverse proxied server where to go for location /en
         location = /en {
-            rewrite /en / break;
             proxy_set_header Host $host;
             proxy_pass http://apis_page/en;
         }
