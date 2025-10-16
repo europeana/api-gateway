@@ -207,14 +207,13 @@ http {
         location = / {
             proxy_pass         http://apis_page;
             proxy_set_header   Host             $host;
-            proxy_redirect https://${ROOT_REDIRECT_HOST}/en https://$host;
-            add_header X-debug-message "here in browser access root redirect" always;
         }
 
+        # APIs landing page redirects to /en. Hence we need to tell reverse proxied server where to go for location /en
         location = /en {
+            rewrite /en / break;
             proxy_set_header Host $host;
             proxy_pass http://apis_page/en;
-            add_header X-debug-message "here in en redirect" always;
         }
 
         # Used by Kubernetes health checks
