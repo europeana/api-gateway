@@ -216,7 +216,7 @@ http {
 
         location = /en {
             proxy_set_header Host $host;
-            proxy_pass http://apis_page/en
+            proxy_pass http://apis_page/en;
             add_header X-debug-message "here in en redirect" always;
         }
 
