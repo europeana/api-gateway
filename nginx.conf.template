@@ -207,6 +207,7 @@ http {
         location = / {
             proxy_pass         http://apis_page/en/;
             proxy_set_header   Host             $host;
+            proxy_redirect https://${ROOT_REDIRECT_HOST}/en https://$host;
             add_header X-debug-message "here in browser access root redirect" always;
         }
 
