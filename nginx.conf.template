@@ -206,11 +206,7 @@ http {
         # Redirect root
         location = / {
             proxy_pass         http://apis_page/en/;
-            proxy_redirect     off;
-
             proxy_set_header   Host             $host;
-            proxy_set_header   X-Real-IP        $remote_addr;
-            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
             add_header X-debug-message "here in browser access root redirect" always;
         }
 
