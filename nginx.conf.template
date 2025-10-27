@@ -194,8 +194,14 @@ http {
 
         # Redirect root
         location = / {
-            proxy_set_header Host ${APIS_LANDINGPAGE};
+            proxy_set_header Host $host;
             proxy_pass http://apis_page;
+        }
+
+        # APIs landing page redirects to /en (relative url), so we need to reverse proxy that as well
+        location = /en {
+            proxy_set_header Host $host;
+            proxy_pass http://apis_page/en;
         }
 
         # Used by Kubernetes health checks
