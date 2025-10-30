@@ -204,6 +204,12 @@ http {
             proxy_pass http://apis_page/en;
         }
 
+        # APIs landing page redirects to /_nuxt (relative url), so we need to reverse proxy that as well
+        location ~ ^/_nuxt/(.*) {
+            proxy_set_header Host $host;
+            proxy_pass http://apis_page/$is_args$args;
+        }
+
         # Used by Kubernetes health checks
         location /nginx-health {
             default_type application/json;
