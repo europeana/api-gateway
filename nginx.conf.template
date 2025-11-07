@@ -210,6 +210,17 @@ http {
             proxy_pass http://apis_page$is_args$args;
         }
 
+        # Multiple language Redirect for landing page
+        # Not sure how we will reach here but we do need to support this.
+        # if we access via api gateway some other languages we should be redirected to the default /en page
+        # languages to support - (bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv)
+
+        location = /bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv {
+            proxy_set_header Host $host;
+            proxy_pass http://apis_page/en;
+        }
+
+
         # Used by Kubernetes health checks
         location /nginx-health {
             default_type application/json;
