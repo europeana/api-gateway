@@ -215,7 +215,7 @@ http {
         # if we access via api gateway some other languages we should be redirected to the default /en page
         # languages to support - (bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv)
 
-        location = /bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv {
+        location = /(bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv) {
             proxy_set_header Host $host;
             proxy_pass http://apis_page/en;
         }
