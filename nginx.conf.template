@@ -220,9 +220,8 @@ http {
         # languages to support - (bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv)
 
         location ~ ^/(bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv) {
-            rewrite  ^/(bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv)/ /en break;
             proxy_set_header Host $host;
-            proxy_pass http://apis_page;
+            return 302 http://apis_page/en;
             add_header X-debug-message "here in language redirect " always;
         }
 
