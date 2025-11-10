@@ -196,15 +196,12 @@ http {
         location = / {
             proxy_set_header Host $host;
             proxy_pass http://apis_page;
-            add_header X-debug-message "here in root redirect " always;
-
         }
 
         # APIs landing page redirects to /en (relative url), so we need to reverse proxy that as well
         location = /en {
             proxy_set_header Host $host;
             proxy_pass http://apis_page/en;
-            add_header X-debug-message "here in en redirect " always;
 
         }
 
@@ -221,7 +218,6 @@ http {
 
         location ~ ^/(bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv) {
             return 302 http://$host/en;
-            add_header X-debug-message "here in language redirect " always;
         }
 
 
