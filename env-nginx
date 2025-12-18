@@ -12,6 +12,9 @@ NAMESERVER=$(cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}' | tr '\
 export RESOLVER_SETTINGS="${NAMESERVER} ${RESOLVER_SETTINGS}"
 
 vars='$ANNOTATION_API_HOST
+      $DOCS_ATLASSIAN
+      $DOC_SEARCH
+      $DOC_RECORD
       $EMBEDDING_API_HOST
       $EMBEDDING_SERVER1_SETTINGS
       $EMBEDDING_SERVER2_SETTINGS
@@ -22,35 +25,32 @@ vars='$ANNOTATION_API_HOST
       $MANIFEST_API_HOST
       $NEWSPAPER_API_HOST
       $OAI_RECORD_HOST
+      $OAI_SERVER_NEW
+      $OAI_SERVER_OLD
       $RECOMMENDATION_API_HOST
+      $RESOLVER_SETTINGS
+      $ROOT_REDIRECT_HOST
       $SEARCH_API_HOST
       $SET_API_HOST
       $SPARQL_API_HOST
       $SPARQL_API_SERVER1_SETTINGS
       $SPARQL_API_SERVER2_SETTINGS
+      $SPARQL_SERVER_NEW
+      $SPARQL_SERVER_OLD
       $SPARQL_UI_HOST
       $THUMBNAIL_API_HOST
       $TRANSLATION_API_HOST
-      $SOLR_HOST
-
-      $ROOT_REDIRECT_HOST
-
-      $RESOLVER_SETTINGS
       $USE_EPOLL
       $WORKER_CONNECTIONS
       $PORT
-      $PUBLIC_FOLDER
-
-      $SPARQL_SERVER_OLD
-      $SPARQL_SERVER_NEW
-      $OAI_SERVER_OLD
-      $OAI_SERVER_NEW'
+      $PUBLIC_FOLDER'
 
 envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 if [ -z "$1" ]; then
-      echo "No container params. Running default nginx command"
+      echo "No parameters given, running nginx."
       nginx
 else
+      echo "Executing $@"
       exec "$@"
 fi

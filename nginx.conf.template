@@ -117,6 +117,11 @@ http {
         server ${TRANSLATION_API_HOST};
     }
 
+    upstream docs_atlassian {
+        keepalive 10;
+        server ${DOCS_ATLASSIAN};
+    }
+
     # Some Accept headers indicate "machine" access to our SPARQL endpoint
     map $http_accept $sparql_machine_access {
         default                                  0;
@@ -155,30 +160,40 @@ http {
 
         include nginx.conf.d/*.conf;
 
-        # ----------------------------------------------------------
-        # CORS config for nginx
-        # "location /" works as "last resort" and applies to everything that is not matched by other rules
-        # ----------------------------------------------------------
+        ##################################################
+        #           CORS config for nginx                #
+        # location / works as last resort and applies to #
+        # everything that is not matched by other rules  #
+        ##################################################
+
         location / {
             if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' '*';
                 add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
 
-                # Custom headers and headers various browsers *should* be OK with but aren't
+        ##############################################################################
+        # Custom headers and headers various browsers *should* be OK with but aren't #
+        ##############################################################################
+
                 add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,ETag,Cache-Control,Content-Type,Range';
 
-                # Tell client that this pre-flight info is valid for 20 days
+        ##############################################################
+        # Tell client that this pre-flight info is valid for 20 days #
+        ##############################################################
+
                 add_header 'Access-Control-Max-Age' 1728000;
                 add_header 'Content-Type' 'text/plain; charset=utf-8';
                 add_header 'Content-Length' 0;
                 return 204;
             }
+
             #if ($request_method = 'POST') {
             #    add_header 'Access-Control-Allow-Origin' '*' always;
             #    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS' always;
             #    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,ETag,Cache-Control,Content-Type,Range' always;
             #    add_header 'Access-Control-Expose-Headers' 'ETag,Content-Range' always;
             #}
+
             if ($request_method = 'GET') {
                 add_header 'Access-Control-Allow-Origin' '*' always;
                 add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS' always;
@@ -190,7 +205,10 @@ http {
             }
         }
 
-        # ----------------------------------------------------------
+
+        #######################
+        # ROOT & LANDING PAGE #
+        #######################
 
         # Redirect root
         location = / {
@@ -210,56 +228,88 @@ http {
             proxy_pass http://apis_page$is_args$args;
         }
 
-        # Multiple language Redirect for landing page
-        # Not sure how we will reach here but we do need to support this.
-        # if we access via api gateway some other languages we should be redirected to the default /en page
-        # languages to support - (bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv)
+        #############################################################################
+        #              Multiple language Redirect for landing page                  #
+        #      Not sure how we will reach here but we do need to support this.      #
+        #      If we access via api gateway some other languages we should be       #
+        #        redirected to the default /en page. Languages to support:          #
+        # (bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv) #
+        #############################################################################
 
         location ~ ^/(bg|cs|da|de|el|es|et|eu|fi|fr|ga|hr|hu|it|lt|lv|mt|nl|pl|pt|ro|sk|sl|sv) {
             return 302 http://$host/en;
         }
 
-        # Used by Kubernetes health checks
+
+        #######################
+        #  K8S HEALTH CHECKS  #
+        #######################
+
         location /nginx-health {
             default_type application/json;
             return 200 '{"status":"healthy"}';
         }
 
-        ## ----- Search & Record API ----- ##
 
-        # Old /api/v2/record and search.json requests
+        #############################
+        #####  Search & Record  #####
+        #############################
+
+
+        ###############################################
+        # Old /api/v2/record and search.json requests #
+        ###############################################
+
         location ~ ^/api/(.*) {
             rewrite ^/api/(.*)$ /api/$1 break;
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api;
         }
 
-        # Recommendation API for records (alternative path, has to be defined before Search & Record)
+
+        #####################################################
+        # Recommendation API for records (alternative path, #
+        # has to be defined before Search & Record          #
+        #####################################################
+
         location ~ ^/record/(v2/)?(.*)/recommend {
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/record/$2$is_args$args;
         }
 
-        # Search API v3
+        ###################
+        #  Search API v3  #
+        ###################
+
         location ~ ^/record/v3/search(.*)$ {
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api/record/v3/search.json$is_args$args;
         }
 
-        # Search API v2 and OpenSearch
+        ##################################
+        #  Search API v2 and OpenSearch  #
+        ##################################
+
         location ~ ^/record/(v2/)?(open)?search(.*)$ {
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api/record/$2search$3$is_args$args;
         }
 
-        # Record API
+        ###############
+        # Record API  #
+        ###############
+
         location ~ ^/record/(v2/)?(.*) {
             rewrite  ^/record/(v2/)?(.*)$ /api/v2/record/$2 break;
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api;
         }
 
-        # Always enable CORS for Search & Record API Swagger endpoint (as bug fix)
+        ##############################################
+        # Always enable CORS for Search & Record API #
+        # Swagger endpoint (as bug fix)              #
+        ##############################################
+
         location = /record/api-docs {
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_hide_header Access-Control-Allow-Origin;
@@ -267,9 +317,15 @@ http {
             proxy_pass http://search_api/api/api-docs;
         }
 
-        ## ----- Thumbnail API ----- ##
 
-        # Thumbnail API v2 (old style)
+        #######################
+        #####  THUMBNAILS #####
+        #######################
+
+        ################################
+        # Thumbnail API v2 (old style) #
+        ################################
+
         location = /api/v2/thumbnail-by-url.json {
             # Thumbnails are JPEGs; no need to gzip them
             gzip off;
@@ -277,7 +333,10 @@ http {
             proxy_pass http://thumbnail_api;
         }
 
-        # Thumbnail API v2 (new style)
+        ################################
+        # Thumbnail API v2 (new style) #
+        ################################
+
         location = /thumbnail/v2/url.json {
             # Thumbnails are JPEGs; no need to gzip them
             gzip off;
@@ -290,6 +349,9 @@ http {
             return 404;
         }
 
+        ####################
+        # Thumbnail API v3 #
+        ####################
         # Thumbnail API v3
         location ~ /thumbnail/(v3/)?(.*) {
             # Thumbnails are JPEGs; no need to gzip them
@@ -298,68 +360,109 @@ http {
             proxy_pass http://thumbnail_api/thumbnail/v3/$2$is_args$args;
         }
 
- ## ----- OAI-PMH ----- ##
 
-        # OAI-PMH requests
+        #######################
+        #####   OAI-PMH   #####
+        #######################
+
+        ####################
+        # OAI-PMH requests #
+        ####################
+
         location = /oai/record {
             proxy_set_header Host ${OAI_RECORD_HOST};
             proxy_pass http://oai_record/oai/$is_args$args;
         }
 
-        # OAI-PMH index page
+        ######################
+        # OAI-PMH index page #
+        ######################
+
         location = /oai/record/ {
             proxy_set_header Host ${OAI_RECORD_HOST};
             proxy_pass http://oai_record/index.html;
         }
 
-        # Change all OAI-PMH .shtml form pages to .html
+        #############################
+        # Change all OAI-PMH .shtml #
+        # form pages to .html       #
+        #############################
+
         location ~ ^/oai/record/(.*)\.shtml {
             return 301 https://$host/oai/record/$1.html;
         }
 
-        # OAI-PMH query forms
+
+        #######################
+        # OAI-PMH query forms #
+        #######################
+
         location ~ ^/oai/record/(.*)\.html {
             proxy_set_header Host ${OAI_RECORD_HOST};
             proxy_pass http://oai_record/$1.html;
         }
 
-        ## ----- Annotation API ----- ##
+
+        ########################
+        #####  ANNOTATION  #####
+        ########################
+
+        ####################
+        #  Annotation API  #
+        ####################
 
         location ~ ^/annotation/(.*) {
             proxy_set_header Host ${ANNOTATION_API_HOST};
             proxy_pass http://annotation_api/annotation/$1$is_args$args;
         }
 
-        ## ----- Recommendation API for Entities ----- ##
+        ##############################################################
+        #             Recommendation API for Entities                #
+        # alternative path, has to be defined before /entity/* route #
+        ##############################################################
 
-        # Recommendation API for entities (alternative path, has to be defined before /entity/* route)
         location ~ ^/entity/(.*)/recommend {
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/entity/$1$is_args$args;
         }
 
-        ## ----- Entity API ----- ##
 
-        # Entity - search, resolve and suggest are routed to Entity API
+        ####################
+        #####  ENTITY  #####
+        ####################
+
+
+        ###############################################################
+        # Entity search, resolve and suggest are routed to Entity API #
+        ###############################################################
+
         location ~ ^/entity/(search|suggest|resolve|enrich|stats)(.*) {
             proxy_set_header Host ${ENTITY_API_HOST};
             proxy_pass http://entity_api/entity/$1$2$is_args$args;
         }
 
-        # Entity - all other requests go to Entity Management
+        #######################################################
+        # Entity - all other requests go to Entity Management #
+        #######################################################
+
         location ~ ^/entity/(.*) {
             proxy_set_header Host ${ENTITY_MANAGEMENT_HOST};
             proxy_pass http://entity_management/entity/$1$is_args$args;
         }
 
-        ## ----- IIIF Manifest API ----- ##
+        ###########################
+        #####  IIIF MANIFEST  #####
+        ###########################
 
         location ~ ^/presentation/(.*)/manifest$ {
             proxy_set_header Host ${MANIFEST_API_HOST};
             proxy_pass http://manifest_api/presentation/$1/manifest$is_args$args;
         }
 
-        ## ----- Newspaper Search ----- ##
+
+        ##############################
+        #####  NEWSPAPER SEARCH  #####
+        ##############################
 
         # Newspaper search (has to be defined before fulltext/* route)
         location = /fulltext/search.json {
@@ -367,7 +470,11 @@ http {
             proxy_pass http://newspaper_api/api/v2/search.json$is_args$args;
         }
 
-        ## ----- IIIF Fulltext API ----- ##
+
+
+        ###########################
+        #####  IIIF FULLTEXT  #####
+        ###########################
 
         location ~ ^/(fulltext|presentation)/(.*) {
             proxy_set_header Host ${FULLTEXT_API_HOST};
@@ -375,43 +482,65 @@ http {
         }
 
 
-        ## ----- Recommendation API ----- ##
+        ############################
+        #####  RECOMMENDATION  #####
+        ############################
 
         location ~ ^/recommend/(.*) {
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/$1$is_args$args;
         }
 
-        # Recommendation API for sets (alternative path, has to be defined before /set/* route)
+        ###########################################################
+        #             Recommendation API for Sets                 #
+        # alternative path, has to be defined before /set/* route #
+        ###########################################################
+
         location ~ ^/set/(.*)/recommend {
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/set/$1$is_args$args;
         }
 
-        # Sets API
+        ##################
+        #####  SETS  #####
+        ##################
+
         location ~ ^/set/(.*) {
             proxy_set_header Host ${SET_API_HOST};
             proxy_pass http://set_api/set/$1$is_args$args;
         }
 
-
-        ## ----- Translation API ----- ##
+        #########################
+        #####  TRANSLATION  #####
+        #########################
 
         # no rewrite needed for proxying HOST requests - updated for EA-3859
         location ~* ^/translation/(.*) {
             proxy_set_header Host ${TRANSLATION_API_HOST};
             proxy_pass http://translation_api/$1$is_args$args;
         }
+        ####################
+        #####  SPARQL  #####
+        ####################
 
-        ## ----- SPARQL ----- ##
 
-        # Without trailing slash the SPARQL UI will not include the 'sparql' part of the path
-        # when trying to load its resources
+
+        ###############################################################
+        #  Without trailing slash the SPARQL UI will not include the  #
+        # 'sparql' part of the path when trying to load its resources #
+        ###############################################################
+
         location = /console/sparql {
             return 302 https://$host/console/sparql/;
         }
-        # Don't use regex groups in the proxy_pass because some of the SPARQL console files have spaces in them which
-        # NGINX doesn't like. See also https://stackoverflow.com/a/73166536
+
+
+        ######################################################################
+        # Don't use regex groups in the proxy_pass because some of the       #
+        # SPARQL console files have spaces in them which NGINX doesn't like. #
+        # See also https://stackoverflow.com/a/73166536                      #
+        ######################################################################
+
         location ~* ^/console/sparql/(.*) {
             rewrite ^/console/sparql/(.*)$ /$1 break;
             proxy_set_header Host ${SPARQL_UI_HOST};
@@ -424,33 +553,123 @@ http {
                 return 302 https://$host/console/sparql/$2$is_args$args;
             }
 
-            # Accept headers that indicate "machine" access are forwarded to API
-            # No load balancing algorithm defined, so by default round-robin is used
+            ##########################################################################
+            # Accept headers that indicate "machine" access are forwarded to API     #
+            # No load balancing algorithm defined, so by default round-robin is used #
+            ##########################################################################
+
             proxy_set_header Host ${SPARQL_API_HOST};
             proxy_pass http://sparql_apis/sparql/$1$is_args$args;
-            # Send to next server in list in case of errors (500 error returned by Virtuoso can mean the server is too busy/slow)
+
+
+            ##############################################################
+            # Send to next server in list in case of errors (500 error   #
+            # returned by Virtuoso can mean the server is too busy/slow) #
+            ##############################################################
+
             proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
         }
 
-        ## ----- Embeddings API (load balanced)----- ##
+        ########################
+        #####  EMBEDDINGS  #####
+        ########################
+
+        ######################################
+        #   Embeddings API (load balanced)   #
+        ######################################
 
         location ~* ^/embedding/(.*) {
             proxy_set_header Host ${EMBEDDING_API_HOST};
 
-            # No load balancing algorithm defined, so by default round-robin is used
+
+            ##########################################################################
+            # No load balancing algorithm defined, so round-robin is used by default #
+            ##########################################################################
+
             proxy_pass http://embedding_apis/embedding_api/$1$is_args$args;
 
-            # Send to next server in list in case of errors
+
+            #################################################
+            # Send to next server in list in case of errors #
+            #################################################
+
             proxy_next_upstream error timeout http_502 http_503 http_504;
         }
-
-        ## ----- Consoles and attribution ----- ##
+        ####################################
+        #####  CONSOLES & ATTRIBUTION  #####
+        ####################################
 
         location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set|recommendation)$ {
             return 307 https://$host/console/index.html?url=docs/v3/$1.json;
         }
 
-         # Old and deprecated (kept for the time being for backward compatibility)
+        ###################################################
+        ##### KB DOCS CLEANING & CONFLUENCE WRANGLING #####
+        ###################################################
+
+        location = /docs/search {
+            proxy_set_header Host ${DOCS_ATLASSIAN};
+            proxy_pass http://docs_atlassian/${DOC_SEARCH};
+        }
+
+        location = /docs/record {
+            proxy_set_header Host ${DOCS_ATLASSIAN};
+            proxy_pass http://docs_atlassian/${DOC_RECORD};
+        }
+    }
+
+    ##################################################
+    #             sparql.europeana.eu                #
+    # Server block to redirect requests sent to old  #
+    # sparql server to the API gateway (see EA-4154) #
+    ##################################################
+
+    server {
+        listen ${PORT};
+        server_name ${SPARQL_SERVER_OLD};
+        root ${PUBLIC_FOLDER};
+
+        # Machine access is forwarded as is
+        if ($sparql_machine_access = 1) {
+            return 301 https://${SPARQL_SERVER_NEW}/sparql/$is_args$args;
+        }
+
+        # Human access is sent to the console
+        return 301 https://${SPARQL_SERVER_NEW}/console/sparql/$is_args$args;
+    }
+
+
+    #####################################################
+    #    oai-pmh.europeana.eu & oai.europeana.eu        #
+    # Server block to redirect requests sent to the old #
+    # oai-pmh to the API gateway (see EA-4154)          #
+    #####################################################
+
+    server {
+        listen ${PORT};
+        server_name ${OAI_SERVER_OLD};
+        root ${PUBLIC_FOLDER};
+
+        # All requests to path /oai are forwarded to the OAI-PMH application as is
+        location = /oai {
+            return 301 https://${OAI_SERVER_NEW}/oai/record$is_args$args;
+        }
+
+        # All requests to path / are forwarded to the console. We don't forward the arguments
+        location ~* /(.*.html)? {
+            return 301 https://${OAI_SERVER_NEW}/console/oai;
+        }
+    }
+
+}
+
+        #############################
+        #####  YE OLDE RUBBISH  #####
+        #############################
+
+##########################################################################################
+# CHECK IF THIS CAN BE DELETED - December 2025
+# Old and deprecated (kept for the time being for backward compatibility)
         # ----------------------------------------------------------
         # Redirect old record url format (to be removed?)
         #   Nov 2019 - again 0 hits in last 4 months
@@ -484,40 +703,3 @@ http {
         # location = /api/image {
         #     return 301 https://$host/api/v2/thumbnail-by-url.json$is_args$args;
         # }
-    }
-
-    # --- sparql.europeana.eu ---
-    # Server block to redirect requests sent to old sparql server to API gateway instead (see EA-4154)
-    server {
-        listen 80;
-        server_name ${SPARQL_SERVER_OLD};
-        root ${PUBLIC_FOLDER};
-
-        # Machine access is forwarded as is
-        if ($sparql_machine_access = 1) {
-            return 301 https://${SPARQL_SERVER_NEW}/sparql/$is_args$args;
-        }
-
-        # Human access is sent to the console
-        return 301 https://${SPARQL_SERVER_NEW}/console/sparql/$is_args$args;
-    }
-
-     # --- oai-pmh.europeana.eu and oai.europeana.eu ---
-        # Server block to redirect requests sent to old sparql server to API gateway instead (see EA-4154)
-        server {
-            listen 80;
-            server_name ${OAI_SERVER_OLD};
-            root ${PUBLIC_FOLDER};
-
-            # All requests to path /oai are forwarded to the OAI-PMH application as is
-            location = /oai {
-                return 301 https://${OAI_SERVER_NEW}/oai/record$is_args$args;
-            }
-
-            # All requests to path / are forwarded to the console. We don't forward the arguments
-            location ~* /(.*.html)? {
-                return 301 https://${OAI_SERVER_NEW}/console/oai;
-            }
-        }
-
-}
