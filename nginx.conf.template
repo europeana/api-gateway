@@ -608,12 +608,12 @@ http {
         ###################################################
 
         location = /docs/search {
-            proxy_set_header Host ${DOCS_ATLASSIAN};
+            proxy_set_header Host ${DOCS_BASE};
             proxy_pass http://docs_atlassian/${DOC_SEARCH};
         }
 
         location = /docs/record {
-            proxy_set_header Host ${DOCS_ATLASSIAN};
+            proxy_set_header Host ${DOCS_BASE};
             proxy_pass http://docs_atlassian/${DOC_RECORD};
         }
     }
