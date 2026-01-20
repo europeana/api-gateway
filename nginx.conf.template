@@ -620,7 +620,7 @@ http {
 #             proxy_set_header Referer $http_referer;
 #             proxy_set_header X-Forwarded-For $remote_addr;
 #             proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_pass https://europeana.atlassian.net/wiki/spaces/EF/pages/2385739812/Search+API+Documentation;
+            proxy_pass https://europeana.atlassian.net/wiki/external/OGQzMDk5NjM4OGY0NGE2NzllNzgwOWFlYmE4M2NkMzM;
         }
         
         location = /docs/record {
