@@ -6,6 +6,10 @@ export USE_EPOLL='use epoll'
 export WORKER_CONNECTIONS=1024
 export PORT='80'
 export PUBLIC_FOLDER='/usr/share/nginx/html'
+export ERROR_LOG='stderr warn'
+export LOG_FORMAT='
+    # EA-2236: Disable access logs'
+export ACCESS_LOG='off'
 
 # Also use default nameserver for resolving hostnames (necessary for k8s deployments so we can use service names)
 NAMESERVER=$(cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}' | tr '\n' ' ')
@@ -43,8 +47,12 @@ vars='$ANNOTATION_API_HOST
       $USE_EPOLL
       $WORKER_CONNECTIONS
       $PORT
-      $PUBLIC_FOLDER'
+      $PUBLIC_FOLDER
+      $ERROR_LOG
+      $LOG_FORMAT
+      $ACCESS_LOG'
 
+# envsubst "${vars}" < nginx.conf.template > nginx.conf
 envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 if [ -z "$1" ]; then

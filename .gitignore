@@ -11,3 +11,5 @@
 *.properties.yaml
 *.user.properties
 env-nginx-local
+
+old/

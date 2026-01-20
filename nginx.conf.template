@@ -1,7 +1,7 @@
 worker_processes auto;
 daemon off;
 
-error_log stderr warn;
+error_log ${ERROR_LOG};
 
 events {
     # For deployment in Kubernetes we should always "use epoll" (most efficient). Optionally you can disable it for local testing.
@@ -12,8 +12,8 @@ events {
 
 http {
     charset utf-8;
-    # EA-2236: Disable access logs
-    access_log off;
+    ${LOG_FORMAT}
+    access_log ${ACCESS_LOG};
     default_type application/octet-stream;
     include mime.types;
     sendfile on;
@@ -116,7 +116,7 @@ http {
         # Translation API enforces https
         server ${TRANSLATION_API_HOST};
     }
-
+    
     upstream docs_atlassian {
         keepalive 10;
         server ${DOCS_ATLASSIAN};
@@ -165,7 +165,7 @@ http {
         # location / works as last resort and applies to #
         # everything that is not matched by other rules  #
         ##################################################
-
+        
         location / {
             if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' '*';
@@ -174,26 +174,26 @@ http {
         ##############################################################################
         # Custom headers and headers various browsers *should* be OK with but aren't #
         ##############################################################################
-
+                
                 add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,ETag,Cache-Control,Content-Type,Range';
 
         ##############################################################
         # Tell client that this pre-flight info is valid for 20 days #
         ##############################################################
-
+        
                 add_header 'Access-Control-Max-Age' 1728000;
                 add_header 'Content-Type' 'text/plain; charset=utf-8';
                 add_header 'Content-Length' 0;
                 return 204;
             }
-
+            
             #if ($request_method = 'POST') {
             #    add_header 'Access-Control-Allow-Origin' '*' always;
             #    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS' always;
             #    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,ETag,Cache-Control,Content-Type,Range' always;
             #    add_header 'Access-Control-Expose-Headers' 'ETag,Content-Range' always;
             #}
-
+            
             if ($request_method = 'GET') {
                 add_header 'Access-Control-Allow-Origin' '*' always;
                 add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS' always;
@@ -244,18 +244,18 @@ http {
         #######################
         #  K8S HEALTH CHECKS  #
         #######################
-
+        
         location /nginx-health {
             default_type application/json;
             return 200 '{"status":"healthy"}';
         }
-
+        
 
         #############################
         #####  Search & Record  #####
         #############################
-
-
+        
+        
         ###############################################
         # Old /api/v2/record and search.json requests #
         ###############################################
@@ -271,7 +271,7 @@ http {
         # Recommendation API for records (alternative path, #
         # has to be defined before Search & Record          #
         #####################################################
-
+        
         location ~ ^/record/(v2/)?(.*)/recommend {
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/record/$2$is_args$args;
@@ -280,7 +280,7 @@ http {
         ###################
         #  Search API v3  #
         ###################
-
+        
         location ~ ^/record/v3/search(.*)$ {
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api/record/v3/search.json$is_args$args;
@@ -289,7 +289,7 @@ http {
         ##################################
         #  Search API v2 and OpenSearch  #
         ##################################
-
+        
         location ~ ^/record/(v2/)?(open)?search(.*)$ {
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api/record/$2search$3$is_args$args;
@@ -298,26 +298,26 @@ http {
         ###############
         # Record API  #
         ###############
-
+        
         location ~ ^/record/(v2/)?(.*) {
             rewrite  ^/record/(v2/)?(.*)$ /api/v2/record/$2 break;
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api;
         }
-
+        
         ##############################################
         # Always enable CORS for Search & Record API #
         # Swagger endpoint (as bug fix)              #
         ##############################################
-
+        
         location = /record/api-docs {
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_hide_header Access-Control-Allow-Origin;
             add_header Access-Control-Allow-Origin "*";
             proxy_pass http://search_api/api/api-docs;
         }
-
-
+        
+        
         #######################
         #####  THUMBNAILS #####
         #######################
@@ -336,7 +336,7 @@ http {
         ################################
         # Thumbnail API v2 (new style) #
         ################################
-
+        
         location = /thumbnail/v2/url.json {
             # Thumbnails are JPEGs; no need to gzip them
             gzip off;
@@ -359,8 +359,8 @@ http {
             proxy_set_header Host ${THUMBNAIL_API_HOST};
             proxy_pass http://thumbnail_api/thumbnail/v3/$2$is_args$args;
         }
-
-
+        
+        
         #######################
         #####   OAI-PMH   #####
         #######################
@@ -382,12 +382,12 @@ http {
             proxy_set_header Host ${OAI_RECORD_HOST};
             proxy_pass http://oai_record/index.html;
         }
-
+        
         #############################
         # Change all OAI-PMH .shtml #
         # form pages to .html       #
         #############################
-
+        
         location ~ ^/oai/record/(.*)\.shtml {
             return 301 https://$host/oai/record/$1.html;
         }
@@ -396,7 +396,7 @@ http {
         #######################
         # OAI-PMH query forms #
         #######################
-
+        
         location ~ ^/oai/record/(.*)\.html {
             proxy_set_header Host ${OAI_RECORD_HOST};
             proxy_pass http://oai_record/$1.html;
@@ -406,7 +406,7 @@ http {
         ########################
         #####  ANNOTATION  #####
         ########################
-
+        
         ####################
         #  Annotation API  #
         ####################
@@ -430,12 +430,12 @@ http {
         ####################
         #####  ENTITY  #####
         ####################
-
-
-        ###############################################################
+        
+        
+        ############################################################### 
         # Entity search, resolve and suggest are routed to Entity API #
-        ###############################################################
-
+        ############################################################### 
+        
         location ~ ^/entity/(search|suggest|resolve|enrich|stats)(.*) {
             proxy_set_header Host ${ENTITY_API_HOST};
             proxy_pass http://entity_api/entity/$1$2$is_args$args;
@@ -444,7 +444,7 @@ http {
         #######################################################
         # Entity - all other requests go to Entity Management #
         #######################################################
-
+        
         location ~ ^/entity/(.*) {
             proxy_set_header Host ${ENTITY_MANAGEMENT_HOST};
             proxy_pass http://entity_management/entity/$1$is_args$args;
@@ -504,7 +504,7 @@ http {
         ##################
         #####  SETS  #####
         ##################
-
+        
         location ~ ^/set/(.*) {
             proxy_set_header Host ${SET_API_HOST};
             proxy_pass http://set_api/set/$1$is_args$args;
@@ -529,18 +529,18 @@ http {
         #  Without trailing slash the SPARQL UI will not include the  #
         # 'sparql' part of the path when trying to load its resources #
         ###############################################################
-
+                
         location = /console/sparql {
             return 302 https://$host/console/sparql/;
         }
-
-
+        
+        
         ######################################################################
         # Don't use regex groups in the proxy_pass because some of the       #
         # SPARQL console files have spaces in them which NGINX doesn't like. #
         # See also https://stackoverflow.com/a/73166536                      #
         ######################################################################
-
+        
         location ~* ^/console/sparql/(.*) {
             rewrite ^/console/sparql/(.*)$ /$1 break;
             proxy_set_header Host ${SPARQL_UI_HOST};
@@ -557,16 +557,16 @@ http {
             # Accept headers that indicate "machine" access are forwarded to API     #
             # No load balancing algorithm defined, so by default round-robin is used #
             ##########################################################################
-
+            
             proxy_set_header Host ${SPARQL_API_HOST};
             proxy_pass http://sparql_apis/sparql/$1$is_args$args;
-
-
+            
+            
             ##############################################################
             # Send to next server in list in case of errors (500 error   #
             # returned by Virtuoso can mean the server is too busy/slow) #
             ##############################################################
-
+            
             proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
         }
 
@@ -585,14 +585,14 @@ http {
             ##########################################################################
             # No load balancing algorithm defined, so round-robin is used by default #
             ##########################################################################
-
+            
             proxy_pass http://embedding_apis/embedding_api/$1$is_args$args;
 
 
             #################################################
             # Send to next server in list in case of errors #
             #################################################
-
+            
             proxy_next_upstream error timeout http_502 http_503 http_504;
         }
         ####################################
@@ -602,19 +602,33 @@ http {
         location ~* ^/console/(record|iiif|annotation|thumbnail|ld|search|translation|entity|oai|set|recommendation)$ {
             return 307 https://$host/console/index.html?url=docs/v3/$1.json;
         }
-
+        
         ###################################################
         ##### KB DOCS CLEANING & CONFLUENCE WRANGLING #####
         ###################################################
-
-        location = /docs/search {
-            proxy_set_header Host $host;
-            proxy_pass http://docs_atlassian/${DOC_SEARCH};
+    
+        location = /docs {
+            proxy_set_header Host $proxy_host;
+#             proxy_set_header Referer $http_referer;
+#             proxy_set_header X-Forwarded-For $remote_addr;
+#             proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_pass https://europeana.atlassian.net/wiki/spaces/EF/overview?homepageId=330367111;
         }
-
+    
+        location = /docs/search {
+            proxy_set_header Host $proxy_host;
+#             proxy_set_header Referer $http_referer;
+#             proxy_set_header X-Forwarded-For $remote_addr;
+#             proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_pass https://europeana.atlassian.net/wiki/spaces/EF/pages/2385739812/Search+API+Documentation;
+        }
+        
         location = /docs/record {
-            proxy_set_header Host $host;
-            proxy_pass http://docs_atlassian/${DOC_RECORD};
+            proxy_set_header Host $proxy_host;
+#             proxy_set_header Referer $http_referer;
+#             proxy_set_header X-Forwarded-For $remote_addr;
+#             proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_pass https://europeana.atlassian.net/wiki/spaces/EF/pages/2385674279/Record+API+Documentation;
         }
     }
 
