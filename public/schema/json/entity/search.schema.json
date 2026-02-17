@@ -7,8 +7,8 @@
         "@context"   : {
             "type": "string", "format": "uri", 
             "description": "The JSON-LD context.",
-            "const": "http://www.europeana.eu/schemas/context/entity.jsonld",
-            "example": "http://www.europeana.eu/schemas/context/entity.jsonld"
+            "const": "https://api.europeana.eu/schema/context/entity.jsonld",
+            "example": "https://api.europeana.eu/schema/context/entity.jsonld"
         },
         "id" : {
             "type": "string", "format": "uri",
