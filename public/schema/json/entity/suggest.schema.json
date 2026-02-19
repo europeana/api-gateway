@@ -27,8 +27,10 @@
                 "oneOf": [
                     { "$ref": "#/definitions/agent" },
                     { "$ref": "#/definitions/place" },
+                    { "$ref": "#/definitions/timespan" },
                     { "$ref": "#/definitions/concept" },
-                    { "$ref": "#/definitions/organization" }
+                    { "$ref": "#/definitions/organization" },
+                    { "$ref": "#/definitions/aggregator" }
                 ]
             }
         }
@@ -110,6 +112,21 @@
             "required": [ "id", "type", "prefLabel" ],
             "additionalProperties": false
         },
+        "timespan": {
+            "properties": {
+                "id"                    : { "type": "string", "format": "uri"    },
+                "type"                  : { "enum": [ "TimeSpan" ]               },
+                "depiction"             : { "type": "string", "format": "uri"    },
+                "isShownBy"             : { "$ref": "#/definitions/isShownBy"    },
+                "prefLabel"             : { "$ref": "#/definitions/langMap"      },
+                "altLabel"              : { "$ref": "#/definitions/langMapArray" },
+                "hiddenLabel"           : { "$ref": "#/definitions/langMapArray" },
+                "begin"                 : { "type": "string"                     },
+                "end"                   : { "type": "string"                     }
+            },
+            "required": [ "id", "type", "prefLabel" ],
+            "additionalProperties": false
+        },
         "concept": {
             "properties": {
                 "id"                    : { "type": "string", "format": "uri"    },
@@ -139,5 +156,21 @@
             "required": [ "id", "type", "prefLabel" ],
             "additionalProperties": false
         },
+        "aggregator": {
+            "type": "object",
+            "properties": {
+                "id"                    : { "type": "string", "format": "uri"    },
+                "type"                  : { "enum": [ "Aggregator" ]             },
+                "depiction"             : { "type": "string", "format": "uri"    },
+                "isShownBy"             : { "$ref": "#/definitions/isShownBy"    },
+                "prefLabel"             : { "$ref": "#/definitions/langMap"      },
+                "altLabel"              : { "$ref": "#/definitions/langMapArray" },
+                "hiddenLabel"           : { "$ref": "#/definitions/langMapArray" },
+                "acronym"               : { "$ref": "#/definitions/langMapArray" },
+                "country"               : { "type": "string", "format": "uri"    }
+            },
+            "required": [ "id", "type", "prefLabel" ],
+            "additionalProperties": false
+        }
     }
 }
