@@ -601,7 +601,7 @@ http {
 #             set $args $args&url=docs/v3/record.json;
 #             add_header 'X-Wickie' "$args" always;
 #             proxy_pass https://api.europeana.eu/console/index.html;
-            proxy_pass https://$host/console/index.html?url=docs/v3/record.json;
+            proxy_pass https://api.europeana.eu/console/index.html?url=docs/v3/record.json;
         } 
 
         # https://api.europeana.eu/console/record 
