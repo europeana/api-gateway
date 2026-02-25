@@ -116,11 +116,6 @@ http {
         # Translation API enforces https
         server ${TRANSLATION_API_HOST};
     }
-    
-    upstream docs_atlassian {
-        keepalive 10;
-        server ${DOCS_ATLASSIAN};
-    }
 
     # Some Accept headers indicate "machine" access to our SPARQL endpoint
     map $http_accept $sparql_machine_access {
@@ -596,46 +591,35 @@ http {
             proxy_next_upstream error timeout http_502 http_503 http_504;
         }
         
-        ####################################
-        #####  CONSOLES & ATTRIBUTION  #####
-        ####################################
+                
+        ###########################################
+        ##### Reverse proxy for console pages #####
+        ###########################################
         
         location = /console/record {
             proxy_set_header Host $host;
 #             set $args $args&url=docs/v3/record.json;
-#             
 #             add_header 'X-Wickie' "$args" always;
 #             proxy_pass https://api.europeana.eu/console/index.html;
             proxy_pass https://$host/console/index.html?url=docs/v3/record.json;
         } 
-                   
+
+        # https://api.europeana.eu/console/record 
+        # https://api.europeana.eu/console/index.html?url=docs/v3/record.json 
+        # proxy_set_header Host $host;
+        # proxy_set_header X-Real-IP $remote_addr;
         
-#         location = /console/record {
-#             proxy_pass https://$host/console/index.html?url=docs/v3/record.json;
-#         }         
+        ####################################
+        #####  CONSOLES & ATTRIBUTION  #####
+        ####################################
 
         location ~* ^/console/(iiif|annotation|thumbnail|ld|search|translation|entity|oai|set|recommendation)$ {
             return 307 https://$host/console/index.html?url=docs/v3/$1.json;
          }
-        
-        ###########################################
-        ##### Reverse proxy for console pages #####
-        ###########################################
-    
-# https://api.europeana.eu/console/record 
-# https://api.europeana.eu/console/index.html?url=docs/v3/record.json 
-#     proxy_set_header Host $host;
-#     proxy_set_header X-Real-IP $remote_addr;
-#     
-#         location = /console/record {
-#             proxy_set_header Host $proxy_host;
-#             proxy_set_header Referer $http_referer;
-#             proxy_set_header X-Forwarded-For $remote_addr;
-#             proxy_set_header X-Forwarded-Proto $scheme;
-#             proxy_pass https://europeana.atlassian.net/wiki/spaces/EF/overview?homepageId=330367111;
-#         }
 
-    # END first server block
+    ##########################
+    # END first server block #
+    ##########################
     }
 
 
