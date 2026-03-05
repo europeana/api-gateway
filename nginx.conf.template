@@ -305,22 +305,14 @@ http {
             proxy_set_header Host ${OAI_RECORD_HOST};
             proxy_pass http://oai_record/oai/$is_args$args;
         }
-
-        # OAI-PMH index page
         location = /oai/record/ {
             proxy_set_header Host ${OAI_RECORD_HOST};
-            proxy_pass http://oai_record/index.html;
+            proxy_pass http://oai_record/oai/$is_args$args;
         }
 
-        # Change all OAI-PMH .shtml form pages to .html
-        location ~ ^/oai/record/(.*)\.shtml {
-            return 301 https://$host/oai/record/$1.html;
-        }
-
-        # OAI-PMH query forms
-        location ~ ^/oai/record/(.*)\.html {
-            proxy_set_header Host $host;
-            proxy_pass http://oai_record/$1.html;
+        # Redirect old html interface to console
+        location ~ ^/oai/record/(.*)\.(s)?html {
+            return 301 https://${OAI_SERVER_NEW}/console/oai;
         }
 
         ## ----- Annotation API ----- ##
