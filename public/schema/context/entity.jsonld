@@ -104,6 +104,7 @@
         "region"                 : { "@id": "vcard:region"          },
         "streetAddress"          : { "@id": "vcard:street-address"  },
         "hasGeo"                 : { "@id": "vcard:hasGeo"          },
+        "Location"               : { "@id": "vcard:Location"        },
         
         "isShownBy"              : { "@id": "edm:isShownBy", "@type": "@id" },
         "WebResource"            : { "@id": "edm:WebResource"       },

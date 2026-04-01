@@ -1,0 +1,42 @@
+{
+    "$id": "https://api.europeana.eu/schemas/json/entity/enrich#",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "title": "Entity API - Enrich schema",
+    "type": "object",
+    "properties": {
+        "@context"   : {
+            "type": "string", "format": "uri", 
+            "description": "The JSON-LD context.",
+            "const": "https://api.europeana.eu/schema/context/entity.jsonld",
+            "example": "https://api.europeana.eu/schema/context/entity.jsonld"
+        },
+        "id" : {
+            "type": "string", "format": "uri",
+            "regex": "https[:]//api[.]europeana[.]eu/entity/enrich?.*",
+            "description": "The identifier of the search results page.",
+            "example": "https://api.europeana.eu/entity/enrich?query=test&page=0&pageSize=10"
+        },
+        "type": {
+            "type": "string", "const": "ResultPage", 
+            "example": "ResultPage"
+        },
+        "partOf": {
+        },
+        "total": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50
+        },
+        "next": {
+        },
+        "items": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 50,
+            "items": {
+            }
+        }
+    },
+    "required": [ "@context", "type", "total" ],
+    "additionalProperties": false
+}

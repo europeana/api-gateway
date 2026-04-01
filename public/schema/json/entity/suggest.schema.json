@@ -8,7 +8,7 @@
             "type": "array",
             "description": "The JSON-LD context.",
             "items": {
-                "enum": [ "https://www.w3.org/ns/ldp.jsonld", "http://www.europeana.eu/schemas/context/entity.jsonld" ]
+                "enum": [ "https://www.w3.org/ns/ldp.jsonld", "https://api.europeana.eu/schema/context/entity.jsonld" ]
             }
         },
         "type": {
@@ -27,7 +27,10 @@
                 "oneOf": [
                     { "$ref": "#/definitions/agent" },
                     { "$ref": "#/definitions/place" },
-                    { "$ref": "#/definitions/concept" }
+                    { "$ref": "#/definitions/timespan" },
+                    { "$ref": "#/definitions/concept" },
+                    { "$ref": "#/definitions/organization" },
+                    { "$ref": "#/definitions/aggregator" }
                 ]
             }
         }
@@ -94,17 +97,32 @@
                 "altLabel"              : { "$ref": "#/definitions/langMapArray" },
                 "hiddenLabel"           : { "$ref": "#/definitions/langMapArray" },
                 "isPartOf"              : {
-		    "type": "array",
-		    "minItems": 1,
+                    "type": "array",
+                    "minItems": 1,
                     "items": {
-		        "type": "object",
+                        "type": "object",
                         "properties": {
-			    "id"       : { "type": "string", "format": "uri" },
-			    "prefLabel": { "$ref": "#/definitions/langMap"   }
-			},
-			"additionalProperties": false
-		    }
+                           "id"       : { "type": "string", "format": "uri" },
+                           "prefLabel": { "$ref": "#/definitions/langMap"   }
+                        },
+                        "additionalProperties": false
+                    }
                 }
+            },
+            "required": [ "id", "type", "prefLabel" ],
+            "additionalProperties": false
+        },
+        "timespan": {
+            "properties": {
+                "id"                    : { "type": "string", "format": "uri"    },
+                "type"                  : { "enum": [ "TimeSpan" ]               },
+                "depiction"             : { "type": "string", "format": "uri"    },
+                "isShownBy"             : { "$ref": "#/definitions/isShownBy"    },
+                "prefLabel"             : { "$ref": "#/definitions/langMap"      },
+                "altLabel"              : { "$ref": "#/definitions/langMapArray" },
+                "hiddenLabel"           : { "$ref": "#/definitions/langMapArray" },
+                "begin"                 : { "type": "string"                     },
+                "end"                   : { "type": "string"                     }
             },
             "required": [ "id", "type", "prefLabel" ],
             "additionalProperties": false
@@ -118,6 +136,38 @@
                 "prefLabel"             : { "$ref": "#/definitions/langMap"      },
                 "altLabel"              : { "$ref": "#/definitions/langMapArray" },
                 "hiddenLabel"           : { "$ref": "#/definitions/langMapArray" }
+            },
+            "required": [ "id", "type", "prefLabel" ],
+            "additionalProperties": false
+        },
+        "organization": {
+            "type": "object",
+            "properties": {
+                "id"                    : { "type": "string", "format": "uri"    },
+                "type"                  : { "enum": [ "Organization" ]           },
+                "depiction"             : { "type": "string", "format": "uri"    },
+                "isShownBy"             : { "$ref": "#/definitions/isShownBy"    },
+                "prefLabel"             : { "$ref": "#/definitions/langMap"      },
+                "altLabel"              : { "$ref": "#/definitions/langMapArray" },
+                "hiddenLabel"           : { "$ref": "#/definitions/langMapArray" },
+                "acronym"               : { "$ref": "#/definitions/langMapArray" },
+                "country"               : { "type": "string", "format": "uri"    }
+            },
+            "required": [ "id", "type", "prefLabel" ],
+            "additionalProperties": false
+        },
+        "aggregator": {
+            "type": "object",
+            "properties": {
+                "id"                    : { "type": "string", "format": "uri"    },
+                "type"                  : { "enum": [ "Aggregator" ]             },
+                "depiction"             : { "type": "string", "format": "uri"    },
+                "isShownBy"             : { "$ref": "#/definitions/isShownBy"    },
+                "prefLabel"             : { "$ref": "#/definitions/langMap"      },
+                "altLabel"              : { "$ref": "#/definitions/langMapArray" },
+                "hiddenLabel"           : { "$ref": "#/definitions/langMapArray" },
+                "acronym"               : { "$ref": "#/definitions/langMapArray" },
+                "country"               : { "type": "string", "format": "uri"    }
             },
             "required": [ "id", "type", "prefLabel" ],
             "additionalProperties": false
