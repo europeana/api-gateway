@@ -394,7 +394,9 @@ http {
 
         # Newspaper search (has to be defined before fulltext/* route)
         location = /fulltext/search.json {
-            proxy_set_header Host ${NEWSPAPER_API_HOST};
+#             proxy_set_header Host ${NEWSPAPER_API_HOST};
+            # Hack so S&R API knows it's a newspapers request and not a regular search.
+            proxy_set_header Host newspapers.$host;
             proxy_pass http://newspaper_api/api/v2/search.json$is_args$args;
         }
 
