@@ -389,14 +389,14 @@ http {
             proxy_set_header Host $host;
             proxy_pass http://manifest_api/presentation/$1/manifest$is_args$args;
         }
-
         #####  NEWSPAPER SEARCH  #####
 
         # Newspaper search (has to be defined before fulltext/* route)
         location = /fulltext/search.json {
-#             proxy_set_header Host ${NEWSPAPER_API_HOST};
-            # Hack so S&R API knows it's a newspapers request and not a regular search.
-            proxy_set_header Host newspapers.$host;
+            # revert this change done to improve clarity of logging, but turns out to not work well with
+            # routing newspaper requests. If we find a better solution we could change back to:
+            # proxy_set_header Host $host;
+            proxy_set_header Host ${NEWSPAPER_API_HOST};
             proxy_pass http://newspaper_api/api/v2/search.json$is_args$args;
         }
 
