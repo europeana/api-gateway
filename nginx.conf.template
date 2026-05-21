@@ -393,8 +393,8 @@ http {
 
         # Newspaper search (has to be defined before fulltext/* route)
         location = /fulltext/search.json {
-            # revert this change done to improve clarity of logging, but turns out to not work well with
-            # routing newspaper requests. If we find a better solution we could change back to:
+            # For newspapers search we continue to set host header with internal K8s FQDN so S&R API can tell which Solr
+            # to use. In the future we should add a separate endpoint for newspapers search (see also EA-4535)
             # proxy_set_header Host $host;
             proxy_set_header Host ${NEWSPAPER_API_HOST};
             proxy_pass http://newspaper_api/api/v2/search.json$is_args$args;
@@ -560,42 +560,3 @@ http {
     } # END OLD OAI_PMH SERVER BLOCK
 
 } # END HTTP
-
-
-
-    ##### Old and deprecated #####
-    # ----------------------------------------------------------
-    # (kept for the time being for backward compatibility)
-    # ----------------------------------------------------------
-    # Redirect old record url format (to be removed?)
-    #   Nov 2019 - again 0 hits in last 4 months
-    #   March 2020 - 0 hits at API, but I did notice that we have quite a bit of /resolve/record requests coming in via
-    #                Portal, so for now I'm not removing entirely because I'm not sure if this means we want to put it back
-
-    # location ~ ^/resolve/record/(.*) {
-    #     return 301 https://$host/api/v2/record/$1$is_args$args;
-    # }
-
-    # EA-3761 Keycloak tests
-    # location ~ ^/(auth)/?(protocol/openid-connect|account)?(.*)? {
-    #    set $authPath $1/realms/europeana/$2$3;
-    #    proxy_set_header Host ${KEYCLOAK_HOST};
-    #    add_header 'X-Wickie' "$authPath" always;
-    #    proxy_pass http://keycloak/$authPath;
-    # }
-    #
-    # location ~ ^/(auth)(/realms/europeana)(/protocol/openid-connect|/account)?(.*)? {
-    #     set $authPath $1/realms/europeana/$3$4;
-    #     proxy_set_header Host ${KEYCLOAK_HOST};
-    #     add_header 'X-Wickie' "$authPath" always;
-    #     proxy_pass http://keycloak/$authPath;
-    # }
-
-    # Redirect old thumbnail url format
-    #    Feb 2019 - about 1000 requests a month are still done directly to api (and all of them fail with 500 or 404)
-    #    Nov 2019 - still about 1000 requests per month, most return 500 or 404, a few return 301
-    #    Apr 2024 - about 25 requests per month, we can start deprecating this now
-
-    # location = /api/image {
-    #     return 301 https://$host/api/v2/thumbnail-by-url.json$is_args$args;
-    # }
