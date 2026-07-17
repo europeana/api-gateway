@@ -331,14 +331,14 @@ http {
 
         location = /oai/record {
             proxy_set_header Host ${OAI_RECORD_HOST};
-            proxy_pass http://oai_record/oai/$is_args$args;
+            proxy_pass http://oai_record/oai$is_args$args;
         }
 
         ##### OAI-PMH index page #####
 
         location = /oai/record/ {
             proxy_set_header Host ${OAI_RECORD_HOST};
-            proxy_pass http://oai_record/oai/$is_args$args;
+            proxy_pass http://oai_record/oai$is_args$args;
         }
 
         # Redirect old html interface to console
