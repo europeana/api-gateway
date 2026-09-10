@@ -501,6 +501,18 @@ http {
                add_header Content-Type "application/ld+json" always;
         }
 
+         location = /context/catalog.jsonld {
+                       proxy_pass https://raw.githubusercontent.com/europeana/dsp/main/resources/context/catalog.jsonld;
+
+                       proxy_set_header Host raw.githubusercontent.com;
+                       proxy_ssl_server_name on;
+                       proxy_ssl_name raw.githubusercontent.com;
+
+                       # Ensure JSON-LD content type
+                       proxy_hide_header Content-Type;
+                       add_header Content-Type "application/ld+json" always;
+                }
+
         #####  EMBEDDINGS  #####
 
         ##### Embeddings API (load balanced) #####
