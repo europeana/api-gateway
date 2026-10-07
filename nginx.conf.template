@@ -153,51 +153,18 @@ http {
 
         # add_header Link "<http://creativecommons.org/publicdomain/zero/1.0/>;rel=license";
 
+        # Hide CORS headers from backends globally across proxied responses
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_hide_header Access-Control-Allow-Methods;
+        proxy_hide_header Access-Control-Allow-Headers;
+        proxy_hide_header Access-Control-Expose-Headers;
+
         include nginx.conf.d/*.conf;
 
-        # -----------------------------------------------#
-        #           CORS config for nginx                #
-        # location / works as last resort and applies to #
-        # everything that is not matched by other rules  #
-        # -----------------------------------------------#
-        
+        # Default fallback route
         location / {
-            if ($request_method = 'OPTIONS') {
-                add_header 'Access-Control-Allow-Origin' '*';
-                add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
-
-        # ---------------------------------------------------------------------------#
-        # Custom headers and headers various browsers *should* be OK with but aren't #
-        # ---------------------------------------------------------------------------#
-                
-                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,ETag,Cache-Control,Content-Type,Range';
-
-        # -----------------------------------------------------------#
-        # Tell client that this pre-flight info is valid for 20 days #
-        # -----------------------------------------------------------#
-        
-                add_header 'Access-Control-Max-Age' 1728000;
-                add_header 'Content-Type' 'text/plain; charset=utf-8';
-                add_header 'Content-Length' 0;
-                return 204;
-            }
-            
-            #if ($request_method = 'POST') {
-            #    add_header 'Access-Control-Allow-Origin' '*' always;
-            #    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS' always;
-            #    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,ETag,Cache-Control,Content-Type,Range' always;
-            #    add_header 'Access-Control-Expose-Headers' 'ETag,Content-Range' always;
-            #}
-            
-            if ($request_method = 'GET') {
-                add_header 'Access-Control-Allow-Origin' '*' always;
-                add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,ETag,Cache-Control,Content-Type,Range' always;
-                # See also https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_response_header
-                add_header 'Access-Control-Expose-Headers' 'ETag,Content-Range' always;
-
-                add_header 'Cache-Control' 'public, max-age=604800, must-revalidate';
-            }
+            include nginx.conf.d/location-cors.conf;
+            add_header 'Cache-Control' 'public, max-age=604800, must-revalidate';
         }
 
         # Redirect root #
@@ -242,17 +209,19 @@ http {
 
         # Old /api/v2/record and search.json requests #
         location ~ ^/api/(.*) {
+            include nginx.conf.d/location-cors.conf;
             rewrite ^/api/(.*)$ /api/$1 break;
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api;
         }
-        
+
         # --------------------------------------------------#
         # Recommendation API for records; alternative path, #
         # has to be defined before Search & Record          #
         # --------------------------------------------------#
 
         location ~ ^/record/(v2/)?(.*)/recommend {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/record/$2$is_args$args;
         }
@@ -260,6 +229,7 @@ http {
         ##### Search API v3 #####
 
         location ~ ^/record/v3/search(.*)$ {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api/record/v3/search.json$is_args$args;
         }
@@ -267,6 +237,7 @@ http {
         ##### Search API v2 and OpenSearch #####
 
         location ~ ^/record/(v2/)?(open)?search(.*)$ {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api/record/$2search$3$is_args$args;
         }
@@ -274,20 +245,20 @@ http {
         ##### Record API #####
 
         location ~ ^/record/(v2/)?(.*) {
+            include nginx.conf.d/location-cors.conf;
             rewrite  ^/record/(v2/)?(.*)$ /api/v2/record/$2 break;
             proxy_set_header Host ${SEARCH_API_HOST};
             proxy_pass http://search_api;
         }
-        
+
         # -------------------------------------------#
         # Always enable CORS for Search & Record API #
         # Swagger endpoint (as bug fix)              #
         # -------------------------------------------#
-        
+
         location = /record/api-docs {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${SEARCH_API_HOST};
-            proxy_hide_header Access-Control-Allow-Origin;
-            add_header Access-Control-Allow-Origin "*";
             proxy_pass http://search_api/api/api-docs;
         }
 
@@ -296,7 +267,7 @@ http {
         ##### Thumbnail API v2 (old style) #####
 
         location = /api/v2/thumbnail-by-url.json {
-            # Thumbnails are JPEGs; no need to gzip them
+            include nginx.conf.d/location-cors.conf;
             gzip off;
             proxy_set_header Host $host;
             proxy_pass http://thumbnail_api;
@@ -305,7 +276,7 @@ http {
         ##### Thumbnail API v2 (new style) #####
 
         location = /thumbnail/v2/url.json {
-            # Thumbnails are JPEGs; no need to gzip them
+            include nginx.conf.d/location-cors.conf;
             gzip off;
             proxy_set_header Host $host;
             proxy_pass http://thumbnail_api/api/v2/thumbnail-by-url.json$is_args$args;
@@ -319,7 +290,7 @@ http {
         ##### Thumbnail API v3 #####
 
         location ~ /thumbnail/(v3/)?(.*) {
-            # Thumbnails are JPEGs; no need to gzip them
+            include nginx.conf.d/location-cors.conf;
             gzip off;
             proxy_set_header Host $host;
             proxy_pass http://thumbnail_api/thumbnail/v3/$2$is_args$args;
@@ -330,6 +301,7 @@ http {
         ##### OAI-PMH requests #####
 
         location = /oai/record {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${OAI_RECORD_HOST};
             proxy_pass http://oai_record/oai$is_args$args;
         }
@@ -337,6 +309,7 @@ http {
         ##### OAI-PMH index page #####
 
         location = /oai/record/ {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${OAI_RECORD_HOST};
             proxy_pass http://oai_record/oai$is_args$args;
         }
@@ -351,6 +324,7 @@ http {
         ##### Annotation API #####
 
         location ~ ^/annotation/(.*) {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host $host;
             proxy_pass http://annotation_api/annotation/$1$is_args$args;
         }
@@ -361,6 +335,7 @@ http {
         # -----------------------------------------------------------#
 
         location ~ ^/entity/(.*)/recommend {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/entity/$1$is_args$args;
         }
@@ -370,8 +345,9 @@ http {
         # ------------------------------------------------------------#
         # Entity search, resolve and suggest are routed to Entity API #
         # ------------------------------------------------------------#
-        
+
         location ~ ^/entity/(search|suggest|resolve|enrich|stats)(.*) {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host $host;
             proxy_pass http://entity_api/entity/$1$2$is_args$args;
         }
@@ -379,6 +355,7 @@ http {
         ##### Entity - all other requests go to Entity Management #####
 
         location ~ ^/entity/(.*) {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${ENTITY_MANAGEMENT_HOST};
             proxy_pass http://entity_management/entity/$1$is_args$args;
         }
@@ -386,6 +363,7 @@ http {
         #####  IIIF MANIFEST  #####
 
         location ~ ^/presentation/(.*)/manifest$ {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host $host;
             proxy_pass http://manifest_api/presentation/$1/manifest$is_args$args;
         }
@@ -393,9 +371,7 @@ http {
 
         # Newspaper search (has to be defined before fulltext/* route)
         location = /fulltext/search.json {
-            # For newspapers search we continue to set host header with internal K8s FQDN so S&R API can tell which Solr
-            # to use. In the future we should add a separate endpoint for newspapers search (see also EA-4535)
-            # proxy_set_header Host $host;
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${NEWSPAPER_API_HOST};
             proxy_pass http://newspaper_api/api/v2/search.json$is_args$args;
         }
@@ -403,6 +379,7 @@ http {
         #####  IIIF FULLTEXT  #####
 
         location ~ ^/(fulltext|presentation)/(.*) {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host $host;
             proxy_pass http://fulltext_api/presentation/$2$is_args$args;
         }
@@ -410,6 +387,7 @@ http {
         #####  RECOMMENDATION  #####
 
         location ~ ^/recommend/(.*) {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/$1$is_args$args;
         }
@@ -420,6 +398,7 @@ http {
         # --------------------------------------------------------#
 
         location ~ ^/set/(.*)/recommend {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${RECOMMENDATION_API_HOST};
             proxy_pass http://recommendation_api/recommend/set/$1$is_args$args;
         }
@@ -428,6 +407,7 @@ http {
         #####  SETS  #####
 
         location ~ ^/set/(.*) {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host $host;
             proxy_pass http://set_api/set/$1$is_args$args;
         }
@@ -437,6 +417,7 @@ http {
 
         # no rewrite needed for proxying HOST requests - updated for EA-3859
         location ~* ^/translation/(.*) {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host $host;
             proxy_pass http://translation_api/$1$is_args$args;
         }
@@ -471,6 +452,8 @@ http {
                 return 302 https://$host/console/sparql/$2$is_args$args;
             }
 
+            include nginx.conf.d/location-cors.conf;
+
             # -----------------------------------------------------------------------#
             # Accept headers that indicate "machine" access are forwarded to API     #
             # No load balancing algorithm defined, so by default round-robin is used #
@@ -493,6 +476,7 @@ http {
         ##### Embeddings API (load balanced) #####
 
         location ~* ^/embedding/(.*) {
+            include nginx.conf.d/location-cors.conf;
             proxy_set_header Host ${EMBEDDING_API_HOST};
 
             # ----------------------------------------------------------
